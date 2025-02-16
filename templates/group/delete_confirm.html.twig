@@ -1,0 +1,45 @@
+{# templates/group/delete_confirmation.html.twig #}
+
+<h1>Are you sure you want to delete the group?</h1>
+
+<!-- Button to trigger the confirmation alert -->
+<button type="button" class="btn btn-danger" onclick="confirmDeletion()">Yes, Delete</button>
+<a href="{{ path('group_list') }}" class="btn btn-secondary">Cancel</a>
+
+<script>
+    function confirmDeletion(groupId) {
+        if (confirm("Are you sure you want to delete this group?")) {
+            const form = document.getElementById("delete-form-" + groupId);
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with an error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert("Group deleted successfully!");
+                    window.location.href = "{{ path('group_list') }}"; // Redirect to list
+                } else {
+                    alert("An error occurred: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while deleting the group.");
+            });
+        }
+    }
+</script>
+
+
+<form action="{{ path('group_delete', {'id': group.id}) }}" method="POST" id="deleteForm" style="display:none;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+</form>

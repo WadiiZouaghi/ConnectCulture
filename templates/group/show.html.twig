@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Group Details{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center">
+        <div class="card w-75 shadow-lg p-4">
+            <h2 class="text-center mb-4">Group Details</h2>
+
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Name:</strong> {{ group.name }}</li>
+                <li class="list-group-item"><strong>Description:</strong> {{ group.description }}</li>
+                <li class="list-group-item"><strong>Event Date:</strong> {{ group.eventDate|date('Y-m-d H:i') }}</li>
+                <li class="list-group-item"><strong>Location:</strong> {{ group.location }}</li>
+                <li class="list-group-item"><strong>Max Group Size:</strong> {{ group.maxGroupSize }}</li>
+                <li class="list-group-item"><strong>Contact:</strong> {{ group.contact }}</li>
+            </ul>
+
+            <div class="text-center mt-4">
+                <a href="{{ path('group_edit', {'id': group.id}) }}" class="btn btn-primary">Edit</a>
+                <button class="btn btn-danger" data-group-id="{{ group.id }}" onclick="confirmDeletion(this)">Delete</button>
+                <a href="{{ path('group_list') }}" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Form to Send CSRF Token -->
+    <form id="delete-form" method="POST" style="display: none;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+    </form>
+
+    <script>
+        // The confirmDeletion function
+        function confirmDeletion(button) {
+            const groupId = button.getAttribute("data-group-id"); // Get group ID from data attribute
+            if (confirm("Are you sure you want to delete this group?")) {
+                const form = document.getElementById("delete-form");
+                form.action = '{{ path('group_delete', {'id': 'GROUP_ID'}) }}'.replace('GROUP_ID', groupId); // Set the form action dynamically
+
+                // Submit the form using fetch to avoid page reload
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: new FormData(form)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Group deleted successfully!");
+                        window.location.href = "{{ path('group_list') }}"; // Redirect to group list after successful deletion
+                    } else {
+                        alert("An error occurred: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while deleting the group.");
+                });
+            }
+        }
+    </script>
+{% endblock %}

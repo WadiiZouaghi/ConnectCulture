@@ -1,0 +1,27 @@
+{# templates/group/search.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Groups{% endblock %}
+
+{% block body %}
+    <h1>Search Groups</h1>
+    <form method="get">
+        {{ form(form) }}
+        <button class="btn btn-primary">Search</button>
+    </form>
+
+    <h2>Search Results</h2>
+    <ul>
+        {% for group in groups %}
+            <li>
+                {{ group.name }}
+                <a href="{{ path('group_show', {'id': group.id}) }}" class="btn btn-info btn-sm">Details</a>
+                <a href="{{ path('group_edit', {'id': group.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{{ path('group_delete_confirmation', {'id': group.id}) }}" class="btn btn-danger btn-sm ml-2">Delete</a>
+            </li>
+        {% else %}
+            <li>No groups found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

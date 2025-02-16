@@ -1,0 +1,15 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+group_delete:
+    path: /group/{id}/delete
+    controller: App\Controller\GroupController::delete
+    methods: [POST]
+
+group_delete_confirmation:
+    path: /group/{id}/delete/confirm
+    controller: App\Controller\GroupController::deleteConfirmation
+    methods: [GET]

@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Group List{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center">
+        <div class="card w-75 shadow-lg p-4">
+            <h2 class="text-center mb-4">Group List</h2>
+
+            <div class="text-center mb-3">
+                <a href="{{ path('group_new') }}" class="btn btn-success">Create New Group</a>
+            </div>
+
+            {{ form(form) }}
+
+            {% if groups is empty %}
+                <p class="text-center text-muted">No groups available.</p>
+            {% else %}
+                <div class="list-group">
+                    {% for group in groups %}
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                <h5 class="mb-1">{{ group.name }}</h5>
+                                <p class="mb-0"><strong>Location:</strong> {{ group.location }}</p>
+                            </div>
+                            <div>
+                                <a href="{{ path('group_show', {'id': group.id}) }}" class="btn btn-primary btn-sm">Details</a>
+                                <a href="{{ path('group_edit', {'id': group.id}) }}" class="btn btn-secondary btn-sm">Edit</a>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDeletion({{ group.id }})">Delete</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <form id="delete-form" method="POST" style="display: none;">
+        <input type="hidden" name="_token" id="delete-token">
+    </form>
+
+    <script>
+        function confirmDeletion(groupId) {
+            if (confirm("Are you sure you want to delete this group?")) {
+                const form = document.getElementById("delete-form");
+                const tokenInput = document.getElementById("delete-token");
+                tokenInput.value = '{{ csrf_token('delete') }}';
+                form.action = '{{ path('group_delete', {'id': 'GROUP_ID'}) }}'.replace('GROUP_ID', groupId);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: new FormData(form)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Group deleted successfully!");
+                        window.location.reload();
+                    } else {
+                        alert("An error occurred: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while deleting the group.");
+                });
+            }
+        }
+    </script>
+{% endblock %}
