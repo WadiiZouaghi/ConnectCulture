@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="coming-soon">
+            <h1>Coming Soon</h1>
+            <p>UNDER</p>
+            <p>CONSTRUCTION</p>
+            <p>SITE NEARLY READY</p>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" style="width: 0%;"></div>
+        </div>
+        <div class="footer">
+            <p>Under Construction. Forward and secured by Culture Connect</p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const progressBar = document.querySelector(".progress");
+            setTimeout(() => {
+                progressBar.style.width = "100%";
+            }, 100); // Add a slight delay to allow the DOM to fully load
+        });
+    </script>
+</body>
+</html>
