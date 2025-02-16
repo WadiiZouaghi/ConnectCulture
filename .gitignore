@@ -1,15 +1,24 @@
+# Ignorer les fichiers d'environnement
+.env
+.env.dev
+.env.test
 
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
+# Ignorer les dossiers de dépendances
 /vendor/
-###< symfony/framework-bundle ###
+/node_modules/
 
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
+# Ignorer les fichiers de cache et de logs
+/var/
+/temp/
+
+# Ignorer les fichiers générés par l'IDE
+.idea/
+.vscode/
+
+# Ignorer les fichiers de configuration locaux
+/config/packages/*.local.yaml
+/config/packages/*.local.php
+
+# Ignorer les fichiers de sauvegarde
+*.bak
+*.tmp
