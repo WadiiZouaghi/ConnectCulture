@@ -12,9 +12,6 @@ class Competition
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column]
     private ?int $Id_comp = null;
 
     #[ORM\Column(length: 255)]
