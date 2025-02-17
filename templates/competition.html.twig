@@ -115,7 +115,7 @@
         <div class="col-lg-4 col-md-5 offset-md-1">
           <div class="heading_container">
             <h2>
-              Contact Us
+            Add competition ! 
             </h2>
           </div>
         </div>
@@ -123,33 +123,48 @@
       <div class="row">
         <div class="col-lg-4 col-md-5 offset-md-1">
           <div class="form_container">
-            <form action="">
-              <div>
-                <input type="text" placeholder="Your Name" />
-              </div>
-              <div>
-                <input type="text" placeholder="Phone Number" />
-              </div>
-              <div>
-                <input type="email" placeholder="Email" />
-              </div>
-              <div>
-                <input type="text" class="message-box" placeholder="Message" />
-              </div>
-              <div class="btn_box">
-                <button>
-                  SEND
-                </button>
-              </div>
-            </form>
+            {{ form_start(form) }}
+        <div>
+            <label for="{{ form.Nom.vars.id }}">Nom</label>
+            {{ form_widget(form.Nom) }}
+            {{ form_errors(form.Nom) }}
+        </div>
+
+        <div>
+            <label for="{{ form.Description.vars.id }}">Description</label>
+            {{ form_widget(form.Description) }}
+            {{ form_errors(form.Description) }}
+        </div>
+
+        <div>
+            <label for="{{ form.Date_debut.vars.id }}">Date de début</label>
+            {{ form_widget(form.Date_debut) }}
+            {{ form_errors(form.Date_debut) }}
+        </div>
+
+        <div>
+            <label for="{{ form.Date_fin.vars.id }}">Date de fin</label>
+            {{ form_widget(form.Date_fin) }}
+            {{ form_errors(form.Date_fin) }}
+        </div>
+
+        <div>
+            <label for="{{ form.Organisateur_ID.vars.id }}">Organisateur ID</label>
+            {{ form_widget(form.Organisateur_ID) }}
+            {{ form_errors(form.Organisateur_ID) }}
+        </div>
+
+        <button class="btn btn-primary">Add Competition</button>
+    {{ form_end(form) }}
+
           </div>
         </div>
         <div class="col-lg-7 col-md-6 px-0">
-          <div class="map_container">
-            <div class="map">
-              <div id="googleMap"></div>
+        <div class="image_container">
+            <div class="image" style="width: 100%; height: 100%;">
+            <img src="{{ asset('comp.jpg') }}" alt="Descriptive Text" class="img-fluid">
             </div>
-          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -281,7 +296,6 @@
   <!-- Google Map -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
-  <!-- End Google Map -->
 
 </body>
 

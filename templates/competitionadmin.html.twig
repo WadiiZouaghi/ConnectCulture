@@ -48,8 +48,8 @@
       <div class="navbar-menu-wrapper d-flex align-items-top"> 
         <ul class="navbar-nav">
           <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-            <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
-            <h3 class="welcome-sub-text">Your performance summary this week </h3>
+            <h1 class="welcome-text">Hello User</h1>
+            <h3 class="welcome-sub-text">You can update your Competition here </h3>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
@@ -485,47 +485,57 @@
             </div>
             </div>
             <div class="col-lg-12 stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <div class="table-responsive pt-3" style="max-width: 1000px; overflow-x:auto;">
-                    <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                        <th>#</th>
-                        <th>Nom</th>
-                        <th>Description</th>
-                        <th>Date de début</th>
-                        <th>Date de fin</th>
-                        <th>Organisateur ID</th>
-                        </tr>
-                      </thead>
-                    <tbody>
-                    {% for competition in competitions %}
-                    <tr>
-                    <td>{{ competition.IdComp }}</td>
-                    <td>{{ competition.Nom }}</td>
-                    <td>{{ competition.Description }}</td>
-                    <td>{{ competition.DateDebut|date('Y-m-d') }}</td>
-                    <td>{{ competition.DateFin|date('Y-m-d') }}</td>
-                    <td>{{ competition.OrganisateurID }}</td>
-                    <td> <a href="{{ path('supp_competition', {'idComp': competition.IdComp}) }}" class="text-secondarytext-xs" data-toggle="tooltip" data-original-title="Delete user">Delete</a>
-                    </td>
-                    <td> <a href="{{ path('update_competition', {'idComp': competition.IdComp}) }}" class="text-secondarytext-xs" data-toggle="tooltip" data-original-title="UPDATE">UPDATE</a>
-                    </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                    <td colspan="7">No competitions found.</td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                    </table>
-                  </div>
-                  <div>
-                  <a href="{{ path('competition_newadmin') }}" class="btn btn-success">+ Add Competition</a>
-                  </div>
-                </div>
-              </div>
+  <div class="card">
+    <div class="card-body">
+      <h1>added competition</h1>
+
+{{ form_start(form) }}
+<table class="table table-bordered">
+    <tr>
+        <td><label for="{{ form.Nom.vars.id }}"><strong>Nom</strong></label></td>
+        <td>
+            {{ form_widget(form.Nom) }}
+            <small class="text-danger">{{ form_errors(form.Nom) }}</small>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="{{ form.Description.vars.id }}"><strong>Description</strong></label></td>
+        <td>
+            {{ form_widget(form.Description) }}
+            <small class="text-danger">{{ form_errors(form.Description) }}</small>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="{{ form.Date_debut.vars.id }}"><strong>Date de début</strong></label></td>
+        <td>
+            {{ form_widget(form.Date_debut) }}
+            <small class="text-danger">{{ form_errors(form.Date_debut) }}</small>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="{{ form.Date_fin.vars.id }}"><strong>Date de fin</strong></label></td>
+        <td>
+            {{ form_widget(form.Date_fin) }}
+            <small class="text-danger">{{ form_errors(form.Date_fin) }}</small>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="{{ form.Organisateur_ID.vars.id }}"><strong>Organisateur ID</strong></label></td>
+        <td>
+            {{ form_widget(form.Organisateur_ID) }}
+            <small class="text-danger">{{ form_errors(form.Organisateur_ID) }}</small>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="text-center">
+            <button class="btn btn-primary">Add Competition</button>
+        </td>
+    </tr>
+</table>
+{{ form_end(form) }}
+
+
+</div>
             </div>
           </div>
         </div>
