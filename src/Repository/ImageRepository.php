@@ -16,47 +16,28 @@ class ImageRepository extends ServiceEntityRepository
         parent::__construct($registry, Image::class);
     }
 
-    /**
-     * Trouver une image par son nom.
-     *
-     * @param string $imageName
-     * @return Image|null
-     */
-    public function findByName(string $imageName): ?Image
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.imageName = :imageName')
-            ->setParameter('imageName', $imageName)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
+//    /**
+//     * @return Image[] Returns an array of Image objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('i')
+//            ->andWhere('i.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('i.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-    /**
-     * Récupérer toutes les images associées à un événement.
-     *
-     * @param int $eventId
-     * @return Image[]
-     */
-    public function findImagesByEventId(int $eventId): array
-    {
-        return $this->createQueryBuilder('i')
-            ->join('i.events', 'e')
-            ->where('e.id = :eventId')
-            ->setParameter('eventId', $eventId)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Compter le nombre total d'images dans la base de données.
-     *
-     * @return int
-     */
-    public function countAllImages(): int
-    {
-        return $this->createQueryBuilder('i')
-            ->select('COUNT(i)')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
+//    public function findOneBySomeField($value): ?Image
+//    {
+//        return $this->createQueryBuilder('i')
+//            ->andWhere('i.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }

@@ -1,24 +1,10 @@
-# Ignorer les fichiers d'environnement
-.env
-.env.dev
-.env.test
 
-# Ignorer les dossiers de dépendances
-/vendor/
-/node_modules/
-
-# Ignorer les fichiers de cache et de logs
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
 /var/
-/temp/
-
-# Ignorer les fichiers générés par l'IDE
-.idea/
-.vscode/
-
-# Ignorer les fichiers de configuration locaux
-/config/packages/*.local.yaml
-/config/packages/*.local.php
-
-# Ignorer les fichiers de sauvegarde
-*.bak
-*.tmp
+/vendor/
+###< symfony/framework-bundle ###
