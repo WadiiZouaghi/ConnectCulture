@@ -1,0 +1,38 @@
+{# templates/event/_form.html.twig #}
+
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+<table class="table table-bordered">
+    <tr>
+        <th>{{ form_label(form.name, "Nom de l'événement") }}</th>
+        <td>
+            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.name) }}
+        </td>
+    </tr>
+    <tr>
+        <th>{{ form_label(form.description, "Description") }}</th>
+        <td>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+            {{ form_errors(form.description) }}
+        </td>
+    </tr>
+    <tr>
+        <th>{{ form_label(form.date, "Date de l'événement") }}</th>
+        <td>
+            {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.date) }}
+        </td>
+    </tr>
+    <tr>
+        <th>{{ form_label(form.location, "Lieu de l'événement") }}</th>
+        <td>
+            {{ form_widget(form.location, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.location) }}
+        </td>
+    </tr>
+</table>
+<div class="text-center">
+    <button type="submit" class="btn-submit">{{ button_label|default('Enregistrer') }}</button>
+    <a href="#" class="btn-back">Back to list</a>
+</div>
+{{ form_end(form) }}

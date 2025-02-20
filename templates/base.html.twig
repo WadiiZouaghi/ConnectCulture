@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Basic -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CultureConnect</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+   
+   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+   <link rel="stylesheet" href="{{ asset('css/responsive.css') }}" />
+ 
+  <style>
+    .form-section {
+      padding: 50px 0;
+    }
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+    .btn-submit {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+    }
+    .btn-back {
+      background-color: #6c757d;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hero_area">
+    <!-- Header Section -->
+    <header class="header_section">
+      <div class="header_bottom">
+        <div class="container-fluid">
+          <nav class="navbar navbar-expand-lg custom_nav-container">
+            <a class="navbar-brand" href="index.html">
+              <span>ConnectCulture</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+      </header>
+      <section class="slider_section">
+        <div class="slider_bg_box">
+          <img src="{{ asset('images/background.jpg') }}" alt="Background">
+        </div>
+      </section>
+  <!-- About Us Section -->
+  <section class="about_section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>About Us</h2>
+          <p>
+            At CultureConnect, we are dedicated to bringing people together through a variety of cultural and leisure activities. Our mission is to create unforgettable experiences that foster connection, celebration, and exploration. From cultural evenings and camping adventures to exciting moto tours by the sea and insightful museum visits, we offer a diverse range of events to enrich your life. Join us and experience the magic of cultural discovery!
+          </p>
+          <a href="#" class="btn btn-primary">Read More</a>
+        </div>
+        <div class="col-md-6">
+          <img src="{{ asset('images/about-img.jpg') }}" alt="About Us" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formulaire -->
+  {% block body %}
+  <section class="form-section">
+    <div class="container">
+      <div class="form-container">
+        <h2 class="text-center">Create New Event</h2>
+        <p class="text-center">Fill out the form below to create a new event.</p>
+        <form action="#" method="post">
+          <table class="table table-bordered">
+            <tr>
+              <th>Nom d’événement</th>
+              <td>
+                <input type="text" id="event-name" name="event-name" class="form-control" placeholder="Enter event name" required>
+              </td>
+            </tr>
+            <tr>
+              <th>Description</th>
+              <td>
+                <textarea id="event-description" name="event-description" class="form-control" rows="5" placeholder="Enter event description" required></textarea>
+              </td>
+            </tr>
+            <tr>
+              <th>Date</th>
+              <td>
+                <input type="datetime-local" id="start-date" name="start-date" class="form-control" required>
+              </td>
+            </tr>
+          
+            <tr>
+              <th>Location</th>
+              <td>
+                <input type="text" id="location" name="location" class="form-control" placeholder="Enter event location" required>
+              </td>
+            </tr>
+          </table>
+          <div class="text-center">
+            <button type="submit" class="btn-submit">Enregistrer</button>
+            <a href="#" class="btn-back">Back to list</a>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endblock %}
+  </section>
+ 
+  <div class="container mt-4">
+    {% block title %}Liste d'événements{% endblock %}
+
+    {% block Liste %}
+        <h1>Liste d'événements</h1>
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in event %}
+                    <tr>
+                        <td>{{ event.id }}</td>
+                        <td>{{ event.name }}</td>
+                        <td>{{ event.description }}</td>
+                        <td>{{ event.date ? event.date|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ event.location }}</td>
+                        <td>
+                            <a href="{{ path('app_event_show', {'id': event.id}) }}">Show</a>
+                            <a href="{{ path('app_event_edit', {'id': event.id}) }}">Edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">No records found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ path('app_event_new') }}">Create new</a>
+    {% endblock %}
+  <!-- Footer -->
+  <footer class="footer_section text-center py-4">
+    <p>&copy; 2023 CultureConnect. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+   {% block javascripts %}{% endblock %}
+</body>
+
+</html>
