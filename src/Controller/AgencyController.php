@@ -10,10 +10,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
+
+
+
 
 #[Route('/agency', name: 'agency_')]
 class AgencyController extends AbstractController
 {
+    #[Route('/agencies', name: 'agencies_page', methods: ['GET'])]
+    public function agenciesPage(): Response
+    {
+        return $this->render('pages/agencies.html.twig', [
+            'title' => 'Our Agencies',
+        ]);
+    }
+    #[Route('', name: 'index', methods: ['GET'])]
+    public function index(): Response
+    {
+        // Render the service.html.twig template
+        return $this->render('pages/agency.html.twig', [
+            'title' => 'Our agency',
+        ]);
+    }
+   
     #[Route('/create', name: 'create', methods: ['POST'])]
     public function createAgency(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -73,10 +93,11 @@ class AgencyController extends AbstractController
         return new JsonResponse(['message' => 'Service added to agency successfully'], 200);
     }
 
-    #[Route('/{id}', name: 'get_agency', methods: ['GET'])]
-    public function getAgency(int $id, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/getbyid/{id}', name: 'get_agency', methods: ['GET'])]
+    public function getAgency(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
-        $agency = $entityManager->getRepository(Agency::class)->find($id);
+        $agency = $entityManager->getRepository(Agency::class)->find((int) $id); // Explicit typecast
+
         if (!$agency) {
             return new JsonResponse(['error' => 'Agency not found'], 404);
         }
@@ -92,4 +113,31 @@ class AgencyController extends AbstractController
             ]
         ]);
     }
+
+    #[Route('/all', name: 'get_all', methods: ['GET'])]
+    public function getAllAgencies(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $agencies = $entityManager->getRepository(Agency::class)->findAll();
+
+        // Fix: Check if array is empty
+        if (empty($agencies)) {
+            return new JsonResponse(['error' => 'No agencies found'], 404);
+        }
+
+        $data = array_map(function ($agency) {
+            return [
+                'agency_id' => $agency->getAgencyId(),
+                'name' => $agency->getName(),
+                'service_id' => $agency->getService() ? $agency->getService()->getId() : null,
+                'address' => [
+                    'longitude' => $agency->getAddress()->getLongitude(),
+                    'latitude' => $agency->getAddress()->getLatitude(),
+                    'description' => $agency->getAddress()->getDescription()
+                ]
+            ];
+        }, $agencies);
+
+        return new JsonResponse($data);
+    }
+
 }

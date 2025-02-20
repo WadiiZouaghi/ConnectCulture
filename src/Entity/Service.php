@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ServiceRepository;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 class Service
@@ -20,9 +21,13 @@ class Service
     #[ORM\Column(type: 'text')]
     private $description;
 
-    
     #[ORM\OneToMany(mappedBy: 'service', targetEntity: ServiceEquipment::class, cascade: ['persist', 'remove'])]
     private Collection $serviceEquipments;
+
+    public function __construct()
+    {
+        $this->serviceEquipments = new ArrayCollection(); // Initialize the collection
+    }
 
     public function getId(): ?int
     {
@@ -50,27 +55,18 @@ class Service
         $this->description = $description;
         return $this;
     }
-  
 
-    // Getter for the serviceEquipments collection
     public function getServiceEquipments(): Collection
     {
         return $this->serviceEquipments;
     }
 
-    // Add a ServiceEquipment to the collection
     public function addServiceEquipment(ServiceEquipment $equipment): self
     {
-        // Avoid duplicates by checking if the equipment is already in the collection
         if (!$this->serviceEquipments->contains($equipment)) {
             $this->serviceEquipments[] = $equipment;
-            $equipment->setService($this); // Set the service on the equipment
+            $equipment->setService($this);
         }
-
         return $this;
     }
-
-   
 }
-
-

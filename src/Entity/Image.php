@@ -1,11 +1,8 @@
-<?php
-
-namespace App\Entity;
-
-use Doctrine\ORM\Mapping as ORM;
-use App\Repository\ImageRepository;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
+#[Vich\Uploadable]
 class Image
 {
     #[ORM\Id]
@@ -17,7 +14,13 @@ class Image
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $image_url;
+    private $image_url; // Store the file path instead of BLOB
+
+    #[Vich\UploadableField(mapping: "service_images", fileNameProperty: "image_url")]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function getImageId(): ?int
     {
@@ -44,5 +47,19 @@ class Image
     {
         $this->image_url = $image_url;
         return $this;
+    }
+
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if ($imageFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
     }
 }

@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ServiceEquipmentRepository;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ServiceEquipmentRepository::class)]
+#[Vich\Uploadable]
 class ServiceEquipment
 {
     #[ORM\Id]
@@ -19,13 +22,18 @@ class ServiceEquipment
     #[ORM\Column(type: 'text')]
     private $description;
     
-    #[ORM\OneToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(name: "image_id", referencedColumnName: "image_id", nullable: true)]
-    private $image;
+    #[Vich\UploadableField(mapping: "service_equipment_images", fileNameProperty: "imageName")]
+    private ?File $imageFile = null;
+    
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $imageName = null;
 
     #[ORM\ManyToOne(targetEntity: Service::class, inversedBy: 'serviceEquipments')]
     #[ORM\JoinColumn(name: 'service_id', referencedColumnName: 'id')]
     private ?Service $service = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function getId(): ?int
     {
@@ -54,15 +62,27 @@ class ServiceEquipment
         return $this;
     }
 
-    public function getImage(): ?Image
+    public function setImageFile(?File $imageFile = null): void
     {
-        return $this->image;
+        $this->imageFile = $imageFile;
+        if ($imageFile) {
+            $this->updatedAt = new \DateTime();
+        }
     }
 
-    public function setImage(?Image $image): self
+    public function getImageFile(): ?File
     {
-        $this->image = $image;
-        return $this;
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
     }
 
     public function getService(): ?Service
@@ -76,4 +96,3 @@ class ServiceEquipment
         return $this;
     }
 }
-
