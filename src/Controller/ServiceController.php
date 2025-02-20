@@ -63,7 +63,7 @@ class ServiceController extends AbstractController
         ], 201);
     }
 
-    #[Route('/{id}', name: 'get_service', methods: ['GET'])]
+    #[Route('/getbyid/{id}', name: 'get_service', methods: ['GET'])]
     public function getService(int $id, EntityManagerInterface $entityManager): JsonResponse
     {
         $service = $entityManager->getRepository(Service::class)->find($id);
@@ -89,4 +89,108 @@ class ServiceController extends AbstractController
 
         return new JsonResponse($response);
     }
+    #[Route('/all', name: 'get_all_services', methods: ['GET'])]
+    public function getAllServices(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $services = $entityManager->getRepository(Service::class)->findAll();
+        
+        $response = [];
+        
+        foreach ($services as $service) {
+            $serviceData = [
+                'service_id' => $service->getId(),
+                'name' => $service->getName(),
+                'description' => $service->getDescription(),
+                'equipments' => []
+            ];
+
+            foreach ($service->getServiceEquipments() as $equipment) {
+                $serviceData['equipments'][] = [
+                    'equipment_id' => $equipment->getId(),
+                    'name' => $equipment->getName(),
+                    'description' => $equipment->getDescription(),
+                    'imageName' => $equipment->getImageName(),
+                ];
+            }
+
+            $response[] = $serviceData;
+        }
+
+        return new JsonResponse($response);
+    }
+    #[Route('/update/{id}', name: 'update', methods: ['PUT'])]
+    public function updateService(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $service = $entityManager->getRepository(Service::class)->find($id);
+        if (!$service) {
+            return new JsonResponse(['error' => 'Service not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['name'])) {
+            $service->setName($data['name']);
+        }
+        if (isset($data['description'])) {
+            $service->setDescription($data['description']);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Service updated successfully']);
+    }
+
+    #[Route('/delete/{id}', name: 'delete', methods: ['DELETE'])]
+    public function deleteService(int $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $service = $entityManager->getRepository(Service::class)->find($id);
+        if (!$service) {
+            return new JsonResponse(['error' => 'Service not found'], 404);
+        }
+
+        $entityManager->remove($service);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Service deleted successfully']);
+    }
+
+    #[Route('/equipment/update/{id}', name: 'update_equipment', methods: ['PUT'])]
+    public function updateEquipment(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $equipment = $entityManager->getRepository(ServiceEquipment::class)->find($id);
+        if (!$equipment) {
+            return new JsonResponse(['error' => 'Equipment not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['name'])) {
+            $equipment->setName($data['name']);
+        }
+        if (isset($data['description'])) {
+            $equipment->setDescription($data['description']);
+        }
+        if (isset($data['imageName'])) {
+            $equipment->setImageName($data['imageName']);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Equipment updated successfully']);
+    }
+
+    #[Route('/equipment/delete/{id}', name: 'delete_equipment', methods: ['DELETE'])]
+    public function deleteEquipment(int $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $equipment = $entityManager->getRepository(ServiceEquipment::class)->find($id);
+        if (!$equipment) {
+            return new JsonResponse(['error' => 'Equipment not found'], 404);
+        }
+
+        $entityManager->remove($equipment);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Equipment deleted successfully']);
+    }
+
 }

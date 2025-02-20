@@ -3,17 +3,17 @@
 
 <head>
     <meta charset="utf-8">
-    <title>TRAVELER - Free Travel Website Template</title>
+    <title>Create Service</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <meta content="Service Creation" name="keywords">
+    <meta content="Service Creation" name="description">
 
     <!-- Favicon -->
     <link href="{{ asset('img/favicon.ico') }}" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -38,25 +38,6 @@
                         <p><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</p>
                     </div>
                 </div>
-                <div class="col-lg-6 text-center text-lg-right">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a class="text-primary px-3" href="">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a class="text-primary pl-3" href="">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -67,30 +48,8 @@
         <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
             <nav class="navbar navbar-expand-lg bg-light navbar-light shadow-lg py-3 py-lg-0 pl-3 pl-lg-5">
                 <a href="" class="navbar-brand">
-                    <h1 class="m-0 text-primary"><span class="text-dark">TRAVEL</span>ER</h1>
+                    <h1 class="m-0 text-primary"><span class="text-dark">Create</span> Service</h1>
                 </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                {# <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto py-0">
-                        <a href="{{ path('home') }}" class="nav-item nav-link">Home</a>
-                        <a href="{{ path('about') }}" class="nav-item nav-link">About</a>
-                        <a href="{{ path('service') }}" class="nav-item nav-link active">Services</a>
-                        <a href="{{ path('package') }}" class="nav-item nav-link">Tour Packages</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu border-0 rounded-0 m-0">
-                                <a href="{{ path('blog') }}" class="dropdown-item">Blog Grid</a>
-                                <a href="{{ path('single') }}" class="dropdown-item">Blog Detail</a>
-                                <a href="{{ path('destination') }}" class="dropdown-item">Destination</a>
-                                <a href="{{ path('guide') }}" class="dropdown-item">Travel Guides</a>
-                                <a href="{{ path('testimonial') }}" class="dropdown-item">Testimonial</a>
-                            </div>
-                        </div>
-                        <a href="{{ path('contact') }}" class="nav-item nav-link">Contact</a>
-                    </div>
-                </div> #}
             </nav>
         </div>
     </div>
@@ -100,154 +59,150 @@
     <div class="container-fluid page-header">
         <div class="container">
             <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
-                <h3 class="display-4 text-white text-uppercase">My agency</h3>
+                <h3 class="display-4 text-white text-uppercase">Create a New Service</h3>
             </div>
         </div>
     </div>
     <!-- Header End -->
 
-    <!-- Add Agency Form -->
+    <!-- Form Start -->
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Add a New Agency</h2>
-        <form id="agencyForm">
+        <form id="createServiceForm">
             <div class="form-group">
-                <label for="name">Agency Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <label for="service_name">Service Name</label>
+                <input type="text" id="service_name" class="form-control" placeholder="Enter Service Name" required>
             </div>
 
             <div class="form-group">
-                <label for="description">Address</label>
-                <input type="text" class="form-control" id="description" name="description" required>
+                <label for="service_description">Service Description</label>
+                <textarea id="service_description" class="form-control" placeholder="Enter Service Description" required></textarea>
             </div>
 
-            <div class="form-group">
-                <label for="latitude">Latitude</label>
-                <input type="text" class="form-control" id="latitude" name="latitude" required>
+            <div id="equipmentContainer">
+                <div class="equipment-item mb-4">
+                    <h4>Equipment 1</h4>
+                    <div class="form-group">
+                        <label for="equipment_name_1">Equipment Name</label>
+                        <input type="text" name="equipments[0][name]" class="form-control" placeholder="Enter Equipment Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="equipment_description_1">Equipment Description</label>
+                        <textarea name="equipments[0][description]" class="form-control" placeholder="Enter Equipment Description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="equipment_image_1">Equipment Image</label>
+                        <input type="file" name="equipments[0][image]" class="form-control">
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="longitude">Longitude</label>
-                <input type="text" class="form-control" id="longitude" name="longitude" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <button type="button" id="addEquipment" class="btn btn-success">Add More Equipment</button>
+            <button type="submit" class="btn btn-primary mt-3">Create Service</button>
         </form>
     </div>
+    <!-- Form End -->
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white-50 py-5 px-sm-3 px-lg-5" style="margin-top: 90px;">
         <div class="row pt-5">
             <div class="col-lg-3 col-md-6 mb-5">
                 <a href="" class="navbar-brand">
-                    <h1 class="text-primary"><span class="text-white">TRAVEL</span>ER</h1>
+                    <h1 class="text-primary"><span class="text-white">Create</span> Service</h1>
                 </a>
-                <p>Sed ipsum clita tempor ipsum ipsum amet sit ipsum lorem amet labore rebum lorem ipsum dolor. No sed vero lorem dolor dolor</p>
-                <h6 class="text-white text-uppercase mt-4 mb-3" style="letter-spacing: 5px;">Follow Us</h6>
-                <div class="d-flex justify-content-start">
-                    <a class="btn btn-outline-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-outline-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-outline-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h5 class="text-white text-uppercase mb-4" style="letter-spacing: 5px;">Our Services</h5>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Destination</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Services</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Packages</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Guides</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Testimonial</a>
-                    <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Blog</a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h5 class="text-white text-uppercase mb-4" style="letter-spacing: 5px;">Usefull Links</h5>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Destination</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Services</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Packages</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Guides</a>
-                    <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Testimonial</a>
-                    <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Blog</a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h5 class="text-white text-uppercase mb-4" style="letter-spacing: 5px;">Contact Us</h5>
-                <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
-                <h6 class="text-white text-uppercase mt-4 mb-3" style="letter-spacing: 5px;">Newsletter</h6>
-                <div class="w-100">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 25px;" placeholder="Your Email">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary px-3">Sign Up</button>
-                        </div>
-                    </div>
-                </div>
+                <p>Service creation page.</p>
             </div>
         </div>
     </div>
-    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <div class="row">
-            <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white-50">Copyright &copy; <a href="#">Domain</a>. All Rights Reserved.</a>
-                </p>
-            </div>
-            <div class="col-lg-6 text-center text-md-right">
-                <p class="m-0 text-white-50">Designed by <a href="https://htmlcodex.com">HTML Codex</a>
-                </p>
-            </div>
-        </div>
+    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5">
+        <!-- Footer content -->
     </div>
     <!-- Footer End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('lib/easing/easing.min.js') }}"></script>
-    <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('lib/tempusdominus/js/moment.min.js') }}"></script>
-    <script src="{{ asset('lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
-    <script src="{{ asset('lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-
-    <!-- Contact Javascript File -->
-    <script src="{{ asset('mail/jqBootstrapValidation.min.js') }}"></script>
-    <script src="{{ asset('mail/contact.js') }}"></script>
-
-    <!-- Template Javascript -->
-    <script src="{{ asset('js/main.js') }}"></script>
-
-    <!-- Agency Form Script -->
+    <!-- JavaScript -->
     <script>
-        document.getElementById("agencyForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-            
-            const formData = {
-                name: document.getElementById("name").value,
-                description: document.getElementById("description").value,
-                latitude: document.getElementById("latitude").value,
-                longitude: document.getElementById("longitude").value
-            };
+        // Add equipment fields dynamically
+        // Add equipment fields dynamically
+let equipmentCount = 1;
+// Handle form submission
+document.getElementById('createServiceForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the form from submitting normally.
 
-            fetch("{{ path('agency_create') }}", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message || "Agency created successfully!");
-                document.getElementById("agencyForm").reset();
-            })
-            .catch(error => console.error("Error:", error));
+    const formData = new FormData();
+    const serviceName = document.getElementById('service_name').value;
+    const serviceDescription = document.getElementById('service_description').value;
+
+    // Create the data object to send
+    const serviceData = {
+        name: serviceName,
+        description: serviceDescription,
+        equipments: []
+    };
+
+    const equipmentItems = document.querySelectorAll('.equipment-item');
+    let completedRequests = 0; // Track the number of completed requests (i.e., file uploads)
+
+    equipmentItems.forEach((item, index) => {
+        const equipmentName = item.querySelector('input[name^="equipments"][name$="[name]"]').value;
+        const equipmentDescription = item.querySelector('textarea[name^="equipments"][name$="[description]"]').value;
+        const equipmentImage = item.querySelector('input[type="file"]').files[0];
+
+        const equipmentData = {
+            name: equipmentName,
+            description: equipmentDescription
+        };
+
+        if (equipmentImage) {
+            // If there's an image, read it as base64
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                equipmentData.imageName = reader.result.split(',')[1]; // Get base64 image data
+                serviceData.equipments.push(equipmentData);
+
+                completedRequests++;
+                // Check if all equipment items have been processed
+                if (completedRequests === equipmentItems.length) {
+                    submitServiceData(serviceData); // Submit the data after all images are processed
+                }
+            };
+            reader.readAsDataURL(equipmentImage);
+        } else {
+            // If no image, push the equipment data directly
+            serviceData.equipments.push(equipmentData);
+
+            completedRequests++;
+            // Check if all equipment items have been processed
+            if (completedRequests === equipmentItems.length) {
+                submitServiceData(serviceData); // Submit the data
+            }
+        }
+    });
+
+    function submitServiceData(data) {
+        fetch('/service/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert('Service created successfully');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Something went wrong.');
         });
+    }
+});
+
+
+     
     </script>
 </body>
 

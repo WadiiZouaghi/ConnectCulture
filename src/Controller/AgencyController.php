@@ -12,9 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 
-
-
-
 #[Route('/agency', name: 'agency_')]
 class AgencyController extends AbstractController
 {
@@ -25,15 +22,15 @@ class AgencyController extends AbstractController
             'title' => 'Our Agencies',
         ]);
     }
+
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
-        // Render the service.html.twig template
         return $this->render('pages/agency.html.twig', [
             'title' => 'Our agency',
         ]);
     }
-   
+
     #[Route('/create', name: 'create', methods: ['POST'])]
     public function createAgency(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -44,19 +41,36 @@ class AgencyController extends AbstractController
             return new JsonResponse(['error' => 'Missing required fields'], 400);
         }
 
+        // Validate and convert agency name to uppercase
+        $name = strtoupper($data['name']);
+        if (strlen($name) < 3 || strlen($name) > 20) {
+            return new JsonResponse(['error' => 'Agency name must be between 3 and 20 characters'], 400);
+        }
+
+        // Validate address description length (between 5 and 20 characters)
+        $description = $data['description'];
+        if (strlen($description) < 5 || strlen($description) > 100) {
+            return new JsonResponse(['error' => 'Address description must be between 5 and 20 characters'], 400);
+        }
+
+        // Validate latitude and longitude as float
+        if (!is_numeric($data['latitude']) || !is_numeric($data['longitude'])) {
+            return new JsonResponse(['error' => 'Latitude and Longitude must be numeric values'], 400);
+        }
+
         // Create new Address entity
         $address = new Address();
-        $address->setLongitude($data['longitude']);
-        $address->setLatitude($data['latitude']);
-        $address->setDescription($data['description']);
+        $address->setLongitude((float) $data['longitude']);
+        $address->setLatitude((float) $data['latitude']);
+        $address->setDescription($description);
 
         // Persist Address entity
         $entityManager->persist($address);
         $entityManager->flush();
 
-        // Create new Agency entity (without a service)
+        // Create new Agency entity
         $agency = new Agency();
-        $agency->setName($data['name']);
+        $agency->setName($name);
         $agency->setAddress($address);
 
         // Persist Agency entity
@@ -72,45 +86,36 @@ class AgencyController extends AbstractController
     #[Route('/{id}/add-service/{service_id}', name: 'add_service', methods: ['PUT'])]
     public function addServiceToAgency(int $id, int $service_id, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Find Agency
         $agency = $entityManager->getRepository(Agency::class)->find($id);
         if (!$agency) {
             return new JsonResponse(['error' => 'Agency not found'], 404);
         }
 
-        // Find Service
         $service = $entityManager->getRepository(Service::class)->find($service_id);
         if (!$service) {
             return new JsonResponse(['error' => 'Service not found'], 404);
         }
 
-        // Assign Service to Agency
         $agency->setService($service);
-
-        // Save changes
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Service added to agency successfully'], 200);
     }
 
     #[Route('/getbyid/{id}', name: 'get_agency', methods: ['GET'])]
-    public function getAgency(string $id, EntityManagerInterface $entityManager): JsonResponse
+    public function agencyDetails(int $id, EntityManagerInterface $entityManager): Response
     {
-        $agency = $entityManager->getRepository(Agency::class)->find((int) $id); // Explicit typecast
-
+        $agency = $entityManager->getRepository(Agency::class)->find($id);
         if (!$agency) {
-            return new JsonResponse(['error' => 'Agency not found'], 404);
+            throw $this->createNotFoundException('Agency not found');
         }
 
-        return new JsonResponse([
-            'agency_id' => $agency->getAgencyId(),
-            'name' => $agency->getName(),
-            'service_id' => $agency->getService() ? $agency->getService()->getId() : null,
-            'address' => [
-                'longitude' => $agency->getAddress()->getLongitude(),
-                'latitude' => $agency->getAddress()->getLatitude(),
-                'description' => $agency->getAddress()->getDescription()
-            ]
+        $service = $agency->getService();
+
+        return $this->render('pages/agency_details.html.twig', [
+            'agency' => $agency,
+            'services' => $service,
+            'service' => $agency->getService(),
         ]);
     }
 
@@ -119,7 +124,6 @@ class AgencyController extends AbstractController
     {
         $agencies = $entityManager->getRepository(Agency::class)->findAll();
 
-        // Fix: Check if array is empty
         if (empty($agencies)) {
             return new JsonResponse(['error' => 'No agencies found'], 404);
         }
@@ -140,4 +144,68 @@ class AgencyController extends AbstractController
         return new JsonResponse($data);
     }
 
+    #[Route('/delete/{id}', name: 'delete', methods: ['DELETE'])]
+    public function deleteAgency(int $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $agency = $entityManager->getRepository(Agency::class)->find($id);
+        if (!$agency) {
+            return new JsonResponse(['error' => 'Agency not found'], 404);
+        }
+
+        $entityManager->remove($agency);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Agency deleted successfully'], 200);
+    }
+
+    #[Route('/update/{id}', name: 'update', methods: ['PUT'])]
+    public function updateAgency(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $agency = $entityManager->getRepository(Agency::class)->find($id);
+        if (!$agency) {
+            return new JsonResponse(['error' => 'Agency not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['name'])) {
+            $agency->setName($data['name']);
+        }
+        if (isset($data['longitude'], $data['latitude'], $data['description'])) {
+            $address = $agency->getAddress();
+            $address->setLongitude($data['longitude']);
+            $address->setLatitude($data['latitude']);
+            $address->setDescription($data['description']);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Agency updated successfully']);
+    }
+
+    #[Route('/address/update/{id}', name: 'update_address', methods: ['PUT'])]
+    public function updateAgencyAddress(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $agency = $entityManager->getRepository(Agency::class)->find($id);
+        if (!$agency) {
+            return new JsonResponse(['error' => 'Agency not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $address = $agency->getAddress();
+
+        if (isset($data['longitude'])) {
+            $address->setLongitude($data['longitude']);
+        }
+        if (isset($data['latitude'])) {
+            $address->setLatitude($data['latitude']);
+        }
+        if (isset($data['description'])) {
+            $address->setDescription($data['description']);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Agency address updated successfully']);
+    }
 }
