@@ -1,0 +1,1154 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  color: #0c0c0c;
+  background-color: #f8f9fa; /* Light, professional background */
+  overflow-x: hidden;
+  transition: background-color 0.3s ease; /* Smooth transition for elegance */
+}
+
+/* Layout Classes */
+.layout_padding {
+  padding: 90px 0;
+}
+
+.layout_padding2 {
+  padding: 75px 0;
+}
+
+.layout_padding2-top {
+  padding-top: 75px;
+}
+
+.layout_padding2-bottom {
+  padding-bottom: 75px;
+}
+
+.layout_padding-top {
+  padding-top: 90px;
+}
+
+.layout_padding-bottom {
+  padding-bottom: 90px;
+}
+
+.heading_container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.heading_container h2 {
+  position: relative;
+  font-weight: 600; /* Slightly less bold for professionalism */
+  margin-bottom: 0;
+  color: #1a2b3c; /* Dark blue for headers, professional and calming */
+}
+
+.heading_container h2 span {
+  color: #1e90ff; /* Dodger blue for a professional, vibrant accent */
+}
+
+.heading_container p {
+  margin-top: 10px;
+  margin-bottom: 0;
+  color: #6c757d; /* Soft gray for secondary text, professional and subtle */
+}
+
+.heading_container.heading_center {
+  align-items: center;
+  text-align: center;
+}
+
+a,
+a:hover,
+a:focus {
+  text-decoration: none;
+  color: #1e90ff; /* Dodger blue for links, professional and clear */
+}
+
+a:hover,
+a:focus {
+  color: #4169e1; /* Royal blue for hover, professional and elegant */
+}
+
+.btn,
+.btn:focus {
+  outline: none !important;
+  box-shadow: none;
+}
+
+/* Header Section */
+.hero_area {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sub_page .hero_area {
+  min-height: auto;
+}
+
+.sub_page .header_section {
+  margin-top: 0;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15); /* Softer shadow for professionalism */
+}
+
+.header_section {
+  background: linear-gradient(90deg, #1a2b3c, #04233b); /* Gradient blue, professional and sleek */
+  color: #ffffff;
+}
+
+.header_section .header_top {
+  padding: 15px 0;
+  background-color: #1a2b3c; /* Darker blue for consistency, professional */
+}
+
+.header_section .header_top .contact_nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header_section .header_top .contact_nav a {
+  color: #ffffff;
+  display: flex;
+  font-size: 15px;
+  transition: color 0.3s ease;
+}
+
+.header_section .header_top .contact_nav a i {
+  margin-right: 5px;
+  border-radius: 100%;
+  background-color: #ffffff;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #1e90ff; /* Dodger blue for icons, professional and vibrant */
+}
+
+.header_section .header_top .contact_nav a:hover i {
+  color: #ffd700; /* Gold for warmth, professional but subtle */
+}
+
+.header_section .header_bottom {
+  background-color: #ffffff;
+  padding: 15px 0;
+}
+
+.header_section .header_bottom .container-fluid {
+  padding-right: 25px;
+  padding-left: 25px;
+}
+
+.navbar-brand span {
+  font-weight: 700;
+  font-size: 24px;
+  color: #000000;
+}
+
+.custom_nav-container {
+  padding: 0;
+}
+
+.custom_nav-container .navbar-nav {
+  margin-left: auto;
+}
+
+.custom_nav-container .navbar-nav .nav-item .nav-link {
+  padding: 5px 20px;
+  color: #000000;
+  text-transform: uppercase;
+  border-radius: 5px;
+  transition: color 0.3s ease; /* Smoother, professional transition */
+}
+
+.custom_nav-container .navbar-nav .nav-item:hover .nav-link,
+.custom_nav-container .navbar-nav .nav-item.active .nav-link {
+  color: #1e90ff; /* Dodger blue for active/hover, professional and clear */
+}
+
+.custom_nav-container .nav_search-btn {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: none;
+  color: #ffffff;
+  background-color: #1e90ff; /* Dodger blue, professional and vibrant */
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.custom_nav-container .nav_search-btn:hover {
+  background-color: #4169e1; /* Royal blue, professional and elegant */
+}
+
+.custom_nav-container .navbar-toggler {
+  outline: none;
+}
+
+.custom_nav-container .navbar-toggler {
+  padding: 0;
+  width: 37px;
+  height: 42px;
+  transition: all 0.3s;
+}
+
+.custom_nav-container .navbar-toggler span,
+.custom_nav-container .navbar-toggler span::before,
+.custom_nav-container .navbar-toggler span::after {
+  background-color: #ffffff; /* White for contrast */
+  display: block;
+  width: 35px;
+  height: 4px;
+  margin: 7px 0;
+  transition: all 0.3s;
+  position: relative;
+  border-radius: 5px;
+}
+
+.custom_nav-container .navbar-toggler[aria-expanded="true"] {
+  transform: rotate(360deg);
+}
+
+.custom_nav-container .navbar-toggler[aria-expanded="true"] span {
+  transform: rotate(45deg);
+}
+
+.custom_nav-container .navbar-toggler[aria-expanded="true"] span::before,
+.custom_nav-container .navbar-toggler[aria-expanded="true"] span::after {
+  transform: rotate(90deg);
+  top: 0;
+}
+
+.custom_nav-container .navbar-toggler[aria-expanded="true"] .s-1 {
+  transform: rotate(45deg);
+  margin: 0;
+  margin-bottom: -4px;
+}
+
+.custom_nav-container .navbar-toggler[aria-expanded="true"] .s-2 {
+  display: none;
+}
+
+.custom_nav-container .navbar-toggler[aria-expanded="true"] .s-3 {
+  transform: rotate(-45deg);
+  margin: 0;
+  margin-top: -4px;
+}
+
+/* Slider Section (Unchanged for now, as it’s not directly relevant to "Event Groups") */
+.slider_section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.slider_section .slider_bg_box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.slider_section .slider_bg_box img {
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.slider_section .slider_bg_box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(37, 37, 37, 0.9), rgba(37, 37, 37, 0.7));
+}
+
+.slider_section .row {
+  align-items: center;
+}
+
+.slider_section #customCarousel1 {
+  width: 100%;
+  position: unset;
+}
+
+.slider_section .detail-box {
+  color: #04233b;
+}
+
+.slider_section .detail-box h1 {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+.slider_section .detail-box p {
+  color: #fefefe;
+  font-size: 14px;
+}
+
+.slider_section .detail-box .btn-box {
+  display: flex;
+  margin: 0 -5px;
+  margin-top: 25px;
+}
+
+.slider_section .detail-box .btn-box a {
+  margin: 5px;
+  text-align: center;
+  width: 165px;
+}
+
+.slider_section .detail-box .btn-box .btn1 {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #0a97b0;
+  color: #ffffff;
+  border-radius: 0;
+  transition: all 0.3s;
+  border: none;
+}
+
+.slider_section .detail-box .btn-box .btn1:hover {
+  background-color: #065968;
+}
+
+.slider_section .detail-box .btn-box .btn2 {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #000000;
+  color: #ffffff;
+  border-radius: 0;
+  transition: all 0.3s;
+  border: none;
+}
+
+.slider_section .detail-box .btn-box .btn2:hover {
+  background-color: black;
+}
+
+.slider_section .carousel-indicators {
+  position: unset;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+  margin-top: 45px;
+}
+
+.slider_section .carousel-indicators li {
+  background-color: #ffffff;
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  opacity: 1;
+}
+
+.slider_section .carousel-indicators li.active {
+  width: 20px;
+  height: 20px;
+  background-color: #0a97b0;
+}
+
+/* Service Section (Unchanged for now, as it’s not directly relevant to "Event Groups") */
+.service_section {
+  position: relative;
+}
+
+.service_section .box {
+  display: flex;
+  margin-top: 45px;
+  background-color: #f8f8f9;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.service_section .box .img-box {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 125px;
+  min-width: 75px;
+  height: 75px;
+  margin-right: 25px;
+}
+
+.service_section .box .img-box img {
+  max-width: 100%;
+  max-height: 100%;
+  transition: all 0.3s;
+}
+
+.service_section .box .detail-box h5 {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.service_section .box .detail-box a {
+  color: #04233b;
+  font-weight: 600;
+}
+
+.service_section .box .detail-box a:hover {
+  color: #0a97b0;
+}
+
+/* About Section (Unchanged for now, as it’s not directly relevant to "Event Groups") */
+.about_section .row {
+  align-items: center;
+}
+
+.about_section .img-box {
+  position: relative;
+}
+
+.about_section .img-box img {
+  max-width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.about_section .img-box::before,
+.about_section .img-box::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45px;
+  height: 70%;
+  background-color: #04233b;
+  z-index: 3;
+}
+
+.about_section .img-box::before {
+  left: 0;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+}
+
+.about_section .img-box::after {
+  right: 0;
+  z-index: 1;
+  transform: translate(50%, -50%);
+}
+
+.about_section .detail-box p {
+  color: #1f1f1f;
+  margin-top: 15px;
+}
+
+.about_section .detail-box a {
+  display: inline-block;
+  padding: 10px 45px;
+  background-color: #0a97b0;
+  color: #ffffff;
+  border-radius: 0px;
+  transition: all 0.3s;
+  border: none;
+  margin-top: 15px;
+}
+
+.about_section .detail-box a:hover {
+  background-color: #065968;
+}
+
+/* Track Section (Unchanged for now, as it’s not directly relevant to "Event Groups") */
+.track_section {
+  position: relative;
+  color: #ffffff;
+}
+
+.track_section .track_bg_box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.track_section .track_bg_box img {
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.track_section .track_bg_box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(37, 37, 37, 0.95), rgba(37, 37, 37, 0.55));
+}
+
+.track_section p {
+  font-size: 14px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+.track_section form {
+  display: flex;
+  align-items: stretch;
+}
+
+.track_section form input {
+  background-color: #ffffff;
+  border: none;
+  flex: 2.5;
+  outline: none;
+  color: #000000;
+  min-height: 42.4px;
+  padding-left: 15px;
+}
+
+.track_section form input::-webkit-input-placeholder {
+  color: #ffffff;
+  opacity: 0.2;
+}
+
+.track_section form input:-ms-input-placeholder {
+  color: #ffffff;
+  opacity: 0.2;
+}
+
+.track_section form input::-ms-input-placeholder {
+  color: #ffffff;
+  opacity: 0.2;
+}
+
+.track_section form input::placeholder {
+  color: #ffffff;
+  opacity: 0.2;
+}
+
+.track_section form button {
+  flex: 1;
+  display: inline-block;
+  padding: 9px 30px;
+  background-color: #0a97b0;
+  color: #ffffff;
+  border-radius: 0;
+  transition: all 0.3s;
+  border: none;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
+.track_section form button:hover {
+  background-color: #065968;
+}
+
+/* Client Section (Unchanged for now, as it’s not directly relevant to "Event Groups") */
+.client_section .client_container {
+  width: 75%;
+  margin-top: 45px;
+}
+
+.client_section .box {
+  display: flex;
+  flex-direction: column;
+  margin-right: 5px;
+}
+
+.client_section .box .detail-box {
+  border: 1px solid #dddddd;
+  padding: 25px;
+  margin-bottom: 25px;
+}
+
+.client_section .box .client_id {
+  display: flex;
+  align-items: center;
+}
+
+.client_section .box .client_id .img-box {
+  position: relative;
+  width: 75px;
+  height: 75px;
+}
+
+.client_section .box .client_id .img-box img {
+  width: 100%;
+}
+
+.client_section .box .client_id .name {
+  margin-left: 15px;
+}
+
+.client_section .box .client_id .name h6 {
+  color: #23242a;
+  font-size: 18px;
+  margin-bottom: 0;
+}
+
+.client_section .box .client_id .name p {
+  margin-bottom: 0;
+}
+
+.client_section .carousel-wrap {
+  margin: 0 auto;
+  position: relative;
+}
+
+.client_section .owl-carousel .owl-nav .owl-prev,
+.client_section .owl-carousel .owl-nav .owl-next {
+  width: 50px;
+  height: 50px;
+  background-size: 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  right: -15%;
+  outline: none;
+  background-color: #0a97b0;
+}
+
+.client_section .owl-carousel .owl-nav .owl-prev:hover,
+.client_section .owl-carousel .owl-nav .owl-next:hover {
+  background-color: #161825;
+}
+
+.client_section .owl-carousel .owl-nav .owl-prev {
+  top: 25%;
+  background-image: url(../images/prev.png);
+}
+
+.client_section .owl-carousel .owl-nav .owl-next {
+  top: calc(25% + 65px);
+  background-image: url(../images/next.png);
+}
+
+/* Contact Section (Unchanged for now, as it’s not directly relevant to "Event Groups") */
+.contact_section {
+  position: relative;
+  padding-bottom: 90px;
+}
+
+.contact_section .heading_container {
+  margin-bottom: 25px;
+}
+
+.contact_section .heading_container h2 {
+  text-transform: uppercase;
+}
+
+.contact_section .form_container {
+  margin-right: 15px;
+}
+
+.contact_section .form_container input {
+  width: 100%;
+  border: none;
+  height: 50px;
+  margin-bottom: 25px;
+  padding-left: 15px;
+  outline: none;
+  color: #101010;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+}
+
+.contact_section .form_container input::-webkit-input-placeholder {
+  color: #04233b;
+}
+
+.contact_section .form_container input:-ms-input-placeholder {
+  color: #04233b;
+}
+
+.contact_section .form_container input::-ms-input-placeholder {
+  color: #04233b;
+}
+
+.contact_section .form_container input::placeholder {
+  color: #04233b;
+}
+
+.contact_section .form_container input.message-box {
+  height: 120px;
+}
+
+.contact_section .form_container button {
+  border: none;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 12px 55px;
+  background-color: #0a97b0;
+  color: #ffffff;
+  border-radius: 5px;
+  transition: all 0.3s;
+  border: none;
+}
+
+.contact_section .form_container button:hover {
+  background-color: #065968;
+}
+
+.contact_section .map_container {
+  height: 420px;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  padding: 0;
+}
+
+.contact_section .map_container .map {
+  height: 100%;
+  flex: 1;
+}
+
+.contact_section .map_container .map #googleMap {
+  height: 100%;
+}
+
+/* Event Groups Section */
+.event-groups-section {
+  padding: 4rem 0; /* Match screenshot padding */
+  background: #ffffff; /* White background to match screenshot */
+  margin-top: 60px; /* Offset for fixed header */
+  transition: background-color 0.3s ease; /* Smooth transition for elegance */
+}
+
+.event-groups-heading {
+  color: #1a2b3c;
+  font-size: 2rem; /* Match screenshot font size */
+  font-weight: 600; /* Less bold for professionalism */
+  margin-bottom: 1.5rem; /* Match screenshot spacing */
+  text-align: center; /* Centered for balance */
+}
+
+.search-form {
+  max-width: 500px;
+  margin: 0 auto 2rem; /* Match screenshot spacing */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for professionalism */
+  border-radius: 0.5rem; /* Match screenshot rounded corners */
+  overflow: hidden;
+}
+
+.search-input {
+  border: 1px solid #1e90ff; /* Dodger blue, match screenshot */
+  border-radius: 0; /* No radius on left side to match screenshot */
+  padding: 0.75rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #4169e1; /* Royal blue, match screenshot hover */
+  box-shadow: 0 0 8px rgba(30, 144, 255, 0.3); /* Softer shadow for professionalism */
+  outline: none;
+}
+
+.search-button {
+  background-color: #1e90ff; /* Dodger blue, match screenshot */
+  border: none;
+  border-radius: 0 0.5rem 0.5rem 0; /* Match screenshot rounded corners */
+  padding: 0.75rem 1.5rem;
+  color: #ffffff;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #4169e1; /* Royal blue, match screenshot hover */
+}
+
+.create-event-btn {
+  background-color: #1e90ff; /* Dodger blue, match screenshot */
+  border: none;
+  border-radius: 4px; /* Match screenshot rounded corners */
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  color: #ffffff; /* White text to match screenshot */
+  margin-bottom: 2rem; /* Match screenshot spacing */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for professionalism */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.create-event-btn:hover {
+  background-color: #4169e1; /* Royal blue, match screenshot hover */
+  transform: scale(1.02); /* Subtle scale for professionalism */
+}
+
+.group-card {
+  background: #ffffff;
+  border-radius: 8px; /* Match screenshot rounded corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Softer shadow for a clean look, match screenshot */
+  border: 1px solid #e9ecef; /* Light gray border for definition, match screenshot */
+  margin-bottom: 1.5rem; /* Match screenshot spacing */
+  padding: 1.5rem; /* Match screenshot padding */
+  display: flex; /* Use flex to align content and actions */
+  flex-direction: column; /* Vertical layout to match screenshot */
+  align-items: flex-start; /* Align items at the top */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smoother, professional transition */
+}
+
+.group-card:hover {
+  transform: translateY(-3px); /* Smaller lift for professionalism */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Softer shadow on hover */
+}
+
+.group-content {
+  width: 100%; /* Full width to match screenshot */
+  margin-bottom: 1rem; /* Space below content to match screenshot */
+}
+
+.group-name { 
+  font-weight: 700; 
+  font-size: 1.25rem; /* Match screenshot font size */
+  line-height: 1.4; 
+  margin-bottom: 0.5rem; /* Match screenshot spacing */
+  color: #1a2b3c; /* Dark blue, match screenshot */
+}
+
+.group-details { 
+  color: #6c757d; /* Soft gray, match screenshot */
+  font-weight: 400; 
+  font-size: 0.9rem; /* Match screenshot font size */
+  line-height: 1.5; 
+  margin-bottom: 0.5rem; /* Match screenshot spacing */
+}
+
+.group-meta { 
+  color: #6c757d; /* Soft gray, match screenshot */
+  font-weight: 400; 
+  font-size: 0.9rem; /* Match screenshot font size */
+  line-height: 1.5; 
+  margin-bottom: 0; /* No bottom margin to match screenshot */
+}
+
+.group-actions {
+  display: flex; /* Use flex for button alignment */
+  flex-direction: row; /* Horizontal layout for buttons */
+  align-items: center; /* Center buttons vertically */
+  justify-content: flex-end; /* Align buttons to the right to match screenshot */
+  width: 100%; /* Full width to match screenshot */
+  margin-top: 1rem; /* Increased space above buttons to match screenshot */
+}
+
+.group-actions button {
+  margin-right: 0.5rem; /* Match screenshot spacing */
+  border-radius: 4px; /* Smaller radius for professionalism, match screenshot */
+  padding: 0.5rem 1rem; /* Match screenshot button size */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.view-btn { background-color: #1e90ff; color: #ffffff; } /* Dodger blue, match screenshot */
+.edit-btn { background-color: #6c757d; color: #ffffff; } /* Gray, match screenshot */
+.delete-btn { background-color: #dc3545; color: #ffffff; } /* Red, match screenshot */
+
+.view-btn:hover { background-color: #4169e1; transform: scale(1.02); } /* Royal blue, match screenshot hover */
+.edit-btn:hover { background-color: #5a6268; transform: scale(1.02); }
+.delete-btn:hover { background-color: #c82333; transform: scale(1.02); }
+
+.no-groups {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 8px; /* Match screenshot rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for clean look, match screenshot */
+  margin-bottom: 1.5rem; /* Match screenshot spacing */
+}
+
+/* Event Group View Section */
+.event-group-view-section {
+  padding: 4rem 0; /* Match screenshot padding */
+  background: #ffffff; /* White background to match screenshot */
+  margin-top: 60px; /* Offset for fixed header */
+  transition: background-color 0.3s ease; /* Smooth transition for elegance */
+}
+
+.event-group-heading {
+  color: #1a2b3c;
+  font-size: 2rem; /* Match screenshot font size */
+  font-weight: 600; /* Less bold for professionalism */
+  margin-bottom: 1.5rem; /* Match screenshot spacing */
+  text-align: center; /* Centered for balance */
+}
+
+.group-banner {
+  width: 100%; /* Full width to match screenshot */
+  height: 300px; /* Match screenshot height */
+  object-fit: cover; /* Ensure image fits properly */
+  border-radius: 4px; /* Match screenshot rounded corners */
+  margin-bottom: 1rem; /* Match screenshot spacing */
+  background-color: #000; /* Black background for default image, match screenshot */
+  display: block; /* Ensure image behaves correctly */
+}
+
+.invite-btn, .view-posts-btn {
+  background-color: #1e90ff; /* Dodger blue, match screenshot */
+  border: none;
+  border-radius: 4px; /* Match screenshot rounded corners */
+  padding: 0.75rem 1.5rem; /* Match screenshot button size */
+  font-weight: 600;
+  color: #ffffff; /* White text, match screenshot */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.invite-btn:hover, .view-posts-btn:hover {
+  background-color: #4169e1; /* Royal blue, match screenshot hover */
+  transform: scale(1.02); /* Subtle scale for professionalism */
+}
+
+/* Info and Footer Sections */
+.info_section {
+  background: linear-gradient(90deg, #1a2b3c, #04233b); /* Professional gradient */
+  color: #ffffff;
+}
+
+.info_section a, .info_section .info_links a, .info_section .contact_link_box a {
+  color: #1e90ff; /* Dodger blue, professional and clear */
+  transition: color 0.3s ease;
+}
+
+.info_section a:hover, .info_section .info_links a:hover, .info_section .contact_link_box a:hover {
+  color: #ffd700; /* Gold, professional but warm */
+}
+
+.info_section .info_social a {
+  color: #ffffff;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.info_section .info_social a:hover {
+  color: #1e90ff; /* Dodger blue, professional and elegant */
+  transform: scale(1.05); /* Subtle scale for professionalism */
+}
+
+.footer_section {
+  background: linear-gradient(90deg, #1a2b3c, #04233b); /* Professional gradient */
+  padding: 2rem 0;
+}
+
+.footer_section p {
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  margin: 1rem 0;
+  color: #ffffff;
+}
+
+.footer-links a {
+  color: #1e90ff;
+  margin: 0 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #ffd700;
+}
+
+.footer-social {
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin: 0 0.5rem;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.footer-social a:hover {
+  color: #1e90ff;
+  transform: scale(1.05);
+}
+
+/* Animations (Reduced for Professionalism) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive Adjustments (Merge with responsive.css) */
+@media (max-width: 768px) {
+  .event-groups-heading, .event-group-heading { font-size: 1.75rem; } /* Smaller for mobile, professional */
+  .search-form { max-width: 100%; }
+  .group-card { 
+    flex-direction: column; /* Stack content and actions vertically on mobile */
+    padding: 1rem; /* Reduced padding for mobile */
+  }
+  .group-content { margin-bottom: 1rem; } /* Space below content on mobile */
+  .group-actions { 
+    flex-direction: row; /* Keep buttons horizontal on mobile */
+    justify-content: flex-end; /* Align buttons to the right on mobile, match screenshot */
+    margin-top: 0.5rem; /* Reduced space above buttons on mobile */
+  }
+  .group-actions button { margin-right: 0.25rem; width: auto; } /* Adjusted spacing on mobile */
+  .group-banner { height: 200px; } /* Reduced height on mobile */
+  .invite-btn, .view-posts-btn { 
+    padding: 0.5rem 1rem; /* Smaller buttons on mobile */
+    font-size: 0.9rem; /* Smaller text on mobile */
+  }
+  .header_section { position: relative; } /* Remove fixed positioning on mobile for usability */
+  .header_contacts .contact-link { display: none; } /* Hide contacts on mobile for simplicity */
+  .custom_nav-container .navbar-nav .nav-item .nav-link { padding: 5px 10px; } /* Smaller padding on mobile */
+}
+
+@media (max-width: 576px) {
+  .event-groups-heading, .event-group-heading { font-size: 1.5rem; } /* Smaller for smaller screens, professional */
+}
+
+/* Override Bootstrap Defaults */
+.btn-primary {
+  background-color: #1e90ff !important; /* Dodger blue, match screenshot */
+  border: none !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.btn-primary:hover {
+  background-color: #4169e1 !important; /* Royal blue, match screenshot hover */
+}
+
+.btn-secondary {
+  background-color: #6c757d !important; /* Gray, match screenshot */
+  border: none !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268 !important; /* Darker gray, match screenshot hover */
+}
+
+.btn-danger {
+  background-color: #dc3545 !important; /* Red, match screenshot */
+  border: none !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.btn-danger:hover {
+  background-color: #c82333 !important; /* Darker red, match screenshot hover */
+}
+
+.form-control {
+  border: 1px solid #1e90ff !important; /* Dodger blue, match screenshot */
+  border-radius: 4px !important; /* Smaller radius for professionalism */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.form-control:focus {
+  border-color: #4169e1 !important; /* Royal blue, match screenshot hover */
+  box-shadow: 0 0 8px rgba(30, 144, 255, 0.3) !important; /* Softer shadow for professionalism */
+  outline: none !important;
+}
+
+/* Minimal Navigation Bar for Group Actions, Horizontal and Left-Aligned with No Background */
+.group-nav-bar {
+  padding: 0.5rem 1rem; /* Compact padding for minimal look */
+  margin-bottom: 1.5rem; /* Space below nav bar to match layout */
+  border-bottom: 1px solid #e9ecef; /* Light gray line for separation, clean and minimal */
+  box-shadow: none; /* Remove shadow for minimal appearance */
+  background-color: transparent; /* No background color for minimal look */
+}
+
+.group-nav-bar .nav {
+  display: flex;
+  flex-direction: row; /* Horizontal layout for items next to each other */
+  align-items: center; /* Center vertically */
+  justify-content: flex-start; /* Align items to the left */
+}
+
+.group-nav-bar .nav-item {
+  margin: 0 1rem 0 0; /* Space between nav items, no right margin for last item */
+}
+
+.group-nav-bar .nav-link {
+  color: #1a2b3c; /* Dark blue text for contrast, match Culture Connect theme */
+  font-weight: 500; /* Slightly bold for clarity */
+  padding: 0.25rem 0.5rem; /* Reduced padding for minimal appearance */
+  border-radius: 0; /* No rounded corners for clean look */
+  text-decoration: none; /* Remove underline for minimal appearance */
+  transition: color 0.3s ease, transform 0.2s ease; /* Fluent animations for hover */
+}
+
+.group-nav-bar .nav-link:hover,
+.group-nav-bar .nav-link:focus {
+  color: #1e90ff; /* Dodger blue on hover, match Culture Connect theme */
+  transform: scale(1.02); /* Subtle scale for professionalism */
+  background-color: transparent; /* No background on hover for minimal look */
+}
+
+.group-nav-bar .nav-link i {
+  margin-right: 0.5rem; /* Space between icon and text */
+  font-size: 1rem; /* Match icon size */
+  color: #1a2b3c; /* Dark blue for icons, match text color */
+}
+
+.group-nav-bar .nav-link:hover i,
+.group-nav-bar .nav-link:focus i {
+  color: #1e90ff; /* Dodger blue on hover, match text color */
+}
+
+/* Active state for "Details" link, minimal appearance with underline */
+.group-nav-bar .nav-link.active {
+  color: #1e90ff; /* Dodger blue for active state, match Culture Connect theme */
+  font-weight: 600; /* Slightly bolder for emphasis */
+  border-bottom: 2px solid #1e90ff; /* Dodger blue underline for minimal, clean active indicator */
+  transform: scale(1.02); /* Subtle scale for active state */
+}
+
+.group-nav-bar .nav-link.active:hover {
+  color: #4169e1; /* Royal blue on hover, match Culture Connect theme */
+  border-bottom: 2px solid #4169e1; /* Royal blue underline on hover */
+}
+
+/* Specific button styles for consistency with Culture Connect, minimal look */
+.invite-btn, .view-posts-btn {
+  background-color: transparent; /* No background for minimal look */
+  border: none; /* No border for clean appearance */
+  font-weight: 600; /* Bold for emphasis */
+}
+
+.invite-btn:hover, .view-posts-btn:hover {
+  color: #1e90ff; /* Dodger blue on hover, match Culture Connect */
+  background-color: transparent; /* No background on hover for minimal look */
+  transform: scale(1.02); /* Subtle scale for professionalism */
+}
+
+/* Responsive Adjustments for Navigation Bar, Minimal and Horizontal */
+@media (max-width: 768px) {
+  .group-nav-bar {
+    padding: 0.25rem 0.5rem; /* Reduced padding on mobile */
+  }
+
+  .group-nav-bar .nav {
+    flex-direction: column; /* Stack items vertically on mobile */
+    align-items: flex-start; /* Align to left on mobile */
+    justify-content: flex-start; /* Maintain left alignment on mobile */
+  }
+
+  .group-nav-bar .nav-item {
+    margin: 0.25rem 0; /* Reduced margin on mobile */
+    width: 100%; /* Full width on mobile for better touch targets */
+  }
+
+  .group-nav-bar .nav-link {
+    padding: 0.25rem 0.5rem; /* Reduced padding on mobile */
+    text-align: left; /* Keep text left-aligned on mobile */
+  }
+
+  .group-nav-bar .nav-link.active {
+    border-bottom: 2px solid #1e90ff; /* Maintain underline on mobile */
+  }
+}
