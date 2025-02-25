@@ -62,10 +62,22 @@ class GroupController extends AbstractController
     public function list(Request $request, GroupRepository $groupRepository): Response
     {
         $searchQuery = $request->query->get('q', '');
-        $groups = $groupRepository->findBySearchQuery($searchQuery);
+        $location = $request->query->get('location', '');
+        $visibility = $request->query->get('visibility', '');
+        $date = $request->query->get('date', '');
+
+        $groups = $groupRepository->findBySearchQueryWithFilters($searchQuery, $location, $visibility, $date);
+        $locations = $groupRepository->findUniqueLocations();
+        $visibilities = $groupRepository->findUniqueVisibilities();
+
         return $this->render('carint/group_list.html.twig', [
             'groups' => $groups,
             'searchQuery' => $searchQuery,
+            'location' => $location,
+            'visibility' => $visibility,
+            'date' => $date,
+            'locations' => $locations,
+            'visibilities' => $visibilities,
         ]);
     }
 
@@ -83,7 +95,7 @@ class GroupController extends AbstractController
                     $group->setCoverPicture($binaryContent);
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Failed to process cover picture: ' . $e->getMessage());
-                    return $this->render('group/edit_event_group.html.twig', [
+                    return $this->render('carint/edit_event_group.html.twig', [
                         'group_form' => $form->createView(),
                         'group' => $group,
                     ]);
