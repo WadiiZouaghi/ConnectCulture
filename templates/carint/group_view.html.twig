@@ -12,10 +12,10 @@
     <title>Culture Connect - View Event Group</title>
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;707;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
-    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" /> <!-- Ensure this loads last -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" />
 </head>
 
@@ -86,22 +86,28 @@
                     {% for message in app.flashes('success') %}
                         <div class="alert alert-success">{{ message }}</div>
                     {% endfor %}
-                    <!-- Minimal navigation bar at the top, horizontal and left-aligned with no background -->
                     <nav class="group-nav-bar">
-                        <ul class="nav flex-row align-items-center">
+                        <ul class="nav flex-row align-items-center justify-content-between">
+                            <div class="d-flex">
+                                <li class="nav-item">
+                                    <a href="{{ path('group_view', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_view' %}active{% endif %}">
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i> Details
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('group_posts', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_posts' %}active{% endif %} view-posts-btn">
+                                        <i class="fas fa-file-alt" aria-hidden="true"></i> Posts
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('group_discussion', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_discussion' %}active{% endif %} discussion-btn">
+                                        <i class="fas fa-comments" aria-hidden="true"></i> Discussion
+                                    </a>
+                                </li>
+                            </div>
                             <li class="nav-item">
-                                <a href="{{ path('group_view', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_view' %}active{% endif %}">
-                                    <i class="fa fa-info-circle" aria-hidden="true"></i> Details
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ path('group_posts', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_posts' %}active{% endif %} view-posts-btn">
-                                    <i class="fa fa-comments" aria-hidden="true"></i> View Posts
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ path('group_invite', {'id': group.id}) }}" class="nav-link invite-btn">
-                                    <i class="fa fa-envelope" aria-hidden="true"></i> Send Invitation
+                                <a href="{{ path('group_invite', {'id': group.id}) }}" class="nav-link btn btn-primary invite-btn">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i> Send Invitation
                                 </a>
                             </li>
                         </ul>

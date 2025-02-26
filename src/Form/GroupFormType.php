@@ -19,12 +19,37 @@ class GroupFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, ['label' => 'Group Name'])
-            ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false])
-            ->add('location', TextType::class, ['label' => 'Location', 'required' => false])
-            ->add('event_date', DateTimeType::class, ['label' => 'Event Date', 'widget' => 'single_text', 'required' => false])
-            ->add('max_participants', NumberType::class, ['label' => 'Max Participants', 'required' => false, 'attr' => ['min' => 1]])
-            ->add('visibility', ChoiceType::class, ['label' => 'Visibility', 'choices' => ['Public' => 'public', 'Private' => 'private'], 'placeholder' => 'Select visibility'])
+            ->add('name', TextType::class, [
+                'label' => 'Group Name',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('location', TextType::class, [
+                'label' => 'Location',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('event_date', DateTimeType::class, [
+                'label' => 'Event Date',
+                'widget' => 'single_text',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('max_participants', NumberType::class, [
+                'label' => 'Max Participants',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'min' => 1],
+            ])
+            ->add('visibility', ChoiceType::class, [
+                'label' => 'Visibility',
+                'choices' => ['Public' => 'public', 'Private' => 'private'],
+                'placeholder' => 'Select visibility',
+                'attr' => ['class' => 'form-control'],
+            ])
             ->add('coverPicture', FileType::class, [
                 'label' => 'Cover Picture (Upload)',
                 'mapped' => false,
@@ -34,7 +59,7 @@ class GroupFormType extends AbstractType
                         'maxSize' => '1024k',
                         'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
                         'mimeTypesMessage' => 'Please upload a valid image file (JPEG, PNG, GIF)',
-                    ])
+                    ]),
                 ],
                 'attr' => ['class' => 'form-control'],
             ]);
@@ -42,6 +67,8 @@ class GroupFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => Group::class]);
+        $resolver->setDefaults([
+            'data_class' => Group::class,
+        ]);
     }
 }

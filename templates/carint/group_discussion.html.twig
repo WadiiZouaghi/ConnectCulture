@@ -4,18 +4,18 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups" />
-    <meta name="description" content="Create cultural event groups on Culture Connect" />
+    <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups, Discussions" />
+    <meta name="description" content="View and participate in discussions for a cultural event group on Culture Connect." />
     <meta name="author" content="" />
     <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="">
 
-    <title>Culture Connect - Create Event Group</title>
+    <title>Culture Connect - Group Discussions</title>
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;707;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
-    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" /> <!-- Ensure this loads last -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" />
 </head>
 
@@ -76,35 +76,64 @@
         </header>
     </div>
 
-    <section class="event-group-create-section layout_padding-top">
+    <section class="discussion-section layout_padding-top">
         <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 col-md-8">
-                    <div class="heading_container text-center">
-                        <h2 class="event-group-heading">Create Event Group</h2>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="heading_container">
+                        <h2 class="discussion-heading">{{ group.name }} Discussions</h2>
                     </div>
                     {% for message in app.flashes('success') %}
-                        <div class="alert alert-success text-center">{{ message }}</div>
+                        <div class="alert alert-success">{{ message }}</div>
                     {% endfor %}
-                    {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger text-center">{{ message }}</div>
-                    {% endfor %}
-                    <div class="form_container mx-auto">
-                        {{ form_start(group_form) }}
-                            <div>{{ form_row(group_form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter event name'}}) }}</div>
-                            <div>{{ form_row(group_form.description, {'attr': {'class': 'form-control message-box', 'placeholder': 'Describe your event'}}) }}</div>
-                            <div>{{ form_row(group_form.location, {'attr': {'class': 'form-control', 'placeholder': 'Event location'}}) }}</div>
-                            <div>{{ form_row(group_form.event_date, {'attr': {'class': 'form-control'}}) }}</div>
-                            <div>{{ form_row(group_form.max_participants, {'attr': {'class': 'form-control', 'placeholder': 'Max participants', 'min': 1}}) }}</div>
-                            <div>{{ form_row(group_form.visibility, {'attr': {'class': 'form-control'}}) }}</div>
-                            <div>{{ form_row(group_form.coverPicture, {'attr': {'class': 'form-control'}}) }}</div>
-                            <div class="btn_box text-center mt-3">
-                                <button type="submit" class="btn btn-primary">Create Event</button>
+                    <nav class="group-nav-bar">
+                        <ul class="nav flex-row align-items-center justify-content-between">
+                            <div class="d-flex">
+                                <li class="nav-item">
+                                    <a href="{{ path('group_view', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_view' %}active{% endif %}">
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i> Details
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('group_posts', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_posts' %}active{% endif %} view-posts-btn">
+                                        <i class="fas fa-file-alt" aria-hidden="true"></i> Posts
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('group_discussion', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_discussion' %}active{% endif %} discussion-btn">
+                                        <i class="fas fa-comments" aria-hidden="true"></i> Discussion
+                                    </a>
+                                </li>
                             </div>
-                        {{ form_end(group_form) }}
-                        <div class="text-center mt-3">
-                            <a href="{{ path('group_list') }}" class="btn btn-secondary">Back to Events</a>
-                        </div>
+                            <li class="nav-item">
+                                <a href="{{ path('group_invite', {'id': group.id}) }}" class="nav-link btn btn-primary invite-btn">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i> Send Invitation
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="discussion-card p-3">
+                        {% if discussions is defined and discussions is not empty %}
+                            <div class="discussion-list">
+                                {% for discussion in discussions %}
+                                    <div class="discussion-item">
+                                        <p class="discussion-content">{{ discussion.content }}</p>
+                                        <small class="discussion-meta">Posted on {{ discussion.createdAt|date('Y-m-d H:i') }} by {{ discussion.author ? discussion.author.name : 'Anonymous' }}</small>
+                                    </div>
+                                {% else %}
+                                    <p class="no-discussions">No discussions yet. Be the first to start one!</p>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="no-discussions">No discussions yet. Be the first to start one!</p>
+                        {% endif %}
+                        <form method="POST" action="{{ path('group_add_discussion', {'id': group.id}) }}" class="mt-3">
+                            <div class="form-group">
+                                <label for="discussionContent">Add a Discussion</label>
+                                <textarea name="content" id="discussionContent" class="form-control" rows="3" placeholder="Write your discussion here..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-2">Submit Discussion</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -118,25 +147,25 @@
                     <div class="info_contact">
                         <h4>Contact Us</h4>
                         <div class="contact_link_box">
-                            <a href="" class="contact-link">
+                            <a href="">
                                 <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 <span>Global Events</span>
                             </a>
-                            <a href="" class="contact-link">
+                            <a href="">
                                 <i class="fa fa-phone" aria-hidden="true"></i>
                                 <span>Call +01 1234567890</span>
                             </a>
-                            <a href="" class="contact-link">
+                            <a href="">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
                                 <span>support@cultureconnect.com</span>
                             </a>
                         </div>
                     </div>
                     <div class="info_social">
-                        <a href="" class="social-link"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 info_col">
@@ -149,16 +178,24 @@
                     <div class="info_link_box">
                         <h4>Links</h4>
                         <div class="info_links">
-                            <a class="link-item active" href="{{ path('group_list') }}"><img src="{{ asset('images/nav-bullet.png') }}" alt=""> Events</a>
-                            <a class="link-item" href=""><img src="{{ asset('images/nav-bullet.png') }}" alt=""> About</a>
-                            <a class="link-item" href=""><img src="{{ asset('images/nav-bullet.png') }}" alt=""> Services</a>
-                            <a class="link-item" href=""><img src="{{ asset('images/nav-bullet.png') }}" alt=""> Contact Us</a>
+                            <a class="active" href="{{ path('group_list') }}">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Events
+                            </a>
+                            <a class="" href="">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> About
+                            </a>
+                            <a class="" href="">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Services
+                            </a>
+                            <a class="" href="">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Contact Us
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 info_col">
                     <h4>Subscribe</h4>
-                    <form action="#" class="subscribe-form">
+                    <form action="#">
                         <input type="text" placeholder="Enter email" class="form-control" />
                         <button type="submit" class="btn btn-primary">Subscribe</button>
                     </form>
@@ -171,18 +208,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
-                    <p class="footer-text">
+                    <p>
                         © {{ "now"|date("Y") }} All Rights Reserved By
-                        <a href="https://cultureconnect.com/" class="footer-link">Culture Connect</a>
+                        <a href="https://cultureconnect.com/">Culture Connect</a>
                     </p>
                     <div class="footer-links">
-                        <a href="" class="footer-link">Privacy Policy</a> | <a href="" class="footer-link">Terms of Service</a>
+                        <a href="">Privacy Policy</a> | <a href="">Terms of Service</a>
                     </div>
                     <div class="footer-social">
-                        <a href="" class="social-link"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>

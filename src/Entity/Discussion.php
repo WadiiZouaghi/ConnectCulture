@@ -2,13 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'posts')]
-class Post
+#[ORM\Entity(repositoryClass: App\Repository\DiscussionRepository::class)]
+#[ORM\Table(name: 'discussions')]
+class Discussion
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,13 +19,13 @@ class Post
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'posts')]
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'discussions')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private ?Group $group = null;
 
-    #[ORM\ManyToOne(targetEntity: Actor::class)]
-    #[ORM\JoinColumn(name: 'actor_id', referencedColumnName: 'actor_id', nullable: false)]
-    private ?Actor $actor = null;
+    #[ORM\ManyToOne(targetEntity: Actor::class, inversedBy: 'discussions')]
+    #[ORM\JoinColumn(name: 'actor_id', referencedColumnName: 'actor_id', nullable: true)]
+    private ?Actor $author = null;
 
     public function __construct()
     {
@@ -72,14 +70,14 @@ class Post
         return $this;
     }
 
-    public function getActor(): ?Actor
+    public function getAuthor(): ?Actor
     {
-        return $this->actor;
+        return $this->author;
     }
 
-    public function setActor(?Actor $actor): self
+    public function setAuthor(?Actor $author): self
     {
-        $this->actor = $actor;
+        $this->author = $author;
         return $this;
     }
 }
