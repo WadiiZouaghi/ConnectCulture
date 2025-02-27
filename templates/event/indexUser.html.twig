@@ -1,0 +1,277 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events{% endblock %}
+
+{% block body %}
+<section class="events-section">
+    <div class="events-container">
+            <div class="system-info-item">
+                Current User's Login: {{ app.user.userIdentifier }}
+            </div>
+        </div>
+
+        <!-- Events Header -->
+        <div class="events-header">
+            <div class="heading_container">
+                <h2>Event <span>List</span></h2>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="events-grid">
+            {% if events is empty %}
+                <div class="no-events">
+                    <i class="mdi mdi-calendar-blank"></i>
+                    <h3>No Events Available</h3>
+                    <p>Check back later for exciting events!</p>
+                </div>
+            {% else %}
+                {% for event in events %}
+                    <div class="event-card">
+
+
+                        <div class="img-box">
+                            {% if event.image %}
+                                <img src="{{ asset('uploads/images/' ~ event.image) }}" alt="{{ event.name }}">
+                                <div class="img-overlay">
+                                    <i class="mdi mdi-eye"></i>
+                                </div>
+                            {% else %}
+                                <div class="no-image">
+                                    <i class="mdi mdi-image-outline"></i>
+                                    <span>No image available</span>
+                                </div>
+                            {% endif %}
+                            <div class="event-type-badge">{{ event.eventtype }}</div>
+                        </div>
+
+                        <div class="event-content">
+                            <div class="event-info">
+                                <div class="info-item">
+                                    <i class="mdi mdi-format-title"></i>
+                                    <div class="info-content">
+                                        <label>Event Name</label>
+                                        <p>{{ event.name }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="mdi mdi-map-marker"></i>
+                                    <div class="info-content">
+                                        <label>Destination</label>
+                                        <p>{{ event.destination }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="mdi mdi-text"></i>
+                                    <div class="info-content">
+                                        <label>Description</label>
+                                        <p class="description">{{ event.Description }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="mdi mdi-clipboard-list"></i>
+                                    <div class="info-content">
+                                        <label>Required Equipment</label>
+                                        <p>{{ event.equipment }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-actions">
+                                <a href="{{ path('app_event_show_User', {'id': event.id}) }}" class="action-btn view-btn">
+                                    <i class="mdi mdi-eye"></i>
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.events-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.events-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* System Info Styles */
+.system-info-box {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    font-family: 'Courier New', monospace;
+}
+
+.system-info-item {
+    color: #062264;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    white-space: pre-line;
+}
+
+/* Card System Info */
+.card-system-info {
+    background: #f8f9fa;
+    padding: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.system-info-text {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #062264;
+    white-space: pre-line;
+    line-height: 1.4;
+}
+
+/* Events Grid */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Event Card */
+.event-card {
+    background: white;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image Box */
+.img-box {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(6, 34, 100, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.img-box:hover .img-overlay {
+    opacity: 1;
+}
+
+.event-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #062264;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+/* Event Content */
+.event-content {
+    padding: 15px;
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+}
+
+.info-content label {
+    color: #062264;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+}
+
+.info-content p {
+    color: #062264;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.description {
+    max-height: 60px;
+    overflow: hidden;
+}
+
+/* Action Button */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: #4b93d1;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    border: none;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .events-section {
+        padding: 10px;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-system-info {
+        padding: 8px;
+    }
+
+    .system-info-text {
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}

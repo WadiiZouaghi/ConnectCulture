@@ -1,0 +1,93 @@
+{% block title %}Edit Profile{% endblock %}
+{% extends 'baseA.html.twig' %}
+
+{% block body %}
+<div class="wrapper">
+    <form method="post" class="form-signin">
+        <h2 class="form-signin-heading">Edit Profile</h2>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        <div class="mb-3">
+            {{ form_label(form.fullName) }}
+            {{ form_widget(form.fullName, {
+                'attr': {'class': 'form-control' ~ (form.fullName.vars.errors|length > 0 ? ' is-invalid' : ''), 'placeholder': 'Full Name'}
+            }) }}
+            <div class="invalid-feedback">
+                {% for error in form.fullName.vars.errors %}
+                    {{ error.message }}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email, {
+                'attr': {'class': 'form-control' ~ (form.email.vars.errors|length > 0 ? ' is-invalid' : ''), 'placeholder': 'Email Address'}
+            }) }}
+            <div class="invalid-feedback">
+                {% for error in form.email.vars.errors %}
+                    {{ error.message }}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.phone) }}
+            {{ form_widget(form.phone, {
+                'attr': {'class': 'form-control' ~ (form.phone.vars.errors|length > 0 ? ' is-invalid' : ''), 'placeholder': 'Phone'}
+            }) }}
+            <div class="invalid-feedback">
+                {% for error in form.phone.vars.errors %}
+                    {{ error.message }}
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-lg btn-primary btn-block">Save Changes</button>
+        {{ form_end(form) }}
+    </form>
+</div>
+<style>
+body {
+    background: #eee !important;    
+}
+
+.wrapper {    
+    margin-top: 80px;
+    margin-bottom: 80px;
+}
+
+.form-signin {
+    max-width: 380px;
+    padding: 15px 35px 45px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.1);  
+}
+
+.form-signin-heading, .checkbox {
+    margin-bottom: 30px;
+}
+
+.checkbox {
+    font-weight: normal;
+}
+
+.form-control {
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    z-index: 2;
+}
+</style>
+{% endblock %}
