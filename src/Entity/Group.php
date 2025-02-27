@@ -21,7 +21,7 @@ class Group
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private ?string $location = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
@@ -33,8 +33,14 @@ class Group
     #[ORM\Column(type: 'string', length: 50)]
     private ?string $visibility = null;
 
-    #[ORM\Column(type: 'blob', nullable: true)]
+    #[ORM\Column(type: 'blob', nullable: false)]
     private $coverPicture = null;
+
+    #[ORM\Column(type: 'float', nullable: false)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: 'float', nullable: false)]
+    private ?float $longitude = null;
 
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'group', cascade: ['persist', 'remove'])]
     private Collection $posts;
@@ -134,6 +140,31 @@ class Group
         return $this;
     }
 
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
     public function getPosts(): Collection
     {
         return $this->posts;
@@ -158,6 +189,9 @@ class Group
         return $this;
     }
 
+    /**
+     * @return Collection<int, Discussion>
+     */
     public function getDiscussions(): Collection
     {
         return $this->discussions;
@@ -182,6 +216,9 @@ class Group
         return $this;
     }
 
+    /**
+     * @return Collection<int, Actor>
+     */
     public function getActors(): Collection
     {
         return $this->actors;
@@ -204,8 +241,11 @@ class Group
         return $this;
     }
 
-    public function isMember(Actor $actor): bool
+    public function isMember(?Actor $actor): bool
     {
+        if (!$actor) {
+            return false;
+        }
         return $this->actors->contains($actor);
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -7,19 +7,20 @@
     <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups" />
     <meta name="description" content="Edit cultural event groups on Culture Connect" />
     <meta name="author" content="" />
-    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="">
+    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
 
     <title>Culture Connect - Edit Event Group</title>
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" /> <!-- Ensure this loads last -->
-    <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 </head>
 
 <body class="sub_page">
+    <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
             <div class="header_top">
@@ -27,11 +28,11 @@
                     <div class="contact_nav">
                         <a href="" class="contact-link">
                             <i class="fa fa-phone" aria-hidden="true"></i>
-                            <span>Call : +01 123455678990</span>
+                            <span>Call: +01 123455678990</span>
                         </a>
                         <a href="" class="contact-link">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
-                            <span>Email : support@cultureconnect.com</span>
+                            <span>Email: support@cultureconnect.com</span>
                         </a>
                         <a href="" class="contact-link">
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
@@ -47,7 +48,7 @@
                             <span>Culture Connect</span>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class=""> </span>
+                            <span class=""></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav">
@@ -55,16 +56,16 @@
                                     <a class="nav-link" href="{{ path('group_list') }}">Events <span class="sr-only">(current)</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">Services</a>
+                                    <a class="nav-link" href="#">Services</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">About</a>
+                                    <a class="nav-link" href="#">About</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">Contact Us</a>
+                                    <a class="nav-link" href="#">Contact Us</a>
                                 </li>
                                 <form class="form-inline">
-                                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
+                                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
                                 </form>
@@ -76,12 +77,13 @@
         </header>
     </div>
 
-    <section class="event-group-edit-section layout_padding-top">
+    <!-- Main Content Section -->
+    <section class="event-group-create-section layout_padding-top">
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-lg-6 col-md-8">
-                    <div class="heading_container text-center">
-                        <h2 class="event-group-heading">Edit Event Group</h2>
+                    <div class="heading_container heading_center">
+                        <h2>Edit Event Group</h2>
                     </div>
                     {% for message in app.flashes('success') %}
                         <div class="alert alert-success text-center">{{ message }}</div>
@@ -91,26 +93,46 @@
                     {% endfor %}
                     <div class="form_container mx-auto">
                         {{ form_start(group_form) }}
-                            <div>{{ form_row(group_form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter event name'}}) }}</div>
-                            <div>{{ form_row(group_form.description, {'attr': {'class': 'form-control message-box', 'placeholder': 'Describe your event'}}) }}</div>
-                            <div>{{ form_row(group_form.location, {'attr': {'class': 'form-control', 'placeholder': 'Event location'}}) }}</div>
-                            <div>{{ form_row(group_form.event_date, {'attr': {'class': 'form-control'}}) }}</div>
-                            <div>{{ form_row(group_form.max_participants, {'attr': {'class': 'form-control', 'placeholder': 'Max participants', 'min': 1}}) }}</div>
-                            <div>{{ form_row(group_form.visibility, {'attr': {'class': 'form-control'}}) }}</div>
-                            <div>{{ form_row(group_form.coverPicture, {'attr': {'class': 'form-control'}}) }}</div>
+                            <div class="form-group">
+                                {{ form_label(group_form.name, 'Group Name', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter event name'}}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(group_form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.description, {'attr': {'class': 'form-control', 'placeholder': 'Describe your event', 'rows': '4'}}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(group_form.location, 'Location', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.location, {'attr': {'class': 'form-control', 'placeholder': 'Event location'}}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(group_form.event_date, 'Event Date', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.event_date, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(group_form.max_participants, 'Max Participants', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.max_participants, {'attr': {'class': 'form-control', 'placeholder': 'Max participants', 'min': 1}}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(group_form.visibility, 'Visibility', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.visibility, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(group_form.coverPicture, 'Cover Picture', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.coverPicture, {'attr': {'class': 'form-control'}}) }}
+                            </div>
                             <div class="btn_box text-center mt-3">
                                 <button type="submit" class="btn btn-primary">Update Event</button>
+                                <a href="{{ path('group_list') }}" class="btn btn-secondary ml-2">Back to Events</a>
                             </div>
                         {{ form_end(group_form) }}
-                        <div class="text-center mt-3">
-                            <a href="{{ path('group_list') }}" class="btn btn-secondary">Back to Events</a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Info Section -->
     <section class="info_section layout_padding2">
         <div class="container">
             <div class="row">
@@ -118,25 +140,25 @@
                     <div class="info_contact">
                         <h4>Contact Us</h4>
                         <div class="contact_link_box">
-                            <a href="" class="contact-link">
+                            <a href="">
                                 <i class="fa fa-map-marker" aria-hidden="true"></i>
                                 <span>Global Events</span>
                             </a>
-                            <a href="" class="contact-link">
+                            <a href="">
                                 <i class="fa fa-phone" aria-hidden="true"></i>
-                                <span>Call +01 1234567890</span>
+                                <span>Call: +01 1234567890</span>
                             </a>
-                            <a href="" class="contact-link">
+                            <a href="">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
                                 <span>support@cultureconnect.com</span>
                             </a>
                         </div>
                     </div>
                     <div class="info_social">
-                        <a href="" class="social-link"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 info_col">
@@ -149,17 +171,25 @@
                     <div class="info_link_box">
                         <h4>Links</h4>
                         <div class="info_links">
-                            <a class="link-item active" href="{{ path('group_list') }}"><img src="{{ asset('images/nav-bullet.png') }}" alt=""> Events</a>
-                            <a class="link-item" href=""><img src="{{ asset('images/nav-bullet.png') }}" alt=""> About</a>
-                            <a class="link-item" href=""><img src="{{ asset('images/nav-bullet.png') }}" alt=""> Services</a>
-                            <a class="link-item" href=""><img src="{{ asset('images/nav-bullet.png') }}" alt=""> Contact Us</a>
+                            <a class="active" href="{{ path('group_list') }}">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Events
+                            </a>
+                            <a href="">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> About
+                            </a>
+                            <a href="">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Services
+                            </a>
+                            <a href="">
+                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Contact Us
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 info_col">
                     <h4>Subscribe</h4>
-                    <form action="#" class="subscribe-form">
-                        <input type="text" placeholder="Enter email" class="form-control" />
+                    <form action="#">
+                        <input type="text" placeholder="Enter email" class="form-control" required />
                         <button type="submit" class="btn btn-primary">Subscribe</button>
                     </form>
                 </div>
@@ -167,32 +197,34 @@
         </div>
     </section>
 
-    <section class="footer_section">
+    <!-- Footer Section -->
+    <footer class="footer_section">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
-                    <p class="footer-text">
+                    <p>
                         © {{ "now"|date("Y") }} All Rights Reserved By
-                        <a href="https://cultureconnect.com/" class="footer-link">Culture Connect</a>
+                        <a href="https://cultureconnect.com/">Culture Connect</a>
                     </p>
                     <div class="footer-links">
-                        <a href="" class="footer-link">Privacy Policy</a> | <a href="" class="footer-link">Terms of Service</a>
+                        <a href="">Privacy Policy</a> | <a href="">Terms of Service</a>
                     </div>
                     <div class="footer-social">
-                        <a href="" class="social-link"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href="" class="social-link"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/custom.js') }}"></script>
+    <!-- Scripts -->
+    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" defer></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('js/custom.js') }}" defer></script>
 </body>
 </html>

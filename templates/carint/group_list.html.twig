@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -7,20 +7,20 @@
     <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups" />
     <meta name="description" content="Browse and join cultural event groups on Culture Connect to explore vibrant experiences worldwide." />
     <meta name="author" content="" />
-    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="">
+    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
 
     <title>Culture Connect - Event Groups</title>
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" /> <!-- Ensure this loads last -->
-    <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 </head>
 
 <body class="sub_page">
+    <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
             <div class="header_top">
@@ -28,11 +28,11 @@
                     <div class="contact_nav">
                         <a href="" class="contact-link">
                             <i class="fa fa-phone" aria-hidden="true"></i>
-                            <span>Call : +01 123455678990</span>
+                            <span>Call: +01 123455678990</span>
                         </a>
                         <a href="" class="contact-link">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
-                            <span>Email : support@cultureconnect.com</span>
+                            <span>Email: support@cultureconnect.com</span>
                         </a>
                         <a href="" class="contact-link">
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
@@ -48,7 +48,7 @@
                             <span>Culture Connect</span>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class=""> </span>
+                            <span class=""></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav">
@@ -56,16 +56,16 @@
                                     <a class="nav-link" href="{{ path('group_list') }}">Events <span class="sr-only">(current)</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">Services</a>
+                                    <a class="nav-link" href="#">Services</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">About</a>
+                                    <a class="nav-link" href="#">About</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="">Contact Us</a>
+                                    <a class="nav-link" href="#">Contact Us</a>
                                 </li>
                                 <form class="form-inline">
-                                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
+                                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
                                 </form>
@@ -77,17 +77,17 @@
         </header>
     </div>
 
+    <!-- Main Content Section -->
     <section class="event-groups-section layout_padding-top">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="heading_container">
-                        <h2 class="event-groups-heading">Event Groups</h2>
+                    <div class="heading_container heading_center">
+                        <h2>Event Groups</h2>
                     </div>
                     {% for message in app.flashes('success') %}
                         <div class="alert alert-success">{{ message }}</div>
                     {% endfor %}
-                    <!-- Enhanced search form with filters aligned horizontally, side by side, centered, and prominent -->
                     <form method="GET" action="{{ path('group_list') }}" class="search-form mb-4">
                         <div class="search-container d-flex flex-row justify-content-center align-items-center">
                             <div class="search-input-group d-flex align-items-center">
@@ -97,41 +97,42 @@
                                 </button>
                             </div>
                             <div class="search-filters d-flex align-items-center ml-3">
-                                <select name="location" class="form-control filter-select mr-2" style="width: 200px;">
+                                <select name="location" class="form-control filter-select mr-2">
                                     <option value="">All Locations</option>
                                     {% for loc in locations %}
                                         <option value="{{ loc.location }}" {% if location == loc.location %}selected{% endif %}>{{ loc.location }}</option>
                                     {% endfor %}
                                 </select>
-                                <select name="visibility" class="form-control filter-select mr-2" style="width: 150px;">
+                                <select name="visibility" class="form-control filter-select mr-2">
                                     <option value="">All Visibilities</option>
                                     {% for vis in visibilities %}
                                         <option value="{{ vis.visibility }}" {% if visibility == vis.visibility %}selected{% endif %}>{{ vis.visibility|capitalize }}</option>
                                     {% endfor %}
                                 </select>
-                                <input type="date" name="date" class="form-control filter-date mr-2" style="width: 150px;" value="{{ date|default('') }}">
-                                <button type="button" class="btn btn-link clear-filters" style="color: #6c757d;">Clear Filters</button>
+                                <input type="date" name="date" class="form-control filter-date mr-2" value="{{ date|default('') }}">
+                                <button type="button" class="btn btn-link clear-filters">Clear Filters</button>
                             </div>
-                            <!-- Suggestions (placeholder for now, implement with JavaScript/AJAX) -->
                             <div id="suggestions" class="suggestions-list" style="display: none;"></div>
                         </div>
                     </form>
-                    <a href="{{ path('group_create') }}" class="create-event-btn mb-4">Create New Event</a>
-                    <div class="row">
+                    <div class="text-center mb-4">
+                        <a href="{{ path('group_create') }}" class="create-event-btn">Create New Event</a>
+                    </div>
+                    <div class="row" id="eventGroups">
                         {% for group in groups %}
-                            <div class="col-12 mb-4">
+                            <div class="col-12 mb-4 event-group" data-location="{{ group.location|lower }}">
                                 <div class="group-card">
                                     <div class="group-content">
                                         <h3 class="group-name">{{ group.name }}</h3>
                                         <p class="group-details">{{ group.description|length > 100 ? group.description|slice(0, 100) ~ '...' : group.description|default('No description provided') }}</p>
                                         <p class="group-meta">Location: {{ group.location|default('Not specified') }} | Date: {{ group.eventDate ? group.eventDate|date('Y-m-d H:i') : 'TBD' }} | Max: {{ group.maxParticipants|default('Unlimited') }} | {{ group.visibility|capitalize }}</p>
                                     </div>
-                                    <div class="group-actions d-flex justify-content-end" role="group">
-                                        <a href="{{ path('group_view', {'id': group.id}) }}" class="view-btn btn btn-sm mr-2">View</a>
-                                        <a href="{{ path('group_edit', {'id': group.id}) }}" class="edit-btn btn btn-sm mr-2">Edit</a>
+                                    <div class="group-actions d-flex justify-content-end">
+                                        <a href="{{ path('group_view', {'id': group.id}) }}" class="action-btn btn mr-2 view-btn">View</a>
+                                        <a href="{{ path('group_edit', {'id': group.id}) }}" class="action-btn btn mr-2 edit-btn">Edit</a>
                                         <form action="{{ path('group_delete', {'id': group.id}) }}" method="post" style="display:inline;">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
-                                            <button type="submit" class="delete-btn btn btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                                            <button type="submit" class="action-btn btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
                                         </form>
                                     </div>
                                 </div>
@@ -147,6 +148,7 @@
         </div>
     </section>
 
+    <!-- Info Section -->
     <section class="info_section layout_padding2">
         <div class="container">
             <div class="row">
@@ -160,7 +162,7 @@
                             </a>
                             <a href="">
                                 <i class="fa fa-phone" aria-hidden="true"></i>
-                                <span>Call +01 1234567890</span>
+                                <span>Call: +01 1234567890</span>
                             </a>
                             <a href="">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -188,13 +190,13 @@
                             <a class="active" href="{{ path('group_list') }}">
                                 <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Events
                             </a>
-                            <a class="" href="">
+                            <a href="">
                                 <img src="{{ asset('images/nav-bullet.png') }}" alt=""> About
                             </a>
-                            <a class="" href="">
+                            <a href="">
                                 <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Services
                             </a>
-                            <a class="" href="">
+                            <a href="">
                                 <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Contact Us
                             </a>
                         </div>
@@ -203,7 +205,7 @@
                 <div class="col-md-6 col-lg-3 info_col">
                     <h4>Subscribe</h4>
                     <form action="#">
-                        <input type="text" placeholder="Enter email" class="form-control" />
+                        <input type="text" placeholder="Enter email" class="form-control" required />
                         <button type="submit" class="btn btn-primary">Subscribe</button>
                     </form>
                 </div>
@@ -211,7 +213,8 @@
         </div>
     </section>
 
-    <section class="footer_section">
+    <!-- Footer Section -->
+    <footer class="footer_section">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
@@ -231,31 +234,27 @@
                 </div>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/custom.js') }}"></script>
+    <!-- Scripts -->
+    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" defer></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('js/custom.js') }}" defer></script>
 
     <script>
-        // JavaScript for clearing filters
         document.querySelector('.clear-filters').addEventListener('click', function() {
             document.querySelector('select[name="location"]').value = '';
             document.querySelector('select[name="visibility"]').value = '';
             document.querySelector('input[name="date"]').value = '';
-            // Clear the main search input
             document.querySelector('input[name="q"]').value = '';
-            // Submit the form to reset the search
             this.closest('form').submit();
         });
 
-        // Placeholder for autocomplete suggestions (implement with AJAX if needed)
         document.getElementById('searchInput').addEventListener('input', function() {
             let query = this.value;
             if (query.length > 2) {
-                // Simulate suggestions (replace with real AJAX call)
                 let suggestions = ['aaaaaaa', 'Camping', 'Zaghouen', 'Public Event'];
                 let filteredSuggestions = suggestions.filter(s => s.toLowerCase().includes(query.toLowerCase()));
                 let suggestionsHtml = filteredSuggestions.map(s => `<div class="suggestion-item">${s}</div>`).join('');
@@ -266,39 +265,11 @@
             }
         });
 
-        // Hide suggestions when clicking outside
         document.addEventListener('click', function(event) {
             if (!document.getElementById('searchInput').contains(event.target) && !document.getElementById('suggestions').contains(event.target)) {
                 document.getElementById('suggestions').style.display = 'none';
             }
         });
     </script>
-
-    <style>
-        .suggestions-list {
-            position: absolute;
-            background: #ffffff;
-            border: 1px solid #1e90ff;
-            border-radius: 0.25rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            width: calc(100% - 2px); /* Match search input width */
-            margin-top: 0.5rem;
-            left: 0; /* Position below search input */
-        }
-
-        .suggestion-item {
-            padding: 0.4rem 1rem; /* Reduced for minimal look, match screenshot */
-            color: #1a2b3c;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .suggestion-item:hover {
-            background-color: #f8f9fa;
-        }
-    </style>
 </body>
 </html>
