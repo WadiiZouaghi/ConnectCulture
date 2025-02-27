@@ -1,0 +1,63 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+    methods: ['GET']
+app_quote:
+    path: /quote
+    controller: App\Controller\QuoteController::index
+# Event Routes
+event_routes:
+    resource: '../src/Controller/EventController.php'
+    type: attribute
+    prefix: /event
+
+# Admin Event Routes
+app_event_index:
+    path: /event/
+    controller: App\Controller\EventController::index
+    methods: ['GET']
+
+app_event_new:
+    path: /event/new
+    controller: App\Controller\EventController::new
+    methods: ['GET', 'POST']
+
+app_event_show:
+    path: /event/{id}
+    controller: App\Controller\EventController::show
+    methods: ['GET']
+    requirements:
+        id: '\d+'
+
+app_event_edit:
+    path: /event/{id}/edit
+    controller: App\Controller\EventController::edit
+    methods: ['GET', 'POST']
+    requirements:
+        id: '\d+'
+
+app_event_delete:
+    path: /event/{id}
+    controller: App\Controller\EventController::delete
+    methods: ['POST']
+    requirements:
+        id: '\d+'
+
+# User Event Routes
+app_event_index_user:
+    path: /event/user
+    controller: App\Controller\EventController::indexUser
+    methods: ['GET']
+
+app_event_show_user:
+    path: /event/user/{id}
+    controller: App\Controller\EventController::showUser
+    methods: ['GET']
+    requirements:
+        id: '\d+'
+

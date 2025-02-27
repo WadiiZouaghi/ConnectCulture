@@ -1,0 +1,31 @@
+<ul class="navbar-nav ms-auto">
+  <!-- Category Dropdown -->
+  <li class="nav-item dropdown d-none d-lg-block">
+      <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+          Select Category
+      </a>
+      <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
+          <!-- Add dropdown items -->
+      </div>
+  </li>
+  
+  <!-- Notifications -->
+  <li class="nav-item dropdown">
+      <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+          <i class="icon-mail icon-lg"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
+          <!-- Add notification items -->
+      </div>
+  </li>
+  
+  <!-- User Profile -->
+  <li class="nav-item dropdown d-none d-lg-block user-dropdown">
+      <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+          <img class="img-xs rounded-circle" src="{{ asset('assets/images/faces/face8.jpg') }}" alt="Profile image">
+      </a>
+      <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+          <!-- Add user dropdown items -->
+      </div>
+  </li>
+</ul>
