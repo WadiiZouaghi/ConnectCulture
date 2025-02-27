@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Signalement{% endblock %}
+
+{% block body %}
+    <h1>Create new Signalement</h1>
+
+    {{ include('signalement/_form.html.twig') }}
+
+    <a href="{{ path('app_signalement_index') }}">back to list</a>
+{% endblock %}

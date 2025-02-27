@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filtrage index{% endblock %}
+
+{% block body %}
+    <h1>Filtrage index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Mot_interdit</th>
+                <th>Action</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for filtrage in filtrages %}
+            <tr>
+                <td>{{ filtrage.id }}</td>
+                <td>{{ filtrage.motInterdit }}</td>
+                <td>{{ filtrage.action }}</td>
+                <td>
+                    <a href="{{ path('app_filtrage_show', {'id': filtrage.id}) }}">show</a>
+                    <a href="{{ path('app_filtrage_edit', {'id': filtrage.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_filtrage_new') }}">Create new</a>
+{% endblock %}
