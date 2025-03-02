@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Group;
+use App\Entity\GroupType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,6 +50,13 @@ class GroupFormType extends AbstractType
                 'label' => 'Visibility',
                 'choices' => ['Public' => 'public', 'Private' => 'private'],
                 'placeholder' => 'Select visibility',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('groupType', EntityType::class, [
+                'class' => GroupType::class,
+                'choice_label' => 'type',
+                'placeholder' => 'Select group type',
+                'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('coverPicture', FileType::class, [

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Discussion;
+use App\Entity\Group;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,7 +14,6 @@ class DiscussionRepository extends ServiceEntityRepository
         parent::__construct($registry, Discussion::class);
     }
 
-    // Add custom methods here if needed, e.g., for fetching discussions
     public function findByGroupOrderedByDate(Group $group): array
     {
         return $this->createQueryBuilder('d')

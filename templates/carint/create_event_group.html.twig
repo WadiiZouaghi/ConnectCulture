@@ -14,9 +14,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
-    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/font-awesome/css/all.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
 </head>
 
 <body class="sub_page">
@@ -64,6 +63,15 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Contact Us</a>
                                 </li>
+                                {% if app.user %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Logout</a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Login</a>
+                                    </li>
+                                {% endif %}
                                 <form class="form-inline">
                                     <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
                                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -96,30 +104,37 @@
                             <div class="form-group">
                                 {{ form_label(group_form.name, 'Group Name', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(group_form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter event name'}}) }}
+                                {{ form_errors(group_form.name) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(group_form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(group_form.description, {'attr': {'class': 'form-control', 'placeholder': 'Describe your event', 'rows': '4'}}) }}
+                                {{ form_errors(group_form.description) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(group_form.location, 'Location', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(group_form.location, {'attr': {'class': 'form-control', 'placeholder': 'Event location'}}) }}
+                                {{ form_errors(group_form.location) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(group_form.event_date, 'Event Date', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(group_form.event_date, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(group_form.event_date) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(group_form.max_participants, 'Max Participants', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(group_form.max_participants, {'attr': {'class': 'form-control', 'placeholder': 'Max participants', 'min': 1}}) }}
+                                {{ form_errors(group_form.max_participants) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(group_form.visibility, 'Visibility', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(group_form.visibility, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(group_form.visibility) }}
                             </div>
                             <div class="form-group">
                                 {{ form_label(group_form.coverPicture, 'Cover Picture', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(group_form.coverPicture, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(group_form.coverPicture) }}
                             </div>
                             <div class="btn_box text-center mt-3">
                                 <button type="submit" class="btn btn-primary">Create Event</button>

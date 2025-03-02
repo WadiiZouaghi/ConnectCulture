@@ -1,25 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups" />
-    <meta name="description" content="Browse and join cultural event groups on Culture Connect to explore vibrant experiences worldwide." />
-    <meta name="author" content="" />
-    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
+{% extends 'base.html.twig' %}
 
-    <title>Culture Connect - Event Groups</title>
+{% block title %}Culture Connect - Event Groups{% endblock %}
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
-    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-</head>
-
-<body class="sub_page">
+{% block body %}
     <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
@@ -48,12 +31,17 @@
                             <span>Culture Connect</span>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class=""></span>
+                            <span class="s-1"></span>
+                            <span class="s-2"></span>
+                            <span class="s-3"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav">
                                 <li class="nav-item active">
                                     <a class="nav-link" href="{{ path('group_list') }}">Events <span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% if app.user %}{{ path('group_create') }}{% else %}{% endif %}">Create New Event</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Services</a>
@@ -64,6 +52,18 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Contact Us</a>
                                 </li>
+                                {% if app.user %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Login</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Register</a>
+                                    </li>
+                                {% endif %}
                                 <form class="form-inline">
                                     <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
                                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -78,10 +78,86 @@
     </div>
 
     <!-- Main Content Section -->
-    <section class="event-groups-section layout_padding-top">
-        <div class="container-fluid">
+    <section class="event-groups-section px-0">
+        <div class="container-fluid px-0">
             <div class="row">
-                <div class="col-lg-12">
+                <!-- Sidebar -->
+                <div class="col-lg-3 col-md-4 col-sm-12 sidebar-col">
+                    <div class="sidebar">
+                        <!-- Quick Navigation -->
+                        <div class="sidebar-section">
+                            <h3>Navigation</h3>
+                            <ul class="sidebar-nav">
+                                <li><a href="{{ path('group_create') }}"><i class="fas fa-plus-circle"></i> Create New Event</a></li>
+                                <li><a href="#my-events"><i class="fas fa-calendar-check"></i> My Events</a></li>
+                                <li><a href="#invitations"><i class="fas fa-envelope"></i> Invitations</a></li>
+                            </ul>
+                            <h4>Categories</h4>
+                            <ul class="sidebar-categories">
+                                <li><a href="{{ path('group_list', {'category': 'music'}) }}">Music</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'dance'}) }}">Dance</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'food'}) }}">Food</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'art'}) }}">Art</a></li>
+                            </ul>
+                        </div>
+                        <!-- Popular Events -->
+                        <div class="sidebar-section">
+                            <h3>Popular Events</h3>
+                            {% if groups is not empty %}
+                                {% for group in groups|sort((a, b) => b.maxParticipants <=> a.maxParticipants)|slice(0, 3) %}
+                                    <div class="popular-event">
+                                        <h4>{{ group.name }}</h4>
+                                        <p>{{ group.location }}</p>
+                                    </div>
+                                {% else %}
+                                    <p>No popular events available.</p>
+                                {% endfor %}
+                            {% else %}
+                                <p>No popular events available.</p>
+                            {% endif %}
+                            <a href="#view-all-popular" class="view-all">View All</a>
+                        </div>
+                        <!-- AI Suggestions -->
+                        <div class="sidebar-section">
+                            <h3>AI Suggestions</h3>
+                            {% if ai_suggestions.events is not empty %}
+                                <h4>Recommended Events</h4>
+                                <ul class="ai-suggestions-list">
+                                    {% for suggestion in ai_suggestions.events %}
+                                        <li>
+                                            <i class="fas fa-lightbulb"></i>
+                                            <a href="{{ path('group_view', {'id': suggestion.event_id}) }}">{{ suggestion.text }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if ai_suggestions.actions is not empty %}
+                                <h4>Suggested Actions</h4>
+                                <ul class="ai-suggestions-list">
+                                    {% for action in ai_suggestions.actions %}
+                                        <li>
+                                            <i class="fas fa-star"></i>
+                                            {% if action.action == 'invite' %}
+                                                <a href="{{ path('group_invite', {'id': action.event_id}) }}">{{ action.text }}</a>
+                                            {% elseif action.action == 'explore' %}
+                                                <a href="{{ path('group_view', {'id': action.event_id}) }}">{{ action.text }}</a>
+                                            {% elseif action.action == 'signup' %}
+                                                <a href="">{{ action.text }}</a>
+                                            {% else %}
+                                                {{ action.text }}
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% if ai_suggestions.events is empty and ai_suggestions.actions is empty %}
+                                <p>No suggestions available at the moment.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Main Content -->
+                <div class="col-lg-9 col-md-8 col-sm-12">
                     <div class="heading_container heading_center">
                         <h2>Event Groups</h2>
                     </div>
@@ -89,68 +165,75 @@
                         <div class="alert alert-success">{{ message }}</div>
                     {% endfor %}
                     <form method="GET" action="{{ path('group_list') }}" class="search-form mb-4">
-                        <div class="search-container d-flex flex-row justify-content-center align-items-center">
-                            <div class="search-input-group d-flex align-items-center">
+                        <div class="search-container d-flex flex-column align-items-center">
+                            <div class="search-input-group d-flex align-items-center mb-3 w-100" style="max-width: 500px;">
                                 <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control search-input" placeholder="Search groups by name, description, or location" id="searchInput">
                                 <button type="submit" class="search-button">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <div class="search-filters d-flex align-items-center ml-3">
-                                <select name="location" class="form-control filter-select mr-2">
+                            <div class="search-filters d-flex flex-row justify-content-center align-items-center w-100" style="max-width: 500px; gap: 10px;">
+                                <select name="location" class="form-control filter-select">
                                     <option value="">All Locations</option>
                                     {% for loc in locations %}
                                         <option value="{{ loc.location }}" {% if location == loc.location %}selected{% endif %}>{{ loc.location }}</option>
                                     {% endfor %}
                                 </select>
-                                <select name="visibility" class="form-control filter-select mr-2">
+                                <select name="visibility" class="form-control filter-select">
                                     <option value="">All Visibilities</option>
                                     {% for vis in visibilities %}
                                         <option value="{{ vis.visibility }}" {% if visibility == vis.visibility %}selected{% endif %}>{{ vis.visibility|capitalize }}</option>
                                     {% endfor %}
                                 </select>
-                                <input type="date" name="date" class="form-control filter-date mr-2" value="{{ date|default('') }}">
+                                <input type="date" name="date" class="form-control filter-date" value="{{ date|default('') }}">
                                 <button type="button" class="btn btn-link clear-filters">Clear Filters</button>
                             </div>
                             <div id="suggestions" class="suggestions-list" style="display: none;"></div>
                         </div>
                     </form>
                     <div class="text-center mb-4">
-                        <a href="{{ path('group_create') }}" class="create-event-btn">Create New Event</a>
+                        <a href="{% if app.user %}{{ path('group_create') }}{% else %}{% endif %}" class="create-event-btn">Create New Event</a>
                     </div>
-                    <div class="row" id="eventGroups">
-                        {% for group in groups %}
-                            <div class="col-12 mb-4 event-group" data-location="{{ group.location|lower }}">
-                                <div class="group-card">
-                                    <div class="group-content">
-                                        <h3 class="group-name">{{ group.name }}</h3>
-                                        <p class="group-details">{{ group.description|length > 100 ? group.description|slice(0, 100) ~ '...' : group.description|default('No description provided') }}</p>
-                                        <p class="group-meta">Location: {{ group.location|default('Not specified') }} | Date: {{ group.eventDate ? group.eventDate|date('Y-m-d H:i') : 'TBD' }} | Max: {{ group.maxParticipants|default('Unlimited') }} | {{ group.visibility|capitalize }}</p>
-                                    </div>
-                                    <div class="group-actions d-flex justify-content-end">
-                                        <a href="{{ path('group_view', {'id': group.id}) }}" class="action-btn btn mr-2 view-btn">View</a>
-                                        <a href="{{ path('group_edit', {'id': group.id}) }}" class="action-btn btn mr-2 edit-btn">Edit</a>
-                                        <form action="{{ path('group_delete', {'id': group.id}) }}" method="post" style="display:inline;">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
-                                            <button type="submit" class="action-btn btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
-                                        </form>
+                    {% if groups is not empty %}
+                        <div class="row" id="eventGroups">
+                            {% for group in groups %}
+                                <div class="col-12 mb-4 event-group" data-location="{{ group.location|lower }}">
+                                    <div class="group-card">
+                                        <div class="group-content">
+                                            <h3 class="group-name">{{ group.name }}</h3>
+                                            <p class="group-details">{{ group.description|length > 100 ? group.description|slice(0, 100) ~ '...' : group.description|default('No description provided') }}</p>
+                                            <p class="group-meta">Location: {{ group.location|default('Not specified') }} | Date: {{ group.eventDate ? group.eventDate|date('Y-m-d H:i') : 'TBD' }} | Max: {{ group.maxParticipants|default('Unlimited') }} | {{ group.visibility|capitalize }}</p>
+                                            <p class="group-type">Type: {{ group.groupType ? group.groupType.type : 'Not specified' }}</p>
+                                        </div>
+                                        <div class="group-actions d-flex justify-content-end">
+                                            <a href="{{ path('group_view', {'id': group.id}) }}" class="action-btn btn view-btn">View</a>
+                                            {% if app.user %}
+                                                <a href="{{ path('group_edit', {'id': group.id}) }}" class="action-btn btn edit-btn">Edit</a>
+                                                <form action="{{ path('group_delete', {'id': group.id}) }}" method="post" style="display:inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+                                                    <button type="submit" class="action-btn btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% else %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="row">
                             <div class="col-12">
-                                <div class="no-groups">No event groups found</div>
+                                <div class="no-groups">No event groups found. Please add some groups to the database.</div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Info Section -->
-    <section class="info_section layout_padding2">
-        <div class="container">
+    <section class="info_section layout_padding2 px-0">
+        <div class="container-fluid px-0">
             <div class="row">
                 <div class="col-md-6 col-lg-3 info_col">
                     <div class="info_contact">
@@ -214,8 +297,8 @@
     </section>
 
     <!-- Footer Section -->
-    <footer class="footer_section">
-        <div class="container">
+    <footer class="footer_section px-0">
+        <div class="container-fluid px-0">
             <div class="row">
                 <div class="col-12 text-center">
                     <p>
@@ -235,14 +318,9 @@
             </div>
         </div>
     </footer>
+{% endblock %}
 
-    <!-- Scripts -->
-    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" defer></script>
-    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('js/custom.js') }}" defer></script>
-
+{% block javascripts %}
     <script>
         document.querySelector('.clear-filters').addEventListener('click', function() {
             document.querySelector('select[name="location"]').value = '';
@@ -255,7 +333,7 @@
         document.getElementById('searchInput').addEventListener('input', function() {
             let query = this.value;
             if (query.length > 2) {
-                let suggestions = ['aaaaaaa', 'Camping', 'Zaghouen', 'Public Event'];
+                let suggestions = ['Samba Night', 'Art Exhibition', 'Food Festival', 'Zaghouen', 'Public Event'];
                 let filteredSuggestions = suggestions.filter(s => s.toLowerCase().includes(query.toLowerCase()));
                 let suggestionsHtml = filteredSuggestions.map(s => `<div class="suggestion-item">${s}</div>`).join('');
                 document.getElementById('suggestions').innerHTML = suggestionsHtml;
@@ -271,5 +349,4 @@
             }
         });
     </script>
-</body>
-</html>
+{% endblock %}

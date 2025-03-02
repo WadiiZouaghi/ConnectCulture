@@ -1,25 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups, Discussions" />
-    <meta name="description" content="View and participate in discussions for a cultural event group on Culture Connect." />
-    <meta name="author" content="" />
-    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
+{% extends 'base.html.twig' %}
 
-    <title>Culture Connect - Group Discussions</title>
+{% block title %}Culture Connect - {{ group.name }} Discussions{% endblock %}
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
-    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-</head>
-
-<body class="sub_page">
+{% block body %}
     <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
@@ -48,7 +31,9 @@
                             <span>Culture Connect</span>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class=""></span>
+                            <span class="s-1"></span>
+                            <span class="s-2"></span>
+                            <span class="s-3"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav">
@@ -64,6 +49,15 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Contact Us</a>
                                 </li>
+                                {% if app.user %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Logout</a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Login</a>
+                                    </li>
+                                {% endif %}
                                 <form class="form-inline">
                                     <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
                                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -81,7 +75,29 @@
     <section class="event-group-view-section layout_padding-top">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">
+                <!-- Sidebar -->
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <div class="sidebar">
+                        <!-- Quick Navigation -->
+                        <div class="sidebar-section">
+                            <h3>Navigation</h3>
+                            <ul class="sidebar-nav">
+                                <li><a href="{{ path('group_create') }}"><i class="fas fa-plus-circle"></i> Create New Event</a></li>
+                                <li><a href="#my-events"><i class="fas fa-calendar-check"></i> My Events</a></li>
+                                <li><a href="#invitations"><i class="fas fa-envelope"></i> Invitations</a></li>
+                            </ul>
+                            <h4>Categories</h4>
+                            <ul class="sidebar-categories">
+                                <li><a href="{{ path('group_list', {'category': 'music'}) }}">Music</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'dance'}) }}">Dance</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'food'}) }}">Food</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'art'}) }}">Art</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Main Content -->
+                <div class="col-lg-9 col-md-8 col-sm-12">
                     <div class="heading_container heading_center">
                         <h2>{{ group.name }} Discussions</h2>
                     </div>
@@ -96,7 +112,7 @@
                             <div class="d-flex">
                                 <li class="nav-item">
                                     <a href="{{ path('group_view', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_view' %}active{% endif %}" aria-current="{% if app.request.attributes.get('_route') == 'group_view' %}page{% else %}false{% endif %}">
-                                        <i class="fa fa-info-circle" aria-hidden="true"></i> Details
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i> Details
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -110,15 +126,28 @@
                                     </a>
                                 </li>
                             </div>
+                            <li class="nav-item">
+                                <a href="{{ path('group_invite', {'id': group.id}) }}" class="nav-link btn btn-primary invite-btn">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i> Send Invitation
+                                </a>
+                            </li>
                         </ul>
                     </nav>
-                    <div class="discussion-section">
+                    <div class="discussions-section mt-4">
+                        <h3>Discussions</h3>
                         {% if discussions is defined and discussions is not empty %}
                             <div class="discussion-list">
                                 {% for discussion in discussions %}
-                                    <div class="discussion-item">
+                                    <div class="discussion-card mb-3">
                                         <p class="discussion-content">{{ discussion.content }}</p>
                                         <small class="discussion-meta">Posted on {{ discussion.createdAt|date('Y-m-d H:i') }} by {{ discussion.author ? discussion.author.name : 'Anonymous' }}</small>
+                                        <div class="discussion-actions d-flex justify-content-end mt-2">
+                                            <a href="{{ path('discussion_edit', {'id': discussion.id}) }}" class="action-btn btn edit-btn mr-2">Update</a>
+                                            <form action="{{ path('discussion_delete', {'id': discussion.id}) }}" method="post" style="display:inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ discussion.id) }}">
+                                                <button type="submit" class="action-btn btn delete-btn" onclick="return confirm('Are you sure you want to delete this discussion?')">Delete</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 {% else %}
                                     <p class="no-discussions">No discussions yet. Be the first to start one!</p>
@@ -156,7 +185,7 @@
                             </a>
                             <a href="">
                                 <i class="fa fa-phone" aria-hidden="true"></i>
-                                <span>Call: +01 1234567890</span>
+                                <span>Call: +01 123455678990</span>
                             </a>
                             <a href="">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -229,12 +258,4 @@
             </div>
         </div>
     </footer>
-
-    <!-- Scripts -->
-    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" defer></script>
-    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('js/custom.js') }}" defer></script>
-</body>
-</html>
+{% endblock %}

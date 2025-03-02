@@ -5,72 +5,60 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'actors')]
-class Actor
+#[ORM\Entity(repositoryClass: \App\Repository\ActorRepository::class)]
+#[ORM\Table(name: "actor")]
+class Actor implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer', name: 'actor_id')]
-    private ?int $actorId = null;
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $lastName = null;
-
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: "string", length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: "json")]
+    private array $roles = [];
+
+    #[ORM\Column(type: "string")]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'string', length: 50)]
-    private ?string $role = null;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $name = null;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $location = null;
 
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'actors')]
-    #[ORM\JoinTable(name: 'actor_group',
-        joinColumns: [new ORM\JoinColumn(name: 'actor_id', referencedColumnName: 'actor_id')],
-        inverseJoinColumns: [new ORM\JoinColumn(name: 'id', referencedColumnName: 'id')]
-    )]
+    #[ORM\JoinTable(name: "actor_group")]
     private Collection $groups;
 
-    #[ORM\OneToMany(targetEntity: Discussion::class, mappedBy: 'author', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: "author", targetEntity: Discussion::class)]
     private Collection $discussions;
+
+    #[ORM\OneToMany(mappedBy: "actor", targetEntity: Post::class)]
+    private Collection $posts;
+
+    #[ORM\OneToMany(mappedBy: "inviter", targetEntity: Invitation::class)]
+    private Collection $sentInvitations;
+
+    #[ORM\OneToMany(mappedBy: "invitee", targetEntity: Invitation::class)]
+    private Collection $receivedInvitations;
 
     public function __construct()
     {
         $this->groups = new ArrayCollection();
         $this->discussions = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->sentInvitations = new ArrayCollection();
+        $this->receivedInvitations = new ArrayCollection();
     }
 
-    public function getActorId(): ?int
+    public function getId(): ?int
     {
-        return $this->actorId;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): self
-    {
-        $this->lastName = $lastName;
-        return $this;
+        return $this->id;
     }
 
     public function getEmail(): ?string
@@ -84,7 +72,25 @@ class Actor
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -95,17 +101,41 @@ class Actor
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getSalt(): ?string
     {
-        return $this->role;
+        return null;
     }
 
-    public function setRole(string $role): self
+    public function eraseCredentials()
     {
-        $this->role = $role;
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
         return $this;
     }
 
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Group>
+     */
     public function getGroups(): Collection
     {
         return $this->groups;
@@ -128,6 +158,9 @@ class Actor
         return $this;
     }
 
+    /**
+     * @return Collection<int, Discussion>
+     */
     public function getDiscussions(): Collection
     {
         return $this->discussions;
@@ -145,7 +178,90 @@ class Actor
     public function removeDiscussion(Discussion $discussion): self
     {
         if ($this->discussions->removeElement($discussion)) {
-            $discussion->setAuthor(null);
+            if ($discussion->getAuthor() === $this) {
+                $discussion->setAuthor(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setActor($this);
+        }
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            if ($post->getActor() === $this) {
+                $post->setActor(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invitation>
+     */
+    public function getSentInvitations(): Collection
+    {
+        return $this->sentInvitations;
+    }
+
+    public function addSentInvitation(Invitation $invitation): self
+    {
+        if (!$this->sentInvitations->contains($invitation)) {
+            $this->sentInvitations->add($invitation);
+            $invitation->setInviter($this);
+        }
+        return $this;
+    }
+
+    public function removeSentInvitation(Invitation $invitation): self
+    {
+        if ($this->sentInvitations->removeElement($invitation)) {
+            if ($invitation->getInviter() === $this) {
+                $invitation->setInviter(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invitation>
+     */
+    public function getReceivedInvitations(): Collection
+    {
+        return $this->receivedInvitations;
+    }
+
+    public function addReceivedInvitation(Invitation $invitation): self
+    {
+        if (!$this->receivedInvitations->contains($invitation)) {
+            $this->receivedInvitations->add($invitation);
+            $invitation->setInvitee($this);
+        }
+        return $this;
+    }
+
+    public function removeReceivedInvitation(Invitation $invitation): self
+    {
+        if ($this->receivedInvitations->removeElement($invitation)) {
+            if ($invitation->getInvitee() === $this) {
+                $invitation->setInvitee(null);
+            }
         }
         return $this;
     }

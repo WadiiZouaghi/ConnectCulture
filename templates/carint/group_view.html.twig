@@ -1,26 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups" />
-    <meta name="description" content="View {{ group.name }} on Culture Connect to explore vibrant cultural experiences." />
-    <meta name="author" content="" />
-    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
+{% extends 'base.html.twig' %}
 
-    <title>Culture Connect - {{ group.name }}</title>
+{% block title %}Culture Connect - {{ group.name }}{% endblock %}
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
-    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-</head>
-
-<body class="sub_page">
+{% block body %}
     <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
@@ -49,7 +31,9 @@
                             <span>Culture Connect</span>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class=""></span>
+                            <span class="s-1"></span>
+                            <span class="s-2"></span>
+                            <span class="s-3"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav">
@@ -65,6 +49,18 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Contact Us</a>
                                 </li>
+                                {% if app.user %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href=">Logout</a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Login</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="">Register</a>
+                                    </li>
+                                {% endif %}
                                 <form class="form-inline">
                                     <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
                                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -78,114 +74,147 @@
         </header>
     </div>
 
-    <!-- Main Content Section -->
+    <!-- Group View Section -->
     <section class="event-group-view-section layout_padding-top">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">
+                <!-- Sidebar -->
+                <div class="col-lg-3 col-md-4 col-sm-12">
+                    <div class="sidebar">
+                        <!-- Quick Navigation -->
+                        <div class="sidebar-section">
+                            <h3>Navigation</h3>
+                            <ul class="sidebar-nav">
+                                <li><a href="{{ path('group_create') }}"><i class="fas fa-plus-circle"></i> Create New Event</a></li>
+                                <li><a href="#my-events"><i class="fas fa-calendar-check"></i> My Events</a></li>
+                                <li><a href="#invitations"><i class="fas fa-envelope"></i> Invitations</a></li>
+                            </ul>
+                            <h4>Categories</h4>
+                            <ul class="sidebar-categories">
+                                <li><a href="{{ path('group_list', {'category': 'music'}) }}">Music</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'dance'}) }}">Dance</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'food'}) }}">Food</a></li>
+                                <li><a href="{{ path('group_list', {'category': 'art'}) }}">Art</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Main Content -->
+                <div class="col-lg-9 col-md-8 col-sm-12">
                     <div class="heading_container heading_center">
-                        <h2>{{ group.name }} Details</h2>
+                        <h2>{{ group.name }}</h2>
                     </div>
                     {% for message in app.flashes('success') %}
-                        <div class="alert alert-success" role="alert">{{ message }}</div>
+                        <div class="alert alert-success">{{ message }}</div>
                     {% endfor %}
                     <nav class="group-nav-bar">
                         <ul class="nav flex-row align-items-center justify-content-between">
                             <div class="d-flex">
                                 <li class="nav-item">
-                                    <a href="{{ path('group_view', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_view' %}active{% endif %}" aria-current="{% if app.request.attributes.get('_route') == 'group_view' %}page{% else %}false{% endif %}">
-                                        <i class="fa fa-info-circle" aria-hidden="true"></i> Details
-                                    </a>
+                                    <a class="nav-link active" href="{{ path('group_view', {'id': group.id}) }}"><i class="fas fa-info-circle"></i> Details</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ path('group_posts', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_posts' %}active{% endif %} view-posts-btn" aria-current="{% if app.request.attributes.get('_route') == 'group_posts' %}page{% else %}false{% endif %}">
-                                        <i class="fas fa-file-alt" aria-hidden="true"></i> Posts
-                                    </a>
+                                    <a class="nav-link view-posts-btn" href="{{ path('group_posts', {'id': group.id}) }}"><i class="fas fa-comment"></i> Posts</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ path('group_discussion', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_discussion' %}active{% endif %} discussion-btn" aria-current="{% if app.request.attributes.get('_route') == 'group_discussion' %}page{% else %}false{% endif %}">
-                                        <i class="fas fa-comments" aria-hidden="true"></i> Discussion
-                                    </a>
+                                    <a class="nav-link discussion-btn" href="{{ path('group_discussion', {'id': group.id}) }}"><i class="fas fa-comments"></i> Discussions</a>
                                 </li>
                             </div>
+                            <li class="nav-item">
+                                <a href="{{ path('group_invite', {'id': group.id}) }}" class="nav-link btn btn-primary invite-btn">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i> Send Invitation
+                                </a>
+                            </li>
                         </ul>
-                    </nav>
+                    </div>
                     <div class="group-card">
-                        <!-- Group Card Header with Cover Image -->
                         <div class="group-card-header">
-                            <img src="{% if base64Image %}data:image/jpeg;base64,{{ base64Image }}{% else %}{{ asset('images/default_event_banner.jpg') }}{% endif %}" alt="{{ group.name }} Cover" class="group-cover-image">
-                            <!-- Weather Forecast Card on Top-Right of Image -->
-                            {% if weatherData and weatherData.daily is not empty %}
-                                <div class="weather-forecast-card">
-                                    <h4>Weather on {{ group.eventDate ? group.eventDate|date('Y-m-d') : 'Event Date' }}</h4>
-                                    <div class="forecast-day">
-                                        <div class="forecast-date">
-                                            {{ weatherData.daily[0].temp }}°C, {{ weatherData.daily[0].description|capitalize }}
-                                        </div>
-                                        <img src="http://openweathermap.org/img/wn/{{ weatherData.daily[0].icon }}.png" alt="{{ weatherData.daily[0].description }}" style="width: 40px; height: 40px;" loading="lazy">
+                            {% if base64Image %}
+                                <img src="data:image/jpeg;base64,{{ base64Image }}" alt="{{ group.name }}" class="group-banner" />
+                                {% if weatherData %}
+                                    <div class="weather-forecast-card">
+                                        <h4>Weather Forecast</h4>
+                                        {% for forecast in weatherData.daily %}
+                                            <div class="forecast-day">
+                                                <p class="forecast-date">{{ forecast.date }}: <strong>{{ forecast.temp }}°C</strong>, {{ forecast.description }}</p>
+                                            </div>
+                                        {% endfor %}
                                     </div>
-                                </div>
-                            {% else %}
-                                <div class="weather-forecast-card">
-                                    <h4>Weather Unavailable</h4>
-                                    <p>Forecast not available for {{ group.eventDate ? group.eventDate|date('Y-m-d') : 'event date' }}.</p>
-                                </div>
+                                {% endif %}
                             {% endif %}
                         </div>
-                        <!-- Group Card Body -->
                         <div class="group-card-body">
-                            <!-- Group Details in Single-Column Layout -->
                             <div class="group-details">
-                                <div class="group-detail">
-                                    <span class="icon-wrapper"><i class="fas fa-info-circle"></i></span>
-                                    <strong>Description:</strong> <span>{{ group.description|default('No description provided') }}</span>
-                                </div>
-                                <div class="group-detail">
-                                    <span class="icon-wrapper"><i class="fas fa-map-marker-alt"></i></span>
-                                    <strong>Location:</strong> <span>{{ group.location|default('Not specified') }}</span>
-                                </div>
-                                <div class="group-detail">
-                                    <span class="icon-wrapper"><i class="fas fa-calendar-alt"></i></span>
-                                    <strong>Event Date:</strong> <span>{{ group.eventDate ? group.eventDate|date('Y-m-d H:i') : 'TBD' }}</span>
-                                </div>
-                                <div class="group-detail">
-                                    <span class="icon-wrapper"><i class="fas fa-users"></i></span>
-                                    <strong>Max Participants:</strong> <span>{{ group.maxParticipants|default('Unlimited') }}</span>
-                                </div>
-                                <div class="group-detail">
-                                    <span class="icon-wrapper"><i class="fas fa-eye"></i></span>
-                                    <strong>Visibility:</strong> <span>{{ group.visibility|capitalize }}</span>
-                                </div>
+                                <p class="group-details">{{ group.description|default('No description provided') }}</p>
+                                <p class="group-meta">
+                                    Location: {{ group.location|default('Not specified') }} | 
+                                    Date: {{ group.eventDate ? group.eventDate|date('Y-m-d H:i') : 'TBD' }} | 
+                                    Max: {{ group.maxParticipants|default('Unlimited') }} | 
+                                    {{ group.visibility|capitalize }}
+                                </p>
+                                <p class="group-type">Type: {{ group.groupType ? group.groupType.type : 'Not specified' }}</p>
+                            </div>
+                            <div class="group-actions d-flex justify-content-end">
+                                <a href="{{ path('group_edit', {'id': group.id}) }}" class="action-btn btn edit-btn mr-2">Edit</a>
+                                <form action="{{ path('group_delete', {'id': group.id}) }}" method="post" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+                                    <button type="submit" class="action-btn btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Related Events Section -->
-                    <div class="related-events">
-                        <h3>Related Events in {{ group.location|default('this area') }}</h3>
-                        <div class="row">
-                            {% for relatedGroup in relatedGroups %}
-                                <div class="col-md-4">
-                                    <div class="related-event-card">
-                                        <h4>{{ relatedGroup.name }}</h4>
-                                        <p><strong>Location:</strong> {{ relatedGroup.location }}</p>
-                                        <p><strong>Date:</strong> {{ relatedGroup.eventDate ? relatedGroup.eventDate|date('Y-m-d') : 'TBD' }}</p>
-                                        <p>{{ relatedGroup.description|length > 50 ? relatedGroup.description|slice(0, 50) ~ '...' : relatedGroup.description|default('No description provided') }}</p>
+                    <!-- Discussions -->
+                    <div class="discussions-section mt-4">
+                        <h3>Discussions</h3>
+                        {% if discussions %}
+                            {% for discussion in discussions %}
+                                <div class="discussion-card mb-3">
+                                    <p class="discussion-content">{{ discussion.content }}</p>
+                                    <p class="discussion-meta">
+                                        Posted by {{ discussion.author ? discussion.author.email : 'Anonymous' }} on {{ discussion.createdAt|date('Y-m-d H:i') }}
+                                    </p>
+                                    <div class="discussion-actions d-flex justify-content-end">
+                                        <a href="{{ path('discussion_edit', {'id': discussion.id}) }}" class="action-btn btn edit-btn mr-2">Update</a>
+                                        <form action="{{ path('discussion_delete', {'id': discussion.id}) }}" method="post" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ discussion.id) }}">
+                                            <button type="submit" class="action-btn btn delete-btn" onclick="return confirm('Are you sure you want to delete this discussion?')">Delete</button>
+                                        </form>
                                     </div>
                                 </div>
-                            {% else %}
-                                <div class="col-12">
-                                    <p>No related events found.</p>
-                                </div>
                             {% endfor %}
-                        </div>
+                        {% else %}
+                            <p class="no-discussions">No discussions yet.</p>
+                        {% endif %}
                     </div>
 
-                    <!-- Call-to-Action Section -->
-                    <div class="cta-section">
-                        <h3>Join {{ group.name }} Today!</h3>
-                        <p>Experience the magic of cultural events with friends and family. Don’t miss out!</p>
-                        <a href="{{ path('group_invite', {'id': group.id}) }}" class="btn">Join Now</a>
+                    <!-- Related Groups -->
+                    <div class="related-groups-section mt-4">
+                        <h3>Related Groups in {{ group.location }}</h3>
+                        <div class="row">
+                            {% for relatedGroup in relatedGroups %}
+                                {% if relatedGroup.id != group.id %}
+                                    <div class="col-md-4 mb-4">
+                                        <div class="group-card">
+                                            <div class="group-content">
+                                                <h4>{{ relatedGroup.name }}</h4>
+                                                <p>{{ relatedGroup.description|length > 50 ? relatedGroup.description|slice(0, 50) ~ '...' : relatedGroup.description|default('No description provided') }}</p>
+                                                <p class="group-meta">Date: {{ relatedGroup.eventDate ? relatedGroup.eventDate|date('Y-m-d H:i') : 'TBD' }}</p>
+                                            </div>
+                                            <div class="group-actions d-flex justify-content-end">
+                                                <a href="{{ path('group_edit', {'id': relatedGroup.id}) }}" class="action-btn btn edit-btn mr-2">Update</a>
+                                                <form action="{{ path('group_delete', {'id': relatedGroup.id}) }}" method="post" style="display:inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ relatedGroup.id) }}">
+                                                    <button type="submit" class="action-btn btn delete-btn" onclick="return confirm('Are you sure you want to delete this group?')">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <p>No related groups found.</p>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -279,12 +308,4 @@
             </div>
         </div>
     </footer>
-
-    <!-- Scripts -->
-    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" defer></script>
-    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('js/custom.js') }}" defer></script>
-</body>
-</html>
+{% endblock %}

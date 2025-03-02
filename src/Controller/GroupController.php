@@ -11,6 +11,7 @@ use App\Form\GroupFormType;
 use App\Repository\DiscussionRepository;
 use App\Repository\GroupRepository;
 use App\Repository\InvitationRepository;
+use App\Service\AISuggestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,12 +25,17 @@ class GroupController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private LoggerInterface $logger;
+    private AISuggestionService $aiSuggestionService;
     private string $weatherApiKey;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger,
+        AISuggestionService $aiSuggestionService
+    ) {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->aiSuggestionService = $aiSuggestionService;
         $this->weatherApiKey = $_ENV['OPENWEATHERMAP_API_KEY'] ?? '';
     }
 
@@ -57,37 +63,30 @@ class GroupController extends AbstractController
     }
 
     /**
- * Convert binary cover picture to base64 string.
- *
- * @param resource|null $coverPicture The cover picture as a resource or null.
- * @return string|null The base64-encoded string or null if conversion fails.
- */
-private function getBase64Image($coverPicture): ?string
-{
-    if ($coverPicture === null) {
-        return null;
-    }
+     * Convert binary cover picture to base64 string.
+     *
+     * @param mixed $coverPicture The cover picture (binary data or null).
+     * @return string|null The base64-encoded string or null if conversion fails.
+     */
+    private function getBase64Image($coverPicture): ?string
+    {
+        if ($coverPicture === null) {
+            return null;
+        }
 
-    // Ensure $coverPicture is a resource
-    if (!is_resource($coverPicture)) {
-        $this->logger->error('Cover picture is not a valid resource for group.');
-        return null;
-    }
+        if (is_resource($coverPicture)) {
+            $binaryContent = stream_get_contents($coverPicture, -1, 0);
+            if ($binaryContent === false) {
+                $this->logger->error('Failed to read cover picture stream for group.');
+                return null;
+            }
+            fclose($coverPicture);
+        } else {
+            $binaryContent = $coverPicture;
+        }
 
-    // Read the binary content from the resource
-    $binaryContent = stream_get_contents($coverPicture, -1, 0);
-    if ($binaryContent === false) {
-        $this->logger->error('Failed to read cover picture stream for group.');
-        return null;
+        return $binaryContent !== '' ? base64_encode($binaryContent) : null;
     }
-
-    // Close the stream to free resources
-    if (is_resource($coverPicture)) {
-        fclose($coverPicture);
-    }
-
-    return $binaryContent !== '' ? base64_encode($binaryContent) : null;
-}
 
     /**
      * Fetch weather forecast for a given group.
@@ -146,7 +145,7 @@ private function getBase64Image($coverPicture): ?string
 
             return !empty($dailyForecasts) ? ['daily' => $dailyForecasts] : null;
         } catch (\Exception $e) {
-            $this->logger->error('Failed to fetch weather data for group ' . $group->getId() . ': ' . $e->getMessage());
+            $this->logger->error('Failed to fetch weather data for group ' . ($group->getId() ?? 'unknown') . ': ' . $e->getMessage());
             return null;
         }
     }
@@ -177,7 +176,7 @@ private function getBase64Image($coverPicture): ?string
     }
 
     #[Route('/groups', name: 'group_list', methods: ['GET'])]
-    public function list(Request $request, GroupRepository $groupRepository): Response
+    public function list(Request $request, GroupRepository $groupRepository, AISuggestionService $aiSuggestionService): Response
     {
         $searchQuery = trim($request->query->get('q', ''));
         $location = trim($request->query->get('location', ''));
@@ -188,6 +187,16 @@ private function getBase64Image($coverPicture): ?string
         $locations = $groupRepository->findUniqueLocations();
         $visibilities = $groupRepository->findUniqueVisibilities();
 
+        // Debug: Log the number of groups retrieved
+        $this->logger->info('Number of groups retrieved: ' . count($groups));
+        foreach ($groups as $group) {
+            $this->logger->info('Group: ' . $group->getName());
+        }
+
+        // Generate AI suggestions for the user
+        $user = $this->getUser();
+        $aiSuggestions = $aiSuggestionService->generateSuggestions($user);
+
         return $this->render('carint/group_list.html.twig', [
             'groups' => $groups,
             'locations' => $locations,
@@ -196,6 +205,7 @@ private function getBase64Image($coverPicture): ?string
             'location' => $location,
             'visibility' => $visibility,
             'date' => $date,
+            'ai_suggestions' => $aiSuggestions,
         ]);
     }
 

@@ -2,15 +2,20 @@
 
 namespace App\Repository;
 
+use App\Entity\Actor;
 use App\Entity\Group;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
 class GroupRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private LoggerInterface $logger;
+
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
     {
         parent::__construct($registry, Group::class);
+        $this->logger = $logger;
     }
 
     public function findBySearchQuery(string $query): array
@@ -25,7 +30,9 @@ class GroupRepository extends ServiceEntityRepository
         ->setParameter('query', '%' . $query . '%')
         ->orderBy('g.name', 'ASC');
 
-        return $qb->getQuery()->getResult();
+        $results = $qb->getQuery()->getResult();
+        $this->logger->info('findBySearchQuery - Query: ' . $query . ', Results: ' . count($results));
+        return $results;
     }
 
     public function findBySearchQueryWithFilters(?string $query = '', ?string $location = '', ?string $visibility = '', ?string $date = ''): array
@@ -48,32 +55,59 @@ class GroupRepository extends ServiceEntityRepository
         }
 
         if ($date) {
-            $qb->andWhere('g.eventDate = :date')
-               ->setParameter('date', new \DateTime($date));
+            // Match only the date portion of eventDate
+            $dateTime = new \DateTime($date);
+            $startOfDay = $dateTime->setTime(0, 0, 0);
+            $endOfDay = $dateTime->setTime(23, 59, 59);
+            $qb->andWhere('g.eventDate BETWEEN :startOfDay AND :endOfDay')
+               ->setParameter('startOfDay', $startOfDay)
+               ->setParameter('endOfDay', $endOfDay);
         }
 
-        return $qb->getQuery()->getResult();
+        $results = $qb->getQuery()->getResult();
+        $this->logger->info('findBySearchQueryWithFilters - Query: ' . $query . ', Location: ' . $location . ', Visibility: ' . $visibility . ', Date: ' . $date . ', Results: ' . count($results));
+        return $results;
     }
 
     public function findUniqueLocations(): array
     {
-        return $this->createQueryBuilder('g')
+        $locations = $this->createQueryBuilder('g')
             ->select('DISTINCT g.location')
             ->where('g.location IS NOT NULL')
             ->andWhere('g.location != :empty')
             ->setParameter('empty', '')
             ->getQuery()
             ->getScalarResult();
+
+        $this->logger->info('findUniqueLocations - Locations found: ' . count($locations));
+        return $locations;
     }
 
     public function findUniqueVisibilities(): array
     {
-        return $this->createQueryBuilder('g')
+        $visibilities = $this->createQueryBuilder('g')
             ->select('DISTINCT g.visibility')
             ->where('g.visibility IS NOT NULL')
             ->andWhere('g.visibility != :empty')
             ->setParameter('empty', '')
             ->getQuery()
             ->getScalarResult();
+
+        $this->logger->info('findUniqueVisibilities - Visibilities found: ' . count($visibilities));
+        return $visibilities;
+    }
+
+    public function findByUserParticipation(Actor $user): array
+    {
+        $results = $this->createQueryBuilder('g')
+            ->innerJoin('g.actors', 'a')
+            ->where('a.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('g.eventDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $this->logger->info('findByUserParticipation - User ID: ' . $user->getId() . ', Results: ' . count($results));
+        return $results;
     }
 }

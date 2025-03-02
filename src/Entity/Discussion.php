@@ -4,27 +4,27 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: App\Repository\DiscussionRepository::class)]
-#[ORM\Table(name: 'discussions')]
+#[ORM\Entity(repositoryClass: \App\Repository\DiscussionRepository::class)]
+#[ORM\Table(name: "discussions")]
 class Discussion
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: "text")]
     private ?string $content = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: "datetime")]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'discussions')]
-    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: "discussions")]
+    #[ORM\JoinColumn(name: "group_id", referencedColumnName: "id", nullable: false)]
     private ?Group $group = null;
 
-    #[ORM\ManyToOne(targetEntity: Actor::class, inversedBy: 'discussions')]
-    #[ORM\JoinColumn(name: 'actor_id', referencedColumnName: 'actor_id', nullable: true)]
+    #[ORM\ManyToOne(targetEntity: Actor::class, inversedBy: "discussions")]
+    #[ORM\JoinColumn(name: "actor_id", referencedColumnName: "id", nullable: true)]
     private ?Actor $author = null;
 
     public function __construct()

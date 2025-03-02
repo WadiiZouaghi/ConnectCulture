@@ -2,31 +2,29 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'posts')]
+#[ORM\Table(name: "posts")]
 class Post
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: "text")]
     private ?string $content = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: "datetime")]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'posts')]
-    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: "posts")]
+    #[ORM\JoinColumn(name: "group_id", referencedColumnName: "id", nullable: false)]
     private ?Group $group = null;
 
-    #[ORM\ManyToOne(targetEntity: Actor::class)]
-    #[ORM\JoinColumn(name: 'actor_id', referencedColumnName: 'actor_id', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Actor::class, inversedBy: "posts")]
+    #[ORM\JoinColumn(name: "actor_id", referencedColumnName: "id", nullable: false)]
     private ?Actor $actor = null;
 
     public function __construct()

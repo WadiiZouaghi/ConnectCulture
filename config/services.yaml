@@ -7,6 +7,14 @@ parameters:
     app.openweathermap_api_key: '%env(OPENWEATHERMAP_API_KEY)%'
 
 services:
+    App\Repository\GroupRepository:
+        arguments:
+            $registry: '@doctrine'
+            $logger: '@monolog.logger'
+    App\Service\AISuggestionService:
+        arguments:
+            $groupRepository: '@App\Repository\GroupRepository'
+            $entityManager: '@doctrine.orm.entity_manager'
     App\Twig\AppExtension:
         tags: ['twig.extension']
     # default configuration for services in *this* file

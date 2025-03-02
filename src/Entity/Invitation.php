@@ -4,31 +4,31 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'invitations')]
+#[ORM\Entity(repositoryClass: \App\Repository\InvitationRepository::class)]
+#[ORM\Table(name: "invitations")]
 class Invitation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer', name: 'invitation_id')]
+    #[ORM\Column(type: "integer", name: "invitation_id")]
     private ?int $invitationId = null;
 
-    #[ORM\ManyToOne(targetEntity: Group::class)]
-    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: "invitations")]
+    #[ORM\JoinColumn(name: "group_id", referencedColumnName: "id", nullable: false)]
     private ?Group $group = null;
 
-    #[ORM\ManyToOne(targetEntity: Actor::class)]
-    #[ORM\JoinColumn(name: 'inviter_id', referencedColumnName: 'actor_id', nullable: true)]
+    #[ORM\ManyToOne(targetEntity: Actor::class, inversedBy: "sentInvitations")]
+    #[ORM\JoinColumn(name: "inviter_id", referencedColumnName: "id", nullable: true)]
     private ?Actor $inviter = null;
 
-    #[ORM\ManyToOne(targetEntity: Actor::class)]
-    #[ORM\JoinColumn(name: 'invitee_id', referencedColumnName: 'actor_id', nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Actor::class, inversedBy: "receivedInvitations")]
+    #[ORM\JoinColumn(name: "invitee_id", referencedColumnName: "id", nullable: false)]
     private ?Actor $invitee = null;
 
-    #[ORM\Column(type: 'string', length: 50)]
-    private ?string $status = 'pending';
+    #[ORM\Column(type: "string", length: 50)]
+    private ?string $status = "pending";
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: "datetime")]
     private ?\DateTimeInterface $createdAt = null;
 
     public function __construct()

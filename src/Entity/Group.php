@@ -6,55 +6,63 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'user_group')]
+#[ORM\Entity(repositoryClass: \App\Repository\GroupRepository::class)]
+#[ORM\Table(name: "event_group")]
 class Group
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: "string", length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $location = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: "datetime", nullable: true)]
     private ?\DateTimeInterface $eventDate = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(type: "integer", nullable: true)]
     private ?int $maxParticipants = null;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    #[ORM\Column(type: "string", length: 50)]
     private ?string $visibility = null;
 
-    #[ORM\Column(type: 'blob', nullable: false)]
+    #[ORM\Column(type: "blob", nullable: true)]
     private $coverPicture = null;
 
-    #[ORM\Column(type: 'float', nullable: false)]
+    #[ORM\Column(type: "float", nullable: true)]
     private ?float $latitude = null;
 
-    #[ORM\Column(type: 'float', nullable: false)]
+    #[ORM\Column(type: "float", nullable: true)]
     private ?float $longitude = null;
 
-    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'group', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: "group", targetEntity: Post::class, cascade: ["persist", "remove"])]
     private Collection $posts;
 
-    #[ORM\OneToMany(targetEntity: Discussion::class, mappedBy: 'group', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: "group", targetEntity: Discussion::class, cascade: ["persist", "remove"])]
     private Collection $discussions;
 
-    #[ORM\ManyToMany(targetEntity: Actor::class, mappedBy: 'groups')]
+    #[ORM\OneToMany(mappedBy: "group", targetEntity: Invitation::class, cascade: ["persist", "remove"])]
+    private Collection $invitations;
+
+    #[ORM\ManyToMany(targetEntity: Actor::class, mappedBy: "groups")]
     private Collection $actors;
+
+    #[ORM\ManyToOne(targetEntity: GroupType::class)]
+    #[ORM\JoinColumn(name: "group_type_id", referencedColumnName: "id", nullable: true)]
+    private ?GroupType $groupType = null;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->discussions = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
         $this->actors = new ArrayCollection();
     }
 
@@ -217,6 +225,33 @@ class Group
     }
 
     /**
+     * @return Collection<int, Invitation>
+     */
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(Invitation $invitation): self
+    {
+        if (!$this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+            $invitation->setGroup($this);
+        }
+        return $this;
+    }
+
+    public function removeInvitation(Invitation $invitation): self
+    {
+        if ($this->invitations->removeElement($invitation)) {
+            if ($invitation->getGroup() === $this) {
+                $invitation->setGroup(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Actor>
      */
     public function getActors(): Collection
@@ -252,5 +287,16 @@ class Group
     public function isPublic(): bool
     {
         return $this->visibility === 'public';
+    }
+
+    public function getGroupType(): ?GroupType
+    {
+        return $this->groupType;
+    }
+
+    public function setGroupType(?GroupType $groupType): self
+    {
+        $this->groupType = $groupType;
+        return $this;
     }
 }

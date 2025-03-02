@@ -12,4 +12,9 @@ class ActorRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Actor::class);
     }
+
+    public function findByEmail(string $email): ?Actor
+    {
+        return $this->findOneBy(['email' => $email]);
+    }
 }
