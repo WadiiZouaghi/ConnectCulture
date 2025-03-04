@@ -1,24 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="keywords" content="Culture Connect, Events, Cultural Events, Event Groups" />
-    <meta name="description" content="Create cultural event groups on Culture Connect" />
-    <meta name="author" content="" />
-    <link rel="shortcut icon" href="{{ asset('images/fevicon.png') }}" type="image/png">
+{% extends 'base.html.twig' %}
 
-    <title>Culture Connect - Create Event Group</title>
+{% block title %}Culture Connect - Create Event Group{% endblock %}
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" />
-    <link href="{{ asset('css/font-awesome/css/all.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-</head>
-
-<body class="sub_page">
+{% block body %}
     <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
@@ -47,7 +31,9 @@
                             <span>Culture Connect</span>
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class=""></span>
+                            <span class="s-1"></span>
+                            <span class="s-2"></span>
+                            <span class="s-3"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav">
@@ -63,16 +49,8 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Contact Us</a>
                                 </li>
-                                {% if app.user %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="">Logout</a>
-                                    </li>
-                                {% else %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="">Login</a>
-                                    </li>
-                                {% endif %}
-                                <form class="form-inline">
+                                <form class="form-inline" method="GET" action="{{ path('group_list') }}">
+                                    <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control mr-2" placeholder="Search events">
                                     <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
@@ -123,7 +101,7 @@
                             </div>
                             <div class="form-group">
                                 {{ form_label(group_form.max_participants, 'Max Participants', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(group_form.max_participants, {'attr': {'class': 'form-control', 'placeholder': 'Max participants', 'min': 1}}) }}
+                                {{ form_widget(group_form.max_participants, {'attr': {'class': 'form-control', 'placeholder': 'Max participants', 'min': '1'}}) }}
                                 {{ form_errors(group_form.max_participants) }}
                             </div>
                             <div class="form-group">
@@ -136,7 +114,12 @@
                                 {{ form_widget(group_form.coverPicture, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(group_form.coverPicture) }}
                             </div>
-                            <div class="btn_box text-center mt-3">
+                            <div class="form-group">
+                                {{ form_label(group_form.groupType, 'Group Type', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(group_form.groupType, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(group_form.groupType) }}
+                            </div>
+                            <div class="btn_box text-center mt-3 mb-4">
                                 <button type="submit" class="btn btn-primary">Create Event</button>
                                 <a href="{{ path('group_list') }}" class="btn btn-secondary ml-2">Back to Events</a>
                             </div>
@@ -161,7 +144,7 @@
                             </a>
                             <a href="">
                                 <i class="fa fa-phone" aria-hidden="true"></i>
-                                <span>Call: +01 1234567890</span>
+                                <span>Call: +01 123455678990</span>
                             </a>
                             <a href="">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -241,5 +224,4 @@
     <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}" defer></script>
     <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}" defer></script>
     <script type="text/javascript" src="{{ asset('js/custom.js') }}" defer></script>
-</body>
-</html>
+{% endblock %}

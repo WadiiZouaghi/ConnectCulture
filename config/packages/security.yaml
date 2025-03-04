@@ -29,4 +29,4 @@ security:
 
     # Easy way to control access for large sections of your site
     access_control:
-        - { path: ^/group/(create|edit|delete), roles: ROLE_USER }
+        #- { path: ^/group/(create|edit|delete), roles: ROLE_USER }
