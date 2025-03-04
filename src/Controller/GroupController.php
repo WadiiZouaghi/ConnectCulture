@@ -193,25 +193,52 @@ class GroupController extends AbstractController
     }
 
     #[Route('/group/create', name: 'group_create', methods: ['GET', 'POST'])]
-    public function create(Request $request): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->logger->info("Creating new event group");
         $group = new Group();
         $form = $this->createForm(GroupFormType::class, $group);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $this->logger->info("Form submitted and valid for group: {$group->getName()}");
+    
+            // Fetch latitude and longitude based on location using OpenWeatherMap Geocoding API
+            if ($group->getLocation()) {
+                try {
+                    $client = HttpClient::create();
+                    $response = $client->request('GET', 'http://api.openweathermap.org/geo/1.0/direct', [
+                        'query' => [
+                            'q' => $group->getLocation(),
+                            'limit' => 1,
+                            'appid' => $this->weatherApiKey, // Using OPENWEATHERMAP_API_KEY
+                        ],
+                    ]);
+                    $geoData = $response->toArray();
+                    if (!empty($geoData)) {
+                        $group->setLatitude($geoData[0]['lat']);
+                        $group->setLongitude($geoData[0]['lon']);
+                        $this->logger->info("Fetched coordinates for group {$group->getName()}: lat={$geoData[0]['lat']}, lon={$geoData[0]['lon']}");
+                    } else {
+                        $this->logger->warning("No coordinates found for location: {$group->getLocation()}");
+                    }
+                } catch (\Exception $e) {
+                    $this->logger->error("Failed to fetch coordinates for group {$group->getName()}: " . $e->getMessage());
+                }
+            }
+    
+            // Process the cover picture
             if (!$this->processCoverPicture($group, $form->get('coverPicture')->getData(), true)) {
                 $this->logger->error("Failed to process cover picture during group creation");
                 return $this->render('carint/create_event_group.html.twig', [
                     'group_form' => $form->createView(),
                 ]);
             }
-
-            $this->entityManager->persist($group);
+    
+            // Persist the group
+            $entityManager->persist($group);
             try {
-                $this->entityManager->flush();
+                $entityManager->flush();
                 $this->logger->info("Successfully created group: {$group->getName()} (ID: {$group->getId()})");
                 $this->addFlash('success', 'Event group created successfully!');
                 return $this->redirectToRoute('group_list');
@@ -220,7 +247,7 @@ class GroupController extends AbstractController
                 $this->addFlash('error', 'Failed to create event group: ' . $e->getMessage());
             }
         }
-
+    
         return $this->render('carint/create_event_group.html.twig', [
             'group_form' => $form->createView(),
         ]);
@@ -383,43 +410,68 @@ public function list(Request $request, GroupRepository $groupRepository, EntityM
     }
 
     #[Route('/group/{id}/view', name: 'group_view', methods: ['GET'])]
-    public function view(Group $group, DiscussionRepository $discussionRepository): Response
-    {
-        $this->logger->info("Viewing group: {$group->getName()} (ID: {$group->getId()})");
+public function view(Group $group, DiscussionRepository $discussionRepository, EntityManagerInterface $entityManager): Response
+{
+    $this->logger->info("Viewing group: {$group->getName()} (ID: {$group->getId()})");
 
-        // Generate cover picture if missing
-        if (!$group->getCoverPicture()) {
-            $this->logger->info("Cover picture missing for group: {$group->getName()}. Generating...");
-            $success = $this->processCoverPicture($group, null, true); // Force regeneration
-            if ($success) {
-                try {
-                    $this->entityManager->flush();
-                    $this->logger->info("Successfully flushed cover picture for group: {$group->getName()}");
-                } catch (\Exception $e) {
-                    $this->logger->error("Failed to flush cover picture for group: {$group->getName()}: " . $e->getMessage());
-                    throw $e;
-                }
-            } else {
-                $this->logger->error("Failed to generate cover picture for group: {$group->getName()}");
+    // Generate cover picture if missing
+    if (!$group->getCoverPicture()) {
+        $this->logger->info("Cover picture missing for group: {$group->getName()}. Generating...");
+        $success = $this->processCoverPicture($group, null, true); // Force regeneration
+        if ($success) {
+            try {
+                $this->entityManager->flush();
+                $this->logger->info("Successfully flushed cover picture for group: {$group->getName()}");
+            } catch (\Exception $e) {
+                $this->logger->error("Failed to flush cover picture for group: {$group->getName()}: " . $e->getMessage());
+                throw $e;
             }
+        } else {
+            $this->logger->error("Failed to generate cover picture for group: {$group->getName()}");
         }
-
-        $base64Image = $this->getBase64Image($group->getCoverPicture());
-        $this->logger->info("Base64 image for group {$group->getName()}: " . ($base64Image ? 'Generated (length: ' . strlen($base64Image) . ')' : 'Null'));
-        $discussions = $discussionRepository->findBy(['group' => $group], ['createdAt' => 'DESC']);
-        $weatherData = $this->fetchWeatherForecast($group);
-        $relatedGroups = $this->entityManager->getRepository(Group::class)
-            ->findBy(['location' => $group->getLocation()], ['eventDate' => 'DESC'], 3);
-
-        return $this->render('carint/group_view.html.twig', [
-            'group' => $group,
-            'base64Image' => $base64Image,
-            'discussions' => $discussions,
-            'weatherData' => $weatherData,
-            'relatedGroups' => $relatedGroups,
-        ]);
     }
 
+    // Fetch coordinates if missing
+    if (!$group->getLatitude() || !$group->getLongitude()) {
+        try {
+            $client = HttpClient::create();
+            $response = $client->request('GET', 'http://api.openweathermap.org/geo/1.0/direct', [
+                'query' => [
+                    'q' => $group->getLocation(),
+                    'limit' => 1,
+                    'appid' => $this->weatherApiKey,
+                ],
+            ]);
+            $geoData = $response->toArray();
+            if (!empty($geoData)) {
+                $group->setLatitude($geoData[0]['lat']);
+                $group->setLongitude($geoData[0]['lon']);
+                $entityManager->persist($group);
+                $entityManager->flush();
+                $this->logger->info("Updated coordinates for group {$group->getId()}: lat={$geoData[0]['lat']}, lon={$geoData[0]['lon']}");
+            } else {
+                $this->logger->warning("No coordinates found for location: {$group->getLocation()}");
+            }
+        } catch (\Exception $e) {
+            $this->logger->error("Failed to fetch coordinates for group {$group->getId()}: " . $e->getMessage());
+        }
+    }
+
+    $base64Image = $this->getBase64Image($group->getCoverPicture());
+    $this->logger->info("Base64 image for group {$group->getName()}: " . ($base64Image ? 'Generated (length: ' . strlen($base64Image) . ')' : 'Null'));
+    $discussions = $discussionRepository->findBy(['group' => $group], ['createdAt' => 'DESC']);
+    $weatherData = $this->fetchWeatherForecast($group);
+    $relatedGroups = $this->entityManager->getRepository(Group::class)
+        ->findBy(['location' => $group->getLocation()], ['eventDate' => 'DESC'], 3);
+
+    return $this->render('carint/group_view.html.twig', [
+        'group' => $group,
+        'base64Image' => $base64Image,
+        'discussions' => $discussions,
+        'weatherData' => $weatherData,
+        'relatedGroups' => $relatedGroups,
+    ]);
+}
     #[Route('/group/{id}/posts', name: 'group_posts', methods: ['GET'])]
     public function posts(Group $group): Response
     {
