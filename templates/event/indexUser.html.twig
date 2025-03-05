@@ -1,0 +1,557 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events Dashboard{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+/* Variables */
+:root {
+    --primary-color: #062264;
+    --secondary-color: #4b93d1;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-bg: #f8f9fa;
+    --dark-text: #343a40;
+    --light-text: #6c757d;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* System Info Box */
+.system-info-box {
+    background: white;
+    padding: 15px 30px;
+    margin-bottom: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.system-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.system-info-item i {
+    color: #0d6efd;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.system-info-item span {
+    color: #0d6efd;
+    font-size: 0.95rem;
+}
+
+/* Events Section */
+.events-section {
+    background-color: var(--light-bg);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.events-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Navigation Container */
+.navigation-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.search-container {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    position: relative;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px 45px;
+    border: 2px solid var(--primary-color);
+    border-radius: 25px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+#search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(75, 147, 209, 0.3);
+}
+
+/* Calendar Button */
+.calendar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.calendar-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+/* Events Grid */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Event Card */
+.event-card {
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image Box */
+.img-box {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.img-box:hover img {
+    transform: scale(1.05);
+}
+
+.no-image {
+    height: 100%;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+}
+
+.no-image i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Event Card Badges */
+.card-badges {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event-type-badge {
+    background: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Event Content */
+.event-content {
+    padding: 1.5rem;
+}
+
+.event-info {
+    display: grid;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.info-item:hover {
+    background: var(--light-bg);
+}
+
+.info-item i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    min-width: 24px;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content label {
+    color: var(--light-text);
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+    display: block;
+}
+
+.info-content p {
+    margin: 0;
+    color: var(--dark-text);
+    font-size: 0.95rem;
+}
+
+/* Event Actions */
+.event-actions {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px 20px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.action-btn:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+/* No Events State */
+.no-events {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.no-events i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.no-events h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .events-section {
+        padding: 1rem;
+    }
+
+    .navigation-container {
+        flex-direction: column;
+    }
+
+    .search-container {
+        width: 100%;
+        max-width: none;
+    }
+
+    .calendar-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .system-info-box {
+        padding: 15px;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-item {
+        padding: 0.25rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="events-section">
+    <div class="events-container">
+        <!-- System Info Box -->
+        <div class="system-info-box">
+            <div class="system-info-item">
+                <i class="fas fa-clock"></i>
+                <span id="current-datetime">Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): </span>
+            </div>
+            <div class="system-info-item">
+                <i class="fas fa-user"></i>
+                <span>Current User's Login: {{ app.user.userIdentifier }}</span>
+            </div>
+        </div>
+
+        <!-- Navigation Container -->
+        <div class="navigation-container">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Search events...">
+                </div>
+            </div>
+
+            <a href="{{ path('app_calendar') }}" class="calendar-btn">
+                <i class="fas fa-calendar"></i>
+                <span>View Calendar</span>
+            </a>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="events-grid" id="events-grid">
+            {% if events is empty %}
+                <div class="no-events">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>No Events Available</h3>
+                    <p>Check back later for exciting events!</p>
+                </div>
+            {% else %}
+                {% for event in events %}
+                    <div class="event-card">
+                        <div class="img-box">
+                            {% if event.image %}
+                                <img src="{{ asset('uploads/images/' ~ event.image) }}" alt="{{ event.name }}">
+                            {% else %}
+                                <div class="no-image">
+                                    <i class="fas fa-image"></i>
+                                    <span>No image available</span>
+                                </div>
+                            {% endif %}
+                            <div class="card-badges">
+                                <div class="event-type-badge">
+                                    <i class="fas fa-tag"></i>
+                                    {{ event.eventtype }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="event-content">
+                            <div class="event-info">
+                                <div class="info-item">
+                                    <i class="fas fa-heading"></i>
+                                    <div class="info-content">
+                                        <label>Event Name</label>
+                                        <p>{{ event.name }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <div class="info-content">
+                                        <label>Location</label>
+                                        <p>{{ event.destination }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <div class="info-content">
+                                        <label>Date & Time</label>
+                                        <p>{{ event.date ? event.date|date('Y-m-d H:i:s') : 'TBD' }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <i class="fas fa-users"></i>
+                                    <div class="info-content">
+                                        <label>Available Places</label>
+                                        <p>{{ event.nbplaces }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <i class="fas fa-align-left"></i>
+                                    <div class="info-content">
+                                        <label>Description</label>
+                                        <p>{{ event.Description }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <i class="fas fa-tools"></i>
+                                    <div class="info-content">
+                                        <label>Required Equipment</label>
+                                        <p>{{ event.equipment ?: 'None required' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-actions">
+                                <a href="{{ path('app_event_show_User', {'id': event.id}) }}" class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                    <span>View Details</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Update datetime in exact specified format
+    function updateDateTime() {
+        const now = new Date();
+        const formatted = now.getUTCFullYear() + '-' + 
+                         String(now.getUTCMonth() + 1).padStart(2, '0') + '-' + 
+                         String(now.getUTCDate()).padStart(2, '0') + ' ' + 
+                         String(now.getUTCHours()).padStart(2, '0') + ':' + 
+                         String(now.getUTCMinutes()).padStart(2, '0') + ':' + 
+                         String(now.getUTCSeconds()).padStart(2, '0');
+        document.getElementById('current-datetime').textContent = 
+            'Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ' + formatted;
+    }
+
+    // Initial datetime update
+    updateDateTime();
+    // Update every second
+    setInterval(updateDateTime, 1000);
+
+    // Enhanced search functionality
+    const searchInput = document.getElementById('search-input');
+    const eventsGrid = document.getElementById('events-grid');
+    let searchTimeout = null;
+
+    searchInput.addEventListener('input', function() {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        searchTimeout = setTimeout(function() {
+            const query = searchInput.value.trim().toLowerCase();
+            const eventCards = document.querySelectorAll('.event-card');
+
+            let hasResults = false;
+
+            if (query === '') {
+                eventCards.forEach(card => {
+                    card.style.display = '';
+                });
+                const existingNoResults = document.querySelector('.no-results');
+                if (existingNoResults) {
+                    existingNoResults.remove();
+                }
+                return;
+            }
+
+            eventCards.forEach(card => {
+                const eventName = card.querySelector('.info-content p').textContent.toLowerCase();
+                const eventDesc = card.querySelector('.info-content p:nth-child(2)')?.textContent.toLowerCase() || '';
+                const eventLocation = card.querySelector('.info-content p:nth-child(3)')?.textContent.toLowerCase() || '';
+                
+                if (eventName.includes(query) || 
+                    eventDesc.includes(query) || 
+                    eventLocation.includes(query)) {
+                    card.style.display = '';
+                    hasResults = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Handle no results state
+            const existingNoResults = document.querySelector('.no-results');
+            if (existingNoResults) {
+                existingNoResults.remove();
+            }
+
+            if (!hasResults) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-events no-results';
+                noResults.innerHTML = `
+                    <i class="fas fa-search"></i>
+                    <h3>No Results Found</h3>
+                    <p>No events match your search for "${query}"</p>
+                `;
+                eventsGrid.appendChild(noResults);
+            }
+        }, 300); // Debounce delay
+    });
+
+    // Optional: Add keyboard shortcut for search focus
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            searchInput.focus();
+        }
+    });
+
+    // Optional: Clear search on escape key
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            this.value = '';
+            this.dispatchEvent(new Event('input'));
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,300 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Events Management{% endblock %}
+
+{% block content %}
+<section class="events-section">
+    <!-- System Info Bar -->
+    <div class="system-info-bar">
+        <div class="system-info-item">
+            Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): {{ "now"|date("Y-m-d H:i:s") }}
+        </div>
+        <div class="system-info-item">
+            Current User's Login: {{ current_username }}
+        </div>
+    </div>
+
+    <div class="events-container">
+        <!-- Events Header -->
+        <div class="events-header">
+            <div class="heading_container">
+                <h2>Event <span>List</span></h2>
+            </div>
+            <a href="{{ path('app_event_new') }}" class="btn btn-primary">
+                <i class="mdi mdi-plus"></i>
+                Create New Event
+            </a>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="events-grid">
+            {% if events is empty %}
+                <div class="no-events">
+                    <i class="mdi mdi-calendar-blank"></i>
+                    <h3>No Events Found</h3>
+                    <p>Start by creating your first event</p>
+                    <a href="{{ path('app_event_new') }}" class="btn btn-primary">
+                        <i class="mdi mdi-plus"></i>
+                        Create New Event
+                    </a>
+                </div>
+            {% endif %}
+
+            {% for event in events %}
+                <div class="event-card">
+                    <div class="img-box">
+                        {% if event.image %}
+                            <img src="{{ asset('uploads/images/' ~ event.image) }}" alt="{{ event.name }}">
+                            <div class="img-overlay">
+                                <i class="mdi mdi-magnify-plus"></i>
+                            </div>
+                        {% else %}
+                            <div class="no-image">
+                                <i class="mdi mdi-image-off"></i>
+                                <span>No image available</span>
+                            </div>
+                        {% endif %}
+                        <div class="event-type-badge">{{ event.eventtype }}</div>
+                    </div>
+
+                    <div class="event-content">
+                        <div class="event-info">
+                            <div class="info-item">
+                                <i class="mdi mdi-format-title"></i>
+                                <div class="info-content">
+                                    <label>Event Name</label>
+                                    <p>{{ event.name }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <i class="mdi mdi-map-marker"></i>
+                                <div class="info-content">
+                                    <label>Destination</label>
+                                    <p>{{ event.destination }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <i class="mdi mdi-text"></i>
+                                <div class="info-content">
+                                    <label>Description</label>
+                                    <p class="description">{{ event.Description }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <i class="mdi mdi-format-list-bulleted"></i>
+                                <div class="info-content">
+                                    <label>Required Equipment</label>
+                                    <p>{{ event.equipment }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="event-actions">
+                            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-info me-2">
+                                <i class="mdi mdi-eye"></i>
+                                View
+                            </a>
+                            <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-primary me-2">
+                                <i class="mdi mdi-pencil"></i>
+                                Edit
+                            </a>
+                            <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" 
+                                  style="display: inline-block"
+                                  onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                <button class="btn btn-danger">
+                                    <i class="mdi mdi-delete"></i>
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+.events-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.system-info-bar {
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.system-info-item {
+    color: #062264;
+    font-family: monospace;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.events-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.heading_container h2 {
+    color: #062264;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.heading_container span {
+    color: #4b93d1;
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.event-card {
+    background: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+.img-box {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image {
+    height: 100%;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #062264;
+}
+
+.no-image i {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.event-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #4b93d1;
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.event-content {
+    padding: 20px;
+}
+
+.event-info {
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: start;
+    margin-bottom: 15px;
+    padding: 10px;
+    transition: transform 0.3s;
+}
+
+.info-item i {
+    margin-right: 10px;
+    color: #4b93d1;
+}
+
+.info-content label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #062264;
+}
+
+.info-content p {
+    margin: 0;
+    color: #666;
+}
+
+.description {
+    max-height: 60px;
+    overflow: hidden;
+}
+
+.event-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.no-events {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.no-events i {
+    font-size: 48px;
+    color: #062264;
+    margin-bottom: 15px;
+}
+
+.no-events h3 {
+    color: #062264;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .events-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .event-actions {
+        flex-direction: column;
+    }
+
+    .system-info-bar {
+        padding: 10px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,7 @@
+framework:
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: 'zoghlamirim116@gmail.com'
+        headers:
+            From: 'Culture Connect <zoghlamirim116@gmail.com>'

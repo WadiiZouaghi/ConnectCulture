@@ -1,0 +1,208 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <!-- System Info -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="system-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">System Information</h4>
+                        </div>
+                        <div class="system-info-text">
+                            <div>Current Date and Time (UTC): {{ "now"|date("Y-m-d H:i:s") }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h3 class="text-primary">Edit Profile</h3>
+                    <p class="text-muted">Update your personal information</p>
+                </div>
+
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+
+                {{ form_start(form, {'attr': {'class': 'edit-profile-form', 'novalidate': 'novalidate'}}) }}
+                    
+                    <!-- Full Name -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="mdi mdi-account me-2"></i>
+                            {{ form_label(form.fullName) }}
+                        </label>
+                        {{ form_widget(form.fullName, {
+                            'attr': {
+                                'class': 'form-control' ~ (form.fullName.vars.errors|length > 0 ? ' is-invalid' : ''),
+                                'placeholder': 'Enter your full name'
+                            }
+                        }) }}
+                        {% if form.fullName.vars.errors|length > 0 %}
+                            <div class="invalid-feedback">
+                                {% for error in form.fullName.vars.errors %}
+                                    {{ error.message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="mdi mdi-email me-2"></i>
+                            {{ form_label(form.email) }}
+                        </label>
+                        {{ form_widget(form.email, {
+                            'attr': {
+                                'class': 'form-control' ~ (form.email.vars.errors|length > 0 ? ' is-invalid' : ''),
+                                'placeholder': 'Enter your email address'
+                            }
+                        }) }}
+                        {% if form.email.vars.errors|length > 0 %}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.vars.errors %}
+                                    {{ error.message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="mdi mdi-phone me-2"></i>
+                            {{ form_label(form.phone) }}
+                        </label>
+                        {{ form_widget(form.phone, {
+                            'attr': {
+                                'class': 'form-control' ~ (form.phone.vars.errors|length > 0 ? ' is-invalid' : ''),
+                                'placeholder': 'Enter your phone number'
+                            }
+                        }) }}
+                        {% if form.phone.vars.errors|length > 0 %}
+                            <div class="invalid-feedback">
+                                {% for error in form.phone.vars.errors %}
+                                    {{ error.message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="mdi mdi-content-save me-1"></i>
+                            Save Changes
+                        </button>
+                        <a href="{{ path('app_profile') }}" class="btn btn-secondary">
+                            <i class="mdi mdi-keyboard-return me-1"></i>
+                            Back
+                        </a>
+                    </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.system-info {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.system-info-text {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #062264;
+}
+
+.form-label {
+    color: #062264;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.form-label i {
+    color: #4b93d1;
+}
+
+.form-control {
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e9ecef;
+    font-size: 0.875rem;
+}
+
+.form-control:focus {
+    border-color: #4b93d1;
+    box-shadow: 0 0 0 0.2rem rgba(75, 147, 209, 0.25);
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 0.875rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
+
+.alert {
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .col-md-6.offset-md-3 {
+        padding: 0 15px;
+    }
+
+    .d-flex.gap-2 {
+        flex-direction: column;
+    }
+    
+    .d-flex.gap-2 .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function updateDateTime() {
+    const now = new Date();
+    const timeString = now.getUTCFullYear() + '-' + 
+                      String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                      String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                      String(now.getUTCHours()).padStart(2, '0') + ':' +
+                      String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                      String(now.getUTCSeconds()).padStart(2, '0');
+    document.querySelector('.system-info-text').firstElementChild.textContent = 
+        'Current Date and Time (UTC): ' + timeString;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+</script>
+{% endblock %}
+{% endblock %}
