@@ -1,0 +1,189 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- System Info -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="system-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">System Information</h4>
+                        </div>
+                        <div class="system-info-text">
+                            <div>Current Date and Time (UTC): {{ "now"|date("Y-m-d H:i:s") }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="card">
+            <div class="card-body">
+                {% if app.user %}
+                    <!-- Profile Header -->
+                    <div class="profile-header text-center mb-4">
+                        <div class="profile-avatar mx-auto mb-3">
+                            <i class="mdi mdi-account-circle text-primary"></i>
+                        </div>
+                        <h2 class="text-primary mb-2">{{ app.user.fullName }}</h2>
+                        <span class="badge bg-success">Active Member</span>
+                    </div>
+
+                    <!-- Profile Information -->
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <!-- Email -->
+                            <div class="profile-info-item mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-email text-primary me-3" style="font-size: 24px;"></i>
+                                            <div>
+                                                <div class="text-muted small">Email</div>
+                                                <div class="fw-medium">{{ app.user.email }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="profile-info-item mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-phone text-primary me-3" style="font-size: 24px;"></i>
+                                            <div>
+                                                <div class="text-muted small">Phone</div>
+                                                <div class="fw-medium">{{ app.user.phone }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Member Since -->
+                            <div class="profile-info-item mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-calendar text-primary me-3" style="font-size: 24px;"></i>
+                                            <div>
+                                                <div class="text-muted small">Member Since</div>
+                                                <div class="fw-medium">{{ app.user.createdAt|date('F d, Y') }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex gap-3 justify-content-center mt-4 pt-4 border-top">
+                                <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">
+                                    <i class="mdi mdi-account-edit me-2"></i>
+                                    Edit Profile
+                                </a>
+                                <a href="{{ path('app_logout') }}" class="btn btn-danger">
+                                    <i class="mdi mdi-logout me-2"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Not Logged In State -->
+                    <div class="text-center py-5">
+                        <div class="profile-avatar mx-auto mb-3">
+                            <i class="mdi mdi-account-off text-danger" style="font-size: 48px;"></i>
+                        </div>
+                        <h2 class="text-danger mb-2">Not Logged In</h2>
+                        <p class="text-muted mb-4">Access Denied</p>
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">
+                            <i class="mdi mdi-login me-2"></i>
+                            Login to View Profile
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.system-info {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.system-info-text {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #062264;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.profile-avatar i {
+    font-size: 48px;
+}
+
+.profile-info-item .card {
+    transition: transform 0.3s ease;
+}
+
+.profile-info-item .card:hover {
+    transform: translateY(-3px);
+}
+
+.badge {
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 1rem !important;
+    }
+    
+    .d-flex.gap-3 .btn {
+        width: 100%;
+    }
+}
+</style>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function updateDateTime() {
+    const now = new Date();
+    const timeString = now.getUTCFullYear() + '-' + 
+                      String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                      String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                      String(now.getUTCHours()).padStart(2, '0') + ':' +
+                      String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                      String(now.getUTCSeconds()).padStart(2, '0');
+    document.querySelector('.system-info-text').firstElementChild.textContent = 
+        'Current Date and Time (UTC): ' + timeString;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+</script>
+{% endblock %}
+{% endblock %}

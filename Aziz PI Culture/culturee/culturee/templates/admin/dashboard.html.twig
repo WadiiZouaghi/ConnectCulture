@@ -1,0 +1,408 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- System Info Card -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="system-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">System Information</h4>
+                        </div>
+                        <div class="system-info-text">
+                            <div>Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): {{ "now"|date("Y-m-d H:i:s") }}</div>
+                            <div>Current User's Login: {{ current_username }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="card-title mb-2">Total Users</h4>
+                        <h2 class="fs-2 mb-0">{{ stats.total_users }}</h2>
+                        <p class="text-muted mb-0">Active Accounts</p>
+                    </div>
+                    <div class="icon-box bg-light rounded-circle">
+                        <i class="mdi mdi-account-multiple text-primary icon-item"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="card-title mb-2">Organizers</h4>
+                        <h2 class="fs-2 mb-0">{{ stats.total_organizers }}</h2>
+                        <p class="text-muted mb-0">Event Creators</p>
+                    </div>
+                    <div class="icon-box bg-light rounded-circle">
+                        <i class="mdi mdi-crown text-warning icon-item"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="card-title mb-2">Total Events</h4>
+                        <h2 class="fs-2 mb-0">{{ stats.total_events }}</h2>
+                        <p class="text-muted mb-0">Created Events</p>
+                    </div>
+                    <div class="icon-box bg-light rounded-circle">
+                        <i class="mdi mdi-calendar-multiple text-success icon-item"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="card-title mb-2">Banned Users</h4>
+                        <h2 class="fs-2 mb-0">{{ stats.banned_users }}</h2>
+                        <p class="text-muted mb-0">Restricted Accounts</p>
+                    </div>
+                    <div class="icon-box bg-light rounded-circle">
+                        <i class="mdi mdi-block-helper text-danger icon-item"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <!-- Monthly Registrations Chart -->
+    <div class="col-lg-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Monthly User Registrations</h4>
+                <p class="card-description">New user registration trends over time</p>
+                <div class="chart-container" style="position: relative; height:300px;">
+                    <canvas id="monthlyRegistrations"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Roles Distribution Chart -->
+    <div class="col-lg-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">User Roles Distribution</h4>
+                <p class="card-description">Breakdown of user types</p>
+                <div class="chart-container" style="position: relative; height:300px;">
+                    <canvas id="userRolesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <!-- Latest Users -->
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Latest Users</h4>
+                <p class="card-description">Most recent registrations</p>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in latest_users|slice(0, 5) %}
+                            <tr>
+                                <td>{{ user.fullName }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% if 'ROLE_ADMIN' in user.roles %}
+                                        <span class="badge bg-danger">Admin</span>
+                                    {% elseif 'ROLE_ORGANIZER' in user.roles %}
+                                        <span class="badge bg-primary">Organizer</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">User</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.banned %}
+                                        <span class="badge bg-danger">Banned</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recently Banned Users -->
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Recently Banned Users</h4>
+                <p class="card-description">Users who have been restricted</p>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Banned Date</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in banned_users|slice(0, 5) %}
+                            <tr>
+                                <td>{{ user.fullName }}</td>
+                                <td>{{ user.bannedAt|date('Y-m-d') }}</td>
+                                <td>
+                                    <span class="text-danger">{{ user.banReason|default('No reason provided') }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .system-info {
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        padding: 15px;
+    }
+
+    .system-info-text {
+        font-family: monospace;
+        font-size: 0.9rem;
+        color: #062264;
+    }
+
+    .icon-box {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon-item {
+        font-size: 24px;
+    }
+
+    .chart-container {
+        margin-top: 20px;
+    }
+
+    .card {
+        transition: transform 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .statistics-card {
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .badge {
+        padding: 0.5em 0.8em;
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Update time function
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.getUTCFullYear() + '-' + 
+                        String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                        String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                        String(now.getUTCHours()).padStart(2, '0') + ':' +
+                        String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                        String(now.getUTCSeconds()).padStart(2, '0');
+        document.querySelector('.system-info-text').firstElementChild.textContent = 
+            'Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ' + timeString;
+    }
+    
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // User Roles Distribution Chart
+    const rolesCtx = document.getElementById('userRolesChart').getContext('2d');
+    new Chart(rolesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Users', 'Organizers', 'Admins'],
+            datasets: [{
+                data: [
+                    {{ role_stats.users }},
+                    {{ role_stats.organizers }},
+                    {{ role_stats.admins }}
+                ],
+                backgroundColor: [
+                    '#4B49AC',
+                    '#FFC100',
+                    '#FF4747'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'User Distribution by Role',
+                    font: {
+                        size: 16
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                }
+            },
+            cutout: '70%',
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
+
+    // Events Statistics Chart (replacing Monthly Registrations)
+    const eventsCtx = document.getElementById('monthlyRegistrations').getContext('2d');
+    new Chart(eventsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Users', 'Active Users', 'Organizers', 'Events', 'Banned Users'],
+            datasets: [{
+                label: 'Platform Statistics',
+                data: [
+                    {{ stats.total_users }},
+                    {{ stats.total_users - stats.banned_users }},
+                    {{ stats.total_organizers }},
+                    {{ stats.total_events }},
+                    {{ stats.banned_users }}
+                ],
+                backgroundColor: [
+                    '#4B49AC',  // Total Users
+                    '#57B657',  // Active Users
+                    '#FFC100',  // Organizers
+                    '#248AFD',  // Events
+                    '#FF4747'   // Banned Users
+                ],
+                borderColor: [
+                    '#4B49AC',
+                    '#57B657',
+                    '#FFC100',
+                    '#248AFD',
+                    '#FF4747'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Platform Overview Statistics',
+                    font: {
+                        size: 16
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        drawBorder: false
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart'
+            },
+            barThickness: 40
+        }
+    });
+});
+</script>
+{% endblock %}

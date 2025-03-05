@@ -1,0 +1,100 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+
+app_home:
+    path: /
+    controller: App\Controller\HomeController::index
+    methods: ['GET']
+
+app_quote:
+    path: /quote
+    controller: App\Controller\QuoteController::index
+
+# Admin Event Routes
+app_event_index:
+    path: /event/
+    controller: App\Controller\EventController::index
+    methods: ['GET']
+
+app_event_new:
+    path: /event/new
+    controller: App\Controller\EventController::new
+    methods: ['GET', 'POST']
+
+app_event_show:
+    path: /event/{id}
+    controller: App\Controller\EventController::show
+    methods: ['GET']
+    requirements:
+        id: '\d+'
+
+app_event_edit:
+    path: /event/{id}/edit
+    controller: App\Controller\EventController::edit
+    methods: ['GET', 'POST']
+    requirements:
+        id: '\d+'
+
+app_event_delete:
+    path: /event/{id}
+    controller: App\Controller\EventController::delete
+    methods: ['POST']
+    requirements:
+        id: '\d+'
+
+# User Event Routes
+app_event_index_user:
+    path: /event/user
+    controller: App\Controller\EventController::indexUser
+    methods: ['GET']
+
+app_event_show_user:
+    path: /event/user/{id}
+    controller: App\Controller\EventController::showUser
+    methods: ['GET']
+    requirements:
+        id: '\d+'
+
+# Organizer Event Routes
+app_event_index_organizer:
+    path: /event/organizer
+    controller: App\Controller\EventController::indexOrganizer
+    methods: ['GET']
+
+app_event_show_organizer:
+    path: /event/organizer/{id}
+    controller: App\Controller\EventController::showOrganizer
+    methods: ['GET']
+    requirements:
+        id: '\d+'
+
+app_event_new_organizer:
+    path: /event/organizer/new
+    controller: App\Controller\EventController::newOrganizer
+    methods: ['GET', 'POST']
+
+app_event_edit_organizer:
+    path: /event/organizer/{id}/edit
+    controller: App\Controller\EventController::editOrganizer
+    methods: ['GET', 'POST']
+    requirements:
+        id: '\d+'
+
+app_event_delete_organizer:
+    path: /event/organizer/{id}
+    controller: App\Controller\EventController::deleteOrganizer
+    methods: ['POST']
+    requirements:
+        id: '\d+'
+
+app_organizer:
+    path: /organizer
+    controller: App\Controller\OrganizerController::index
+app_search:
+    path: /search
+    controller: App\Controller\SearchController::search
+    methods: [GET]
+app_calendar:
+    path: /calendar
+    controller: App\Controller\CalendarController::index

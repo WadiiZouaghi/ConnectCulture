@@ -1,0 +1,655 @@
+{% extends 'baseO.html.twig' %}
+
+{% block title %}Events{% endblock %}
+
+{% block body %}
+<section class="events-section">
+    <!-- System Info Box -->
+    <div class="system-info-box">
+        <div class="system-info-item">
+            <i class="fa fa-clock-o"></i>
+            <span>Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): </span>
+            <span id="current-datetime"></span>
+        </div>
+        <div class="system-info-item">
+            <i class="fa fa-user"></i>
+            <span>Current User's Login: {{ app.user.email }}</span>
+        </div>
+    </div>
+
+    <div class="events-container">
+        <!-- Events Header -->
+        <div class="events-header">
+            <div class="heading_container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active">Events</li>
+                    </ol>
+                </nav>
+                <h2>Event <span>List</span></h2>
+            </div>
+            
+            <!-- Search and Actions -->
+            <div class="header-controls">
+                <div class="search-box">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search events...">
+                </div>
+                
+                <div class="event-actions">
+                    <a href="{{ path('app_event_historique_organizer') }}" class="action-btn history-btn">
+                        <i class="fa fa-history"></i>
+                        History
+                    </a>
+                    <a href="{{ path('app_event_new_organizer') }}" class="action-btn create-btn">
+                        <i class="fa fa-plus"></i>
+                        Create Event
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="events-grid" id="events-grid">
+            {% if events is empty %}
+                <div class="no-events">
+                    <i class="fa fa-calendar-times-o"></i>
+                    <h3>No Events Found</h3>
+                    <p>Start by creating your first event</p>
+                    <a href="{{ path('app_event_new_organizer') }}" class="action-btn create-btn">
+                        <i class="fa fa-plus"></i>
+                        Create New Event
+                    </a>
+                </div>
+            {% else %}
+                {% for event in events %}
+                    <div class="event-card">
+                        <div class="img-box">
+                            {% if event.image %}
+                                <img src="{{ asset('uploads/images/' ~ event.image) }}" 
+                                     alt="{{ event.name }}"
+                                     class="event-image"
+                                     data-action="zoom">
+                                <div class="img-overlay">
+                                    <i class="fa fa-search-plus"></i>
+                                    <span>Click to zoom</span>
+                                </div>
+                            {% else %}
+                                <div class="no-image">
+                                    <i class="fa fa-picture-o"></i>
+                                    <span>No image available</span>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card-badges">
+                                <div class="event-type-badge">
+                                    <i class="fa fa-tag"></i>
+                                    {{ event.eventtype }}
+                                </div>
+                                <div class="event-status">
+                                    {% if event.nbplaces > 0 %}
+                                        <span class="status-badge available">
+                                            <i class="fa fa-check-circle"></i> Available
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge full">
+                                            <i class="fa fa-times-circle"></i> Full
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="event-content">
+                            <!-- Quick Stats -->
+                            <div class="quick-stats">
+                                <div class="stat-item">
+                                    <i class="fa fa-users"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value">{{ event.nbplaces }}</span>
+                                        <span class="stat-label">Places</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fa fa-calendar"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value">{{ event.date ? event.date|date('M d') : 'TBD' }}</span>
+                                        <span class="stat-label">Date</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fa fa-clock-o"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value">{{ event.date ? event.date|date('H:i') : 'TBD' }}</span>
+                                        <span class="stat-label">Time</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Event Info -->
+                            <div class="event-info">
+                                <div class="info-item">
+                                    <i class="fa fa-font"></i>
+                                    <div class="info-content">
+                                        <label>Event Name</label>
+                                        <p>{{ event.name }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="fa fa-map-marker"></i>
+                                    <div class="info-content">
+                                        <label>Destination</label>
+                                        <p>{{ event.destination }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <i class="fa fa-align-left"></i>
+                                    <div class="info-content">
+                                        <label>Description</label>
+                                        <p class="description">{{ event.Description }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="fa fa-list"></i>
+                                    <div class="info-content">
+                                        <label>Required Equipment</label>
+                                        <p>{{ event.equipment }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-actions">
+                                <a href="{{ path('app_event_show_organizer', {'id': event.id}) }}" class="action-btn view-btn">
+                                    <i class="fa fa-eye"></i>
+                                    View
+                                </a>
+                                <a href="{{ path('app_event_edit_organizer', {'id': event.id}) }}" class="action-btn edit-btn">
+                                    <i class="fa fa-pencil"></i>
+                                    Edit
+                                </a>
+                                <button onclick="confirmDelete({{ event.id }})" class="action-btn delete-btn">
+                                    <i class="fa fa-trash"></i>
+                                    Delete
+                                </button>
+                                <form id="delete-form-{{ event.id }}" method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display: none;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Variables */
+:root {
+    --primary-color: #062264;
+    --secondary-color: #4b93d1;
+    --success-color: #4b93d1;
+    --warning-color: #4b93d1;
+    --danger-color: #4b93d1;
+    --light-bg: #f8f9fa;
+    --dark-text: #343a40;
+    --light-text: #6c757d;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* System Info Box */
+.system-info-box {
+    background: white;
+    padding: 15px 30px;
+    margin-bottom: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.system-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.system-info-item i {
+    color: #0d6efd;
+    font-size: 1.1rem;
+}
+
+.system-info-item span {
+    color: #0d6efd;
+    font-size: 0.95rem;
+}
+.info-content {
+    color: #062264;
+    font-size: 0.95rem;
+}
+
+/* Events Section */
+.events-section {
+    background: var(--light-bg);
+    min-height: 100vh;
+    padding: 30px;
+}
+
+.events-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--light-text);
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
+    font-size: 0.95rem;
+}
+
+/* Events Grid */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* Event Card */
+.event-card {
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image Box */
+.img-box {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.event-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.img-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+    color: white;
+}
+
+.img-box:hover .img-overlay {
+    opacity: 1;
+}
+
+.card-badges {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Quick Stats */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 15px;
+    background: var(--light-bg);
+    margin: -20px 15px 15px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--light-text);
+}
+
+/* Event Content */
+.event-content {
+    padding: 20px;
+}
+
+.event-info {
+    margin-top: 20px;
+}
+
+/* Action Buttons */
+.event-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+.event-type-badge {
+    background: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.event-status {
+    background: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.action-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: var(--border-radius);
+    color: white;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.view-btn { background: var(--secondary-color); }
+.edit-btn { background: var(--warning-color); }
+.delete-btn { background: var(--danger-color); }
+.create-btn { background: var(--success-color); }
+.history-btn { background: var(--primary-color); }
+
+.action-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .events-section {
+        padding: 15px;
+    }
+
+    .system-info-box {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .system-info-item {
+        justify-content: center;
+    }
+
+    .header-controls {
+        flex-direction: column;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-stats {
+        grid-template-columns: 1fr;
+        margin: 0 0 15px 0;
+    }
+
+    .event-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+function updateDateTime() {
+    const now = new Date();
+    const formatted = now.getUTCFullYear() + '-' + 
+                     String(now.getUTCMonth() + 1).padStart(2, '0') + '-' + 
+                     String(now.getUTCDate()).padStart(2, '0') + ' ' + 
+                     String(now.getUTCHours()).padStart(2, '0') + ':' + 
+                     String(now.getUTCMinutes()).padStart(2, '0') + ':' + 
+                     String(now.getUTCSeconds()).padStart(2, '0');
+    document.getElementById('current-datetime').textContent = formatted;
+}
+
+function confirmDelete(eventId) {
+    if (confirm('Are you sure you want to delete this event?')) {
+        document.getElementById(`delete-form-${eventId}`).submit();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const eventsGrid = document.getElementById('events-grid');
+    let searchTimeout = null;
+
+    // Initial datetime update
+    updateDateTime();
+    // Update every second
+    setInterval(updateDateTime, 1000);
+
+    function createEventCard(event) {
+        return `
+            <div class="event-card">
+                <div class="img-box">
+                    ${event.image 
+                        ? `<img src="/uploads/images/${event.image}" alt="${event.name}" class="event-image">
+                           <div class="img-overlay">
+                               <i class="fa fa-search-plus"></i>
+                               <span>Click to zoom</span>
+                           </div>` 
+                        : `<div class="no-image">
+                               <i class="fa fa-picture-o"></i>
+                               <span>No image available</span>
+                           </div>`
+                    }
+                    <div class="card-badges">
+                        <div class="event-type-badge">
+                            <i class="fa fa-tag"></i>
+                            ${event.eventtype || 'N/A'}
+                        </div>
+                        <div class="event-status">
+                            ${event.nbplaces > 0 
+                                ? `<span class="status-badge available">
+                                       <i class="fa fa-check-circle"></i> Available
+                                   </span>`
+                                : `<span class="status-badge full">
+                                       <i class="fa fa-times-circle"></i> Full
+                                   </span>`
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <i class="fa fa-users"></i>
+                            <div class="stat-info">
+                                <span class="stat-value">${event.nbplaces}</span>
+                                <span class="stat-label">Places</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fa fa-calendar"></i>
+                            <div class="stat-info">
+                                <span class="stat-value">${event.date ? new Date(event.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) : 'TBD'}</span>
+                                <span class="stat-label">Date</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fa fa-clock-o"></i>
+                            <div class="stat-info">
+                                <span class="stat-value">${event.date ? new Date(event.date).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false}) : 'TBD'}</span>
+                                <span class="stat-label">Time</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-info">
+                        <div class="info-item">
+                            <i class="fa fa-font"></i>
+                            <div class="info-content">
+                                <label>Event Name</label>
+                                <p>${event.name}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa fa-map-marker"></i>
+                            <div class="info-content">
+                                <label>Destination</label>
+                                <p>${event.destination || 'Not specified'}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa fa-align-left"></i>
+                            <div class="info-content">
+                                <label>Description</label>
+                                <p class="description">${event.Description || 'No description available'}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa fa-list"></i>
+                            <div class="info-content">
+                                <label>Required Equipment</label>
+                                <p>${event.equipment || 'None required'}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <a href="/event/${event.id}/show" class="action-btn view-btn">
+                            <i class="fa fa-eye"></i> View
+                        </a>
+                        <a href="/event/${event.id}/edit" class="action-btn edit-btn">
+                            <i class="fa fa-pencil"></i> Edit
+                        </a>
+                        <button onclick="confirmDelete(${event.id})" class="action-btn delete-btn">
+                            <i class="fa fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    searchInput.addEventListener('input', function() {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        searchTimeout = setTimeout(function() {
+            const query = searchInput.value.trim();
+
+            if (query.length === 0) {
+                window.location.reload();
+                return;
+            }
+
+            eventsGrid.innerHTML = '<div class="no-events"><i class="fa fa-spinner fa-spin"></i><h3>Searching...</h3></div>';
+
+            fetch(`/search?query=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.data.length > 0) {
+                        eventsGrid.innerHTML = data.data.map(event => createEventCard(event)).join('');
+                    } else {
+                        eventsGrid.innerHTML = `
+                            <div class="no-events">
+                                <i class="fa fa-search"></i>
+                                <h3>No Events Found</h3>
+                                <p>No events match your search: "${query}"</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    eventsGrid.innerHTML = `
+                        <div class="no-events">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <h3>Error</h3>
+                            <p>Search failed. Please try again.</p>
+                        </div>
+                    `;
+                });
+        }, 300);
+    });
+});
+</script>
+{% endblock %}

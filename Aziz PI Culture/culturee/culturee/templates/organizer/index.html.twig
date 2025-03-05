@@ -1,0 +1,273 @@
+{% extends 'baseO.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block hero_content %}
+<section class="slider_section">    
+    <div class="slider_bg_box">
+        <img src="{{ asset('/uploads/images/21.jpeg') }}" alt="slider background">
+    </div>
+    <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="detail-box">
+                                <h1>
+                                   Culture is the widening of <br>
+                                   the mind and of the spirit.                                
+                                    </h1>
+                                <p>
+                                   Welcome to Culture Connect! Our platform is dedicated to bringing people closer through the celebration of diverse cultures. Discover unique traditions, customs, languages, and values from around the world. Embrace the beauty of diversity and connect with others through shared experiences, stories, and learning. Explore, share, and grow with us!
+                                </p>
+                                <div class="btn-box">
+                                    <a href="{{ path('app_quote') }}" class="btn1">
+                                        Get A Quote
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ol class="carousel-indicators">
+            <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
+            <li data-target="#customCarousel1" data-slide-to="1"></li>
+            <li data-target="#customCarousel1" data-slide-to="2"></li>
+        </ol>
+    </div>
+</section>
+{% endblock %}
+
+{% block body %}
+<!-- Statistics Section -->
+<div class="container-fluid mt-4 mb-4">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="statistics-details d-flex align-items-center justify-content-between">
+                <div class="info-card">
+                    <p class="statistics-title">Current Date and Time (UTC)</p>
+                    <h3 class="rate-percentage current-time">{{ "now"|date("Y-m-d H:i:s") }}</h3>
+                    <p class="text-info d-flex"><i class="fa fa-clock-o"></i><span>UTC</span></p>
+                </div>
+                <div class="info-card">
+                    <p class="statistics-title">Current User's Login</p>
+                    <h3 class="rate-percentage">{{ app.user ? app.user.userIdentifier : 'Guest' }}</h3>
+                    <p class="text-success d-flex"><i class="fa fa-user"></i><span>Active</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* System Info Display */
+.system-info-display {
+    background: #f8f9fa;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.system-info-text {
+    font-family: 'Courier New', monospace;
+    color: #062264;
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+    white-space: pre;
+    line-height: 1.5;
+    background: none;
+    border: none;
+    overflow: visible;
+}
+
+/* Hero Area Styles */
+.hero_area {
+    position: relative;
+    min-height: 100vh;
+}
+
+.slider_section {
+    position: relative;
+    height: 120vh; /* Reduced image height */
+}
+
+.slider_bg_box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.slider_bg_box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8; /* Increased transparency */
+}
+
+/* Content Styling */
+.detail-box {
+    padding: 50px 0;
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+.detail-box h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.detail-box p {
+    margin-bottom: 30px;
+}
+
+.btn1 {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #4b93d1;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn1:hover {
+    background-color: #062264;
+    color: white;
+    text-decoration: none;
+}
+
+/* Carousel Styling */
+.carousel-indicators {
+    bottom: 45px;
+}
+
+.carousel-indicators li {
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    opacity: 1;
+    background-color: #ffffff;
+}
+
+.carousel-indicators li.active {
+    background-color: #4b93d1;
+}
+
+/* Statistics Section */
+.statistics-details {
+    margin-top: 30px;
+}
+
+.info-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.statistics-title {
+    color: #062264;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.rate-percentage {
+    color: #4b93d1;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.text-info, .text-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Add overlay */
+.slider_section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* Increased overlay transparency */
+    z-index: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slider_section {
+        height: 100vh; /* Further reduced image height for mobile */
+    }
+
+    .detail-box {
+        text-align: center;
+        padding: 30px 0;
+    }
+
+    .detail-box h1 {
+        font-size: 2rem;
+    }
+
+    .statistics-details {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .info-card {
+        width: 100%;
+    }
+
+    .system-info-text {
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Preload background image
+    const img = new Image();
+    img.src = '{{ asset('uploads/images/m2.webp') }}';
+    
+    img.onload = function() {
+        document.querySelector('.slider_bg_box img').style.opacity = '1';
+    };
+
+    // Update current time
+    function updateDateTime() {
+        const now = new Date();
+        const dateTimeString = now.getUTCFullYear() + '-' + 
+                             String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                             String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                             String(now.getUTCHours()).padStart(2, '0') + ':' +
+                             String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                             String(now.getUTCSeconds()).padStart(2, '0');
+        
+        document.querySelector('.current-time').textContent = dateTimeString;
+    }
+
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+});
+</script>
+{% endblock %}

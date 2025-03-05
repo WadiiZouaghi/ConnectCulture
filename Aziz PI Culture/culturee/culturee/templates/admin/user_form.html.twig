@@ -1,0 +1,209 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <!-- System Info -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="system-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">System Information</h4>
+                        </div>
+                        <div class="system-info-text">
+                            <div>Current Date and Time (UTC): {{ "now"|date("Y-m-d H:i:s") }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card">
+            <div class="card-body">
+                <!-- Form Header -->
+                <div class="text-center mb-4">
+                    <div class="header-icon mb-3">
+                        <i class="mdi mdi-cog text-primary" style="font-size: 32px;"></i>
+                    </div>
+                    <h3 class="text-primary">{{ page_title }}</h3>
+                </div>
+
+                <!-- Form Body -->
+                {{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
+                    <div class="form-body">
+                        {% for field in form.children %}
+                            {% if field.vars.name != '_token' %}
+                                <div class="mb-4">
+                                    <label class="form-label d-flex align-items-center">
+                                        <i class="mdi mdi-{{ 
+                                            field.vars.name == 'email' ? 'email' : 
+                                            field.vars.name == 'phone' ? 'phone' : 
+                                            field.vars.name == 'password' ? 'lock' : 
+                                            'pencil' 
+                                        }} me-2 text-primary"></i>
+                                        {{ field.vars.label|default(field.vars.name|humanize) }}
+                                    </label>
+                                    <div class="input-group">
+                                        {{ form_widget(field, {
+                                            'attr': {
+                                                'class': 'form-control' ~ (field.vars.errors|length > 0 ? ' is-invalid' : ''),
+                                                'placeholder': 'Enter ' ~ field.vars.label|default(field.vars.name|humanize)
+                                            }
+                                        }) }}
+                                        {% if field.vars.errors|length > 0 %}
+                                            <div class="invalid-feedback">
+                                                <i class="mdi mdi-alert-circle-outline me-1"></i>
+                                                {{ field.vars.errors[0].message }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="mdi mdi-content-save me-1"></i>
+                            Save Changes
+                        </button>
+                        <a href="{{ path('admin_dashboard') }}" class="btn btn-secondary">
+                            <i class="mdi mdi-keyboard-return me-1"></i>
+                            Back
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.system-info {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.system-info-text {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #062264;
+}
+
+.header-icon {
+    width: 64px;
+    height: 64px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.form-label {
+    color: #062264;
+    font-weight: 500;
+}
+
+.input-group {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.form-control {
+    border: 1px solid #e9ecef;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+}
+
+.form-control:focus {
+    border-color: #4b93d1;
+    box-shadow: 0 0 0 0.2rem rgba(75, 147, 209, 0.25);
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 0.875rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@media (max-width: 768px) {
+    .col-md-8.offset-md-2 {
+        padding: 0 15px;
+    }
+
+    .d-flex.gap-2 {
+        flex-direction: column;
+    }
+    
+    .d-flex.gap-2 .btn {
+        width: 100%;
+    }
+}
+</style>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Update system time
+function updateDateTime() {
+    const now = new Date();
+    const timeString = now.getUTCFullYear() + '-' + 
+                      String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                      String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                      String(now.getUTCHours()).padStart(2, '0') + ':' +
+                      String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                      String(now.getUTCSeconds()).padStart(2, '0');
+    document.querySelector('.system-info-text').firstElementChild.textContent = 
+        'Current Date and Time (UTC): ' + timeString;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+
+// Form validation animation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.admin-form');
+    const inputs = document.querySelectorAll('.form-control');
+
+    form.addEventListener('submit', function(e) {
+        const invalidInputs = form.querySelectorAll('.is-invalid');
+        invalidInputs.forEach(input => {
+            input.parentElement.style.animation = 'shake 0.5s ease';
+            setTimeout(() => input.parentElement.style.animation = '', 500);
+        });
+    });
+
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.closest('.input-group').style.boxShadow = '0 0 0 0.2rem rgba(75, 147, 209, 0.15)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.closest('.input-group').style.boxShadow = '';
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

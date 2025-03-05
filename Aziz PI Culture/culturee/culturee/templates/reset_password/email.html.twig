@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your Password</title>
+    <style>
+        .email-container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 5px;
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #0d6efd;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            padding: 20px;
+            border-top: 1px solid #dee2e6;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Culture Connect</h1>
+        </div>
+        
+        <div class="content">
+            <h2>Reset Your Password</h2>
+            <p>Hello {{ user.fullName }},</p>
+            <p>We received a request to reset your password for your Culture Connect account.</p>
+            <p>Click the button below to reset your password. This link will expire in {{ expiryTime }}.</p>
+            
+            <div style="text-align: center;">
+                <a href="{{ resetUrl }}" class="button">Reset My Password</a>
+            </div>
+            
+            <p>If you didn't request this password reset, you can safely ignore this email.</p>
+            
+            <p>For security reasons, this link will expire in {{ expiryTime }}.</p>
+        </div>
+        
+        <div class="footer">
+            <p>This is an automated email from Culture Connect. Please do not reply.</p>
+            <p>Email sent at: {{ "now"|date("Y-m-d H:i:s") }} UTC</p>
+            <p>If you need assistance, please contact support.</p>
+        </div>
+    </div>
+</body>
+</html>

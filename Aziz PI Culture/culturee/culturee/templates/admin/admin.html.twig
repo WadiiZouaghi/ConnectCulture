@@ -1,0 +1,317 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Users List{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title">User Management</h4>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3 text-muted">
+                            <i class="mdi mdi-clock"></i> {{ "now"|date("Y-m-d H:i:s") }} UTC
+                        </span>
+                        <a href="{{ path('admin_user_create') }}" class="btn btn-primary">
+                            <i class="mdi mdi-account-plus"></i> Add New User
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Search Form -->
+                <div class="mb-3">
+                    <form id="searchForm" class="d-flex">
+                        <input type="text" 
+                               id="searchInput" 
+                               class="form-control me-2" 
+                               placeholder="Search users...">
+                       
+                    </form>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.fullName }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone }}</td>
+                                <td>
+                                    {% if 'ROLE_ADMIN' in user.roles %}
+                                        <span class="badge bg-danger">Admin</span>
+                                    {% elseif 'ROLE_ORGANIZER' in user.roles %}
+                                        <span class="badge bg-primary">Organizer</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">User</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.banned %}
+                                        <span class="badge bg-danger">Banned</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ path('admin_user_edit', {'id': user.id}) }}" 
+                                           class="btn btn-sm btn-primary">Edit</a>
+                                        
+                                        {% if not user.banned %}
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#banModal{{ user.id }}">
+                                                Ban
+                                            </button>
+                                        {% else %}
+                                            <a href="{{ path('admin_user_unban', {'id': user.id}) }}" 
+                                               class="btn btn-sm btn-success"
+                                               onclick="return confirm('Are you sure you want to unban this user?')">
+                                                Unban
+                                            </a>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Ban Modal -->
+                                    <div class="modal fade" id="banModal{{ user.id }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="{{ path('admin_user_ban', {'id': user.id}) }}" method="post">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Ban User</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="banReason{{ user.id }}" class="form-label">Ban Reason</label>
+                                                            <textarea id="banReason{{ user.id }}" 
+                                                                      name="ban_reason" 
+                                                                      class="form-control" 
+                                                                      rows="3"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-danger">Ban User</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const userTableBody = document.getElementById('userTableBody');
+    const searchButton = document.getElementById('searchButton');
+    
+    // Add base URL and current datetime
+    const baseUrl = '{{ app.request.baseURL }}';
+    const currentUser = '{{ app.user ? app.user.userIdentifier : "Guest" }}';
+    let currentDateTime = '{{ "now"|date("Y-m-d H:i:s") }} UTC';
+
+    // Update the datetime every second
+    setInterval(() => {
+        const now = new Date();
+        currentDateTime = now.toISOString().split('T').join(' ').split('.')[0] + ' UTC';
+        document.querySelector('.me-3.text-muted').innerHTML = 
+            `<i class="mdi mdi-clock"></i> ${currentDateTime}`;
+    }, 1000);
+
+    function createUserRow(user) {
+        const roles = user.roles || [];
+        const roleBadge = getUserRoleBadge(roles);
+        
+        return `
+            <tr>
+                <td>${user.fullName || ''}</td>
+                <td>${user.email || ''}</td>
+                <td>${user.phone || ''}</td>
+                <td>${roleBadge}</td>
+                <td>
+                    ${user.banned 
+                        ? '<span class="badge bg-danger">Banned</span>'
+                        : '<span class="badge bg-success">Active</span>'
+                    }
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="/admin/user/edit/${user.id}" 
+                           class="btn btn-sm btn-primary">Edit</a>
+                        
+                        ${!user.banned 
+                            ? `<button type="button" 
+                                      class="btn btn-sm btn-danger" 
+                                      data-bs-toggle="modal" 
+                                      data-bs-target="#banModal${user.id}">
+                                  Ban
+                              </button>`
+                            : `<a href="/admin/user/${user.id}/unban" 
+                                 class="btn btn-sm btn-success"
+                                 onclick="return confirm('Are you sure you want to unban this user?')">
+                                  Unban
+                              </a>`
+                        }
+                    </div>
+
+                    <!-- Ban Modal -->
+                    <div class="modal fade" id="banModal${user.id}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="/admin/user/${user.id}/ban" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Ban User</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="banReason${user.id}" class="form-label">Ban Reason</label>
+                                            <textarea id="banReason${user.id}" 
+                                                      name="ban_reason" 
+                                                      class="form-control" 
+                                                      rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger">Ban User</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    function getUserRoleBadge(roles) {
+        if (roles.includes('ROLE_ADMIN')) {
+            return '<span class="badge bg-danger">Admin</span>';
+        } else if (roles.includes('ROLE_ORGANIZER')) {
+            return '<span class="badge bg-primary">Organizer</span>';
+        } else {
+            return '<span class="badge bg-secondary">User</span>';
+        }
+    }
+
+    function showError(message) {
+        userTableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center">
+                    <div class="alert alert-danger">
+                        ${message}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    function showLoading() {
+        userTableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    async function performSearch() {
+        try {
+            const searchTerm = searchInput.value.trim();
+            showLoading();
+
+            const response = await fetch(`/admin/users/search?term=${encodeURIComponent(searchTerm)}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            userTableBody.innerHTML = '';
+            
+            if (data.users && data.users.length > 0) {
+                data.users.forEach(user => {
+                    userTableBody.innerHTML += createUserRow(user);
+                });
+            } else {
+                userTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <div class="alert alert-info">
+                                No users found matching "${searchTerm}"
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // Initialize any Bootstrap components
+            const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
+
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => new bootstrap.Modal(modal));
+
+        } catch (error) {
+            console.error('Search error:', error);
+            showError('An error occurred while searching. Please try again.');
+        }
+    }
+
+    // Handle form submission
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        performSearch();
+    });
+
+    // Handle real-time search with debouncing
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 300);
+    });
+
+    // Initial search
+    performSearch();
+});
+</script>
+{% endblock %}

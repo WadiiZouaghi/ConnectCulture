@@ -1,0 +1,250 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Edit Event{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <!-- System Info -->
+                <div class="system-info mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">System Information</h4>
+                        </div>
+                        <div class="system-info-text">
+                            <div>Current Date and Time (UTC): {{ "now"|date("Y-m-d H:i:s") }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Header -->
+                <div class="text-center mb-4">
+                    <h2 class="text-primary">Edit <span class="text-secondary">Event</span></h2>
+                    <p class="text-muted">Update your event information</p>
+                </div>
+
+                <!-- Event Form -->
+                {{ form_start(form, {'attr': {'class': 'event-form'}}) }}
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-format-title me-2"></i>
+                                {{ form_label(form.name) }}
+                            </label>
+                            {{ form_widget(form.name, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Enter event name'
+                                }
+                            }) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-map-marker me-2"></i>
+                                {{ form_label(form.destination) }}
+                            </label>
+                            {{ form_widget(form.destination, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Enter destination'
+                                }
+                            }) }}
+                            {{ form_errors(form.destination) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-calendar me-2"></i>
+                                {{ form_label(form.date) }}
+                            </label>
+                            {{ form_widget(form.date, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Select date'
+                                }
+                            }) }}
+                            {{ form_errors(form.date) }}
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-tag me-2"></i>
+                                {{ form_label(form.eventtype) }}
+                            </label>
+                            {{ form_widget(form.eventtype, {
+                                'attr': {
+                                    'class': 'form-select'
+                                }
+                            }) }}
+                            {{ form_errors(form.eventtype) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-account-group me-2"></i>
+                                {{ form_label(form.nbplaces) }}
+                            </label>
+                            {{ form_widget(form.nbplaces, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Enter number of places'
+                                }
+                            }) }}
+                            {{ form_errors(form.nbplaces) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-image me-2"></i>
+                                {{ form_label(form.image) }}
+                            </label>
+                            {% if event.image %}
+                                <div class="current-image mb-2">
+                                    <img src="{{ asset('uploads/images/' ~ event.image) }}" 
+                                         class="img-fluid rounded"
+                                         alt="Current event image">
+                                    <small class="d-block text-muted mt-1">Current Image</small>
+                                </div>
+                            {% endif %}
+                            {{ form_widget(form.image, {
+                                'attr': {
+                                    'class': 'form-control'
+                                }
+                            }) }}
+                            {{ form_errors(form.image) }}
+                        </div>
+                    </div>
+
+                    <!-- Full Width Fields -->
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-text me-2"></i>
+                                {{ form_label(form.Description) }}
+                            </label>
+                            {{ form_widget(form.Description, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'rows': '4',
+                                    'placeholder': 'Enter event description'
+                                }
+                            }) }}
+                            {{ form_errors(form.Description) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="mdi mdi-format-list-bulleted me-2"></i>
+                                {{ form_label(form.equipment) }}
+                            </label>
+                            {{ form_widget(form.equipment, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'rows': '3',
+                                    'placeholder': 'List required equipment'
+                                }
+                            }) }}
+                            {{ form_errors(form.equipment) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="mdi mdi-content-save me-1"></i>
+                        {{ button_label|default('Save Changes') }}
+                    </button>
+                    <a href="{{ path('app_event_index') }}" class="btn btn-secondary">
+                        <i class="mdi mdi-keyboard-return me-1"></i>
+                        Back to Events
+                    </a>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.system-info {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.system-info-text {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #062264;
+}
+
+.form-label {
+    color: #062264;
+    font-weight: 500;
+}
+
+.form-label i {
+    color: #4b93d1;
+}
+
+.current-image {
+    max-width: 200px;
+}
+
+.current-image img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #dee2e6;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #4b93d1;
+    box-shadow: 0 0 0 0.2rem rgba(75, 147, 209, 0.25);
+}
+
+.invalid-feedback {
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .d-flex.gap-2 {
+        flex-direction: column;
+    }
+    
+    .d-flex.gap-2 .btn {
+        width: 100%;
+    }
+}
+</style>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function updateDateTime() {
+    const now = new Date();
+    const timeString = now.getUTCFullYear() + '-' + 
+                      String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                      String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                      String(now.getUTCHours()).padStart(2, '0') + ':' +
+                      String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                      String(now.getUTCSeconds()).padStart(2, '0');
+    document.querySelector('.system-info-text').firstElementChild.textContent = 
+        'Current Date and Time (UTC): ' + timeString;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+</script>
+{% endblock %}
+{% endblock %}

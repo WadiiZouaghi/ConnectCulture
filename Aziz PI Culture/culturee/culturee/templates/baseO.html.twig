@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/fevicon.png') }}" type="">
+
+    <title>{% block title %}Culture Connect{% endblock %}</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <link href="{{ asset('assets/css/font-awesome.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/responsive.css') }}" rel="stylesheet" />
+
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+    <header class="header_section">
+        <!-- Dark Blue Top Bar -->
+        <div class="system-info-bar">
+            <div class="container-fluid">
+                <div class="info-items">
+                    <div class="info-item">
+                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        <span class="current-datetime"></span>
+                    </div>
+                    {% if app.user %}
+                    <div class="info-item">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                        <span class="current-user">Current User's Login: {{ app.user.userIdentifier }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- White Navbar -->
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('app_organizer') }}">
+                    <span>Culture Connect</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item {% if app.request.get('_route') == 'app_organizer' %}active{% endif %}">
+                            <a class="nav-link" href="{{ path('app_organizer') }}">
+                                <i class="fa fa-home"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item {% if app.request.get('_route') == 'app_event_index_organizer' %}active{% endif %}">
+                            <a class="nav-link" href="{{ path('app_event_index_organizer') }}">
+                                <i class="fa fa-calendar"></i> Events
+                            </a>
+                        </li>
+                        {% if app.user %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" href="{{ path('app_profile_organizer') }}">
+                                    <i class="fa fa-user"></i> {{ app.user.userIdentifier }}
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ path('app_logout') }}">
+                                        <i class="fa fa-sign-out"></i> Logout
+                                    </a>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_login') }}">
+                                    <i class="fa fa-sign-in"></i> Login
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% block hero_content %}{% endblock %}
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer class="footer_section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer_info">
+                        <h4>System Information</h4>
+                        <div class="info-items">
+                            <div class="info-item">
+                                <i class="fa fa-clock-o"></i>
+                                <span class="current-datetime"></span>
+                            </div>
+                            {% if app.user %}
+                            <div class="info-item">
+                                <i class="fa fa-user"></i>
+                                <span class="current-user">Current User's Login: {{ app.user.userIdentifier }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="footer_links">
+                        <h4>Quick Links</h4>
+                        <a href="{{ path('app_organizer') }}"><i class="fa fa-home"></i> Home</a>
+                        <a href="{{ path('app_event_index_organizer') }}"><i class="fa fa-calendar"></i> Events</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer_bottom">
+                <p>&copy; {{ "now"|date("Y") }} All Rights Reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ asset('assets/js/jquery-3.4.1.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="{{ asset('assets/js/bootstrap.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="{{ asset('assets/js/custom.js') }}"></script>
+
+    <script>
+    function updateDateTime() {
+        const now = new Date();
+        const dateTimeString = 'Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ' + 
+                             now.getUTCFullYear() + '-' + 
+                             String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                             String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                             String(now.getUTCHours()).padStart(2, '0') + ':' +
+                             String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                             String(now.getUTCSeconds()).padStart(2, '0');
+        
+        document.querySelectorAll('.current-datetime').forEach(element => {
+            element.textContent = dateTimeString;
+        });
+    }
+
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    </script>
+
+    {% block javascripts %}{% endblock %}
+
+    <style>
+    :root {
+        --dark-blue: #062264;
+        --light-blue: #4b93d1;
+        --white: #ffffff;
+        --background-color: #f8f9fa;
+        --text-color: #343a40;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Dark Blue Top Bar */
+    .system-info-bar {
+        background-color: var(--dark-blue);
+        padding: 10px 0;
+    }
+
+    .info-items {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--white);
+    }
+
+    .info-item i {
+        color: var(--light-blue);
+    }
+
+    .current-datetime,
+    .current-user {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 14px;
+        color: var(--white);
+    }
+
+    /* White Navbar */
+    .header_section {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: var(--white);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar {
+        padding: 15px 0;
+        background-color: var(--white);
+    }
+
+    .navbar-brand span {
+        color: var(--dark-blue);
+        font-weight: 700;
+        font-size: 24px;
+    }
+
+    .nav-link {
+        color: var(--dark-blue) !important;
+        padding: 8px 15px !important;
+        transition: color 0.3s ease;
+    }
+
+    .nav-link:hover,
+    .nav-item.active .nav-link {
+        color: var(--light-blue) !important;
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+        background-color: var(--white);
+        border: none;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+
+    .dropdown-item {
+        color: var(--dark-blue);
+        padding: 8px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--light-blue);
+        color: var(--white);
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        background-color: var(--background-color);
+    }
+
+    /* Footer */
+    .footer_section {
+        background-color: var(--dark-blue);
+        color: var(--white);
+        padding: 40px 0 20px;
+    }
+
+    .footer_links a {
+        color: var(--white);
+        text-decoration: none;
+        display: block;
+        margin-bottom: 10px;
+        transition: color 0.3s ease;
+    }
+
+    .footer_links a:hover {
+        color: var(--light-blue);
+    }
+
+    .footer_bottom {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 20px;
+        padding-top: 20px;
+        text-align: center;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 8px 20px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: var(--light-blue);
+        border-color: var(--light-blue);
+        color: var(--white);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--dark-blue);
+        border-color: var(--dark-blue);
+        transform: translateY(-2px);
+    }
+
+    /* Custom Navbar Toggler */
+    .navbar-toggler {
+        border-color: var(--dark-blue);
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(6, 34, 100, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .info-items {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .info-item {
+            font-size: 12px;
+        }
+
+        .navbar-collapse {
+            background-color: var(--white);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    }
+    </style>
+</body>
+</html>"
