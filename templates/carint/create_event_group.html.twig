@@ -1,29 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Culture Connect - Create Event Group{% endblock %}
+{% block title %}
+    Culture Connect - Create Event Group
+{% endblock %}
 
 {% block body %}
     <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
+            <!-- Top Contact Bar -->
             <div class="header_top">
                 <div class="container-fluid">
-                    <div class="contact_nav">
-                        <a href="" class="contact-link">
+                    <div class="contact_nav d-flex justify-content-center">
+                        <a href="tel:+01123455678990" class="contact-link mx-3" aria-label="Phone number">
                             <i class="fa fa-phone" aria-hidden="true"></i>
                             <span>Call: +01 123455678990</span>
                         </a>
-                        <a href="" class="contact-link">
+                        <a href="mailto:support@cultureconnect.com" class="contact-link mx-3" aria-label="Email address">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
                             <span>Email: support@cultureconnect.com</span>
                         </a>
-                        <a href="" class="contact-link">
+                        <a href="#" class="contact-link mx-3" aria-label="Global events">
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
                             <span>Global Events</span>
                         </a>
                     </div>
                 </div>
             </div>
+            <!-- Navigation Bar -->
             <div class="header_bottom">
                 <div class="container-fluid">
                     <nav class="navbar navbar-expand-lg custom_nav-container">
@@ -36,7 +40,7 @@
                             <span class="s-3"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav">
+                            <ul class="navbar-nav mr-auto">
                                 <li class="nav-item active">
                                     <a class="nav-link" href="{{ path('group_list') }}">Events <span class="sr-only">(current)</span></a>
                                 </li>
@@ -49,13 +53,13 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Contact Us</a>
                                 </li>
-                                <form class="form-inline" method="GET" action="{{ path('group_list') }}">
-                                    <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control mr-2" placeholder="Search events">
-                                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                    </button>
-                                </form>
                             </ul>
+                            <form class="form-inline my-2 my-lg-0" method="GET" action="{{ path('group_list') }}">
+                                <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control mr-2" placeholder="Search events" aria-label="Search events">
+                                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </form>
                         </div>
                     </nav>
                 </div>
@@ -63,65 +67,118 @@
         </header>
     </div>
 
-    <!-- Main Content Section -->
-    <section class="event-group-create-section layout_padding-top">
+    <!-- Create Event Group Section -->
+    <section class="event-group-create-section layout_padding-top py-5">
         <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 col-md-8">
-                    <div class="heading_container heading_center">
-                        <h2>Create Event Group</h2>
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-3 col-md-4 col-sm-12 mb-4">
+                    <div class="sidebar bg-light p-4 rounded shadow-sm">
+                        <!-- Quick Navigation -->
+                        <div class="sidebar-section mb-4">
+                            <h3 class="mb-3">Navigation</h3>
+                            <ul class="sidebar-nav list-unstyled">
+                                <li class="mb-2">
+                                    <a href="{{ path('group_create') }}" class="text-primary font-weight-bold">
+                                        <i class="fas fa-plus-circle mr-2"></i> Create New Event
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#my-events" class="text-primary">
+                                        <i class="fas fa-calendar-check mr-2"></i> My Events
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#invitations" class="text-primary">
+                                        <i class="fas fa-envelope mr-2"></i> Invitations
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Categories -->
+                        <div class="sidebar-section">
+                            <h4 class="mb-3">Categories</h4>
+                            <ul class="sidebar-categories list-unstyled">
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'music'}) }}" class="text-primary">Music</a></li>
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'dance'}) }}" class="text-primary">Dance</a></li>
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'food'}) }}" class="text-primary">Food</a></li>
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'art'}) }}" class="text-primary">Art</a></li>
+                            </ul>
+                        </div>
                     </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-9 col-md-8 col-sm-12">
+                    <!-- Page Title -->
+                    <div class="heading_container heading_center mb-5">
+                        <h2 class="text-dark font-weight-bold">Create Event Group</h2>
+                    </div>
+
+                    <!-- Flash Messages -->
                     {% for message in app.flashes('success') %}
-                        <div class="alert alert-success text-center">{{ message }}</div>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
                     {% endfor %}
                     {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger text-center">{{ message }}</div>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
                     {% endfor %}
-                    <div class="form_container mx-auto">
+
+                    <!-- Create Form -->
+                    <div class="form_container bg-white p-4 rounded shadow-sm">
                         {{ form_start(group_form) }}
-                            <div class="form-group">
-                                {{ form_label(group_form.name, 'Group Name', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.name, 'Group Name', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter event name'}}) }}
                                 {{ form_errors(group_form.name) }}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(group_form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.description, 'Description', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.description, {'attr': {'class': 'form-control', 'placeholder': 'Describe your event', 'rows': '4'}}) }}
                                 {{ form_errors(group_form.description) }}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(group_form.location, 'Location', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.location, 'Location', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.location, {'attr': {'class': 'form-control', 'placeholder': 'Event location'}}) }}
                                 {{ form_errors(group_form.location) }}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(group_form.event_date, 'Event Date', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.event_date, 'Event Date', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.event_date, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(group_form.event_date) }}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(group_form.max_participants, 'Max Participants', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.max_participants, 'Max Participants', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.max_participants, {'attr': {'class': 'form-control', 'placeholder': 'Max participants', 'min': '1'}}) }}
                                 {{ form_errors(group_form.max_participants) }}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(group_form.visibility, 'Visibility', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.visibility, 'Visibility', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.visibility, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(group_form.visibility) }}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(group_form.coverPicture, 'Cover Picture', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.coverPicture, 'Cover Picture', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.coverPicture, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(group_form.coverPicture) }}
                             </div>
-                            <div class="form-group">
-                                {{ form_label(group_form.groupType, 'Group Type', {'label_attr': {'class': 'form-label'}}) }}
+                            <div class="form-group mb-4">
+                                {{ form_label(group_form.groupType, 'Group Type', {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
                                 {{ form_widget(group_form.groupType, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(group_form.groupType) }}
                             </div>
-                            <div class="btn_box text-center mt-3 mb-4">
-                                <button type="submit" class="btn btn-primary">Create Event</button>
-                                <a href="{{ path('group_list') }}" class="btn btn-secondary ml-2">Back to Events</a>
+                            <div class="btn_box text-center mt-4">
+                                <button type="submit" class="btn btn-primary px-4">Create Event</button>
+                                <a href="{{ path('group_list') }}" class="btn btn-secondary px-4 ml-2">Back to Events</a>
                             </div>
                         {{ form_end(group_form) }}
                     </div>
@@ -131,64 +188,60 @@
     </section>
 
     <!-- Info Section -->
-    <section class="info_section layout_padding2">
+    <section class="info_section layout_padding2 py-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-lg-3 info_col">
+                <!-- Contact Info -->
+                <div class="col-md-6 col-lg-3 info_col mb-4">
                     <div class="info_contact">
-                        <h4>Contact Us</h4>
+                        <h4 class="mb-3">Contact Us</h4>
                         <div class="contact_link_box">
-                            <a href="">
-                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            <a href="#" class="d-flex align-items-center mb-2" aria-label="Global events">
+                                <i class="fa fa-map-marker mr-2" aria-hidden="true"></i>
                                 <span>Global Events</span>
                             </a>
-                            <a href="">
-                                <i class="fa fa-phone" aria-hidden="true"></i>
+                            <a href="tel:+01123455678990" class="d-flex align-items-center mb-2" aria-label="Phone number">
+                                <i class="fa fa-phone mr-2" aria-hidden="true"></i>
                                 <span>Call: +01 123455678990</span>
                             </a>
-                            <a href="">
-                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                            <a href="mailto:support@cultureconnect.com" class="d-flex align-items-center" aria-label="Email address">
+                                <i class="fa fa-envelope mr-2" aria-hidden="true"></i>
                                 <span>support@cultureconnect.com</span>
                             </a>
                         </div>
                     </div>
-                    <div class="info_social">
-                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                    <div class="info_social mt-3">
+                        <a href="#" class="mx-2" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3 info_col">
+                <!-- About Culture Connect -->
+                <div class="col-md-6 col-lg-3 info_col mb-4">
                     <div class="info_detail">
-                        <h4>About Culture Connect</h4>
+                        <h4 class="mb-3">About Culture Connect</h4>
                         <p>Connecting people through cultural events worldwide.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-2 mx-auto info_col">
-                    <div class="info_link_box">
-                        <h4>Links</h4>
-                        <div class="info_links">
-                            <a class="active" href="{{ path('group_list') }}">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Events
-                            </a>
-                            <a href="">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> About
-                            </a>
-                            <a href="">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Services
-                            </a>
-                            <a href="">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Contact Us
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 info_col">
-                    <h4>Subscribe</h4>
-                    <form action="#">
-                        <input type="text" placeholder="Enter email" class="form-control" required />
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
+               <!-- Quick Links -->
+<div class="col-md-6 col-lg-2 mx-auto info_col mb-4">
+    <div class="info_link_box">
+        <h4 class="mb-3">Links</h4>
+        <div class="info_links">
+            <a class="d-block mb-2 active" href="{{ path('group_list') }}">Events</a>
+            <a class="d-block mb-2" href="#">About</a>
+            <a class="d-block mb-2" href="#">Services</a>
+            <a class="d-block mb-2" href="#">Contact Us</a>
+        </div>
+    </div>
+</div>
+                <!-- Newsletter Subscription -->
+                <div class="col-md-6 col-lg-3 info_col mb-4">
+                    <h4 class="mb-3">Subscribe</h4>
+                    <form action="#" class="form-inline">
+                        <input type="email" placeholder="Enter email" class="form-control w-100 mb-2" required aria-label="Email for subscription" />
+                        <button type="submit" class="btn btn-primary w-100">Subscribe</button>
                     </form>
                 </div>
             </div>
@@ -196,32 +249,26 @@
     </section>
 
     <!-- Footer Section -->
-    <footer class="footer_section">
+    <footer class="footer_section py-4">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
-                    <p>
+                    <p class="mb-2">
                         © {{ "now"|date("Y") }} All Rights Reserved By
                         <a href="https://cultureconnect.com/">Culture Connect</a>
                     </p>
-                    <div class="footer-links">
-                        <a href="">Privacy Policy</a> | <a href="">Terms of Service</a>
+                    <div class="footer-links mb-2">
+                        <a href="#" class="mx-2">Privacy Policy</a> | 
+                        <a href="#" class="mx-2">Terms of Service</a>
                     </div>
                     <div class="footer-social">
-                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- Scripts -->
-    <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" defer></script>
-    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js') }}" defer></script>
-    <script type="text/javascript" src="{{ asset('js/custom.js') }}" defer></script>
 {% endblock %}

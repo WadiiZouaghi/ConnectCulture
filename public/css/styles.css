@@ -130,6 +130,7 @@ a:focus {
   min-height: auto;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .sub_page .hero_area {
@@ -144,11 +145,13 @@ a:focus {
 .header_section {
   background: linear-gradient(90deg, var(--secondary-color), #04233b);
   color: #ffffff;
+  width: 100%;
 }
 
 .header_section .header_top {
   padding: 15px 0;
   background-color: var(--secondary-color);
+  width: 100%;
 }
 
 .header_section .header_top .contact_nav {
@@ -182,6 +185,7 @@ a:focus {
 .header_section .header_bottom {
   background-color: #ffffff;
   padding: 15px 0;
+  width: 100%;
 }
 
 .header_section .header_bottom .container-fluid {
@@ -355,6 +359,7 @@ a:focus {
   margin-right: 0.5rem;
   color: var(--primary-color);
 }
+
 .sidebar-categories a.active {
   color: var(--primary-color);
   font-weight: 600;
@@ -526,7 +531,6 @@ a:focus {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 480px; /* Fixed height for consistent card size */
   width: 100%;
 }
 
@@ -538,7 +542,7 @@ a:focus {
 .group-card-header {
   position: relative;
   width: 100%;
-  height: 150px; /* Fixed height for image or placeholder */
+  padding-bottom: 40%; /* Maintain a 5:2 aspect ratio (adjust as needed) */
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   overflow: hidden;
@@ -546,6 +550,9 @@ a:focus {
 
 .group-card-header img,
 .group-card-header .placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -710,16 +717,18 @@ a:focus {
 /* Weather Forecast Styles */
 .weather-forecast-card {
   position: absolute;
-  bottom: 20px;
+  top: 15px;
   right: 20px;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
-  padding: 10px;
+  padding: 6px 6px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  top: 15px;
   background-color: var(--card-background);
   border: 2px solid var(--primary-color);
-  width: 250px;
+  width: auto;
+  max-width: 180px;
+  max-height: 140px;
+  overflow-y: auto;
   z-index: 10;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -729,37 +738,59 @@ a:focus {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
-.weather-forecast-card h4 {
+.weather-forecast-card .weather-card-title {
   color: var(--secondary-color);
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   text-align: center;
 }
 
-.weather-forecast-card p {
-  color: var(--text-color);
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.forecast-day {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  background-color: #f8f9fa;
-  border-radius: 5px;
-  margin-bottom: 0.5rem;
-}
-
-.forecast-date {
+.weather-forecast-card .forecast-date {
   color: var(--secondary-color);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  margin: 0;
+  text-align: center;
+  /* Removed white-space: nowrap to allow text wrapping */
 }
 
-.forecast-date strong {
+.weather-forecast-card .forecast-date strong {
   color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Weather Error Card */
+.weather-error-card {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 6px 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--card-background);
+  border: 2px solid var(--danger-color);
+  width: auto;
+  max-width: 180px;
+  max-height: 80px;
+  overflow-y: auto;
+  z-index: 10;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.weather-error-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.weather-error-card .weather-error-message {
+  color: var(--danger-color);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap; /* Keep nowrap for error messages, as they are typically short */
 }
 
 /* Related Groups Styles */
@@ -870,7 +901,6 @@ a:focus {
   border-bottom: 2px solid var(--primary-hover);
 }
 
-.invite-btn,
 .view-posts-btn,
 .discussion-btn {
   background-color: transparent;
@@ -879,12 +909,27 @@ a:focus {
   color: var(--secondary-color);
 }
 
-.invite-btn:hover,
 .view-posts-btn:hover,
 .discussion-btn:hover {
   color: var(--primary-color);
   background-color: transparent;
   transform: scale(1.02);
+}
+
+.invite-btn {
+  background-color: var(--primary-color);
+  border: none;
+  font-weight: 600;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.invite-btn:hover {
+  background-color: var(--primary-hover);
+  color: #ffffff;
+  transform: scale(1.05);
 }
 
 /* Discussion Section Styles */
@@ -922,6 +967,7 @@ a:focus {
   margin-bottom: 1rem;
   border: 1px solid #e9ecef;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 4px solid var(--primary-color); /* Highlight discussions */
 }
 
 .discussion-card:hover {
@@ -1041,6 +1087,14 @@ a:focus {
   outline: none;
 }
 
+.form_container .form-group label {
+  margin-bottom: 0.5rem;
+}
+
+.form_container .form-control {
+  border-radius: 5px;
+}
+
 .btn_box {
   display: flex;
   gap: 1rem;
@@ -1055,11 +1109,21 @@ a:focus {
   width: 100%;
 }
 
-.info_section a,
-.info_section .info_links a,
+.info_section h4 {
+  color: #ffffff; /* Ensure headings are white */
+}
+
+.info_section p {
+  color: #ffffff; /* Ensure paragraph text is white */
+}
+
+.info_section .info_contact a,
 .info_section .contact_link_box a {
-  color: var(--primary-color);
-  transition: color 0.3s ease;
+  color: #ffffff; /* Ensure contact links are white */
+}
+
+.info_section .info_links a {
+  color: #ffffff; /* Ensure links in info section are white */
 }
 
 .info_section a:hover,
@@ -1069,6 +1133,9 @@ a:focus {
 }
 
 .info_section .info_social a {
+  display: inline-block; /* Ensure icons are displayed */
+  font-family: "Font Awesome 5 Free"; /* Explicitly set Font Awesome font */
+  font-weight: 900; /* Required for Font Awesome 5 */
   color: #ffffff;
   transition: color 0.3s ease, transform 0.3s ease;
 }
@@ -1091,11 +1158,10 @@ a:focus {
 
 .footer-links {
   margin: 1rem 0;
-  color: #ffffff;
 }
 
 .footer-links a {
-  color: var(--primary-color);
+  color: #ffffff; /* Ensure footer links are white */
   margin: 0 0.5rem;
   transition: color 0.3s ease;
 }
@@ -1109,6 +1175,9 @@ a:focus {
 }
 
 .footer-social a {
+  display: inline-block; /* Ensure icons are displayed */
+  font-family: "Font Awesome 5 Free"; /* Explicitly set Font Awesome font */
+  font-weight: 900; /* Required for Font Awesome 5 */
   color: #ffffff;
   font-size: 1.5rem;
   margin: 0 0.5rem;
@@ -1177,6 +1246,16 @@ a:focus {
   border-color: var(--primary-hover);
 }
 
+/* Additional Styles for Group Banner */
+.group-banner {
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.group-banner:hover {
+  transform: scale(1.02);
+}
+
 /* Responsive Adjustments */
 @media (max-width: 1300px) {}
 
@@ -1202,14 +1281,15 @@ a:focus {
   }
 
   .group-card {
-    height: 460px; /* Slightly smaller for smaller screens */
+    height: auto; /* Allow flexible height for smaller screens */
   }
 
   .group-card-header {
-    height: 140px;
+    padding-bottom: 40%; /* Maintain aspect ratio */
   }
 
-  .weather-forecast-card {
+  .weather-forecast-card,
+  .weather-error-card {
     width: 200px;
   }
 }
@@ -1242,17 +1322,20 @@ a:focus {
   }
 
   .group-card {
-    height: 480px; /* Adjusted height for smaller screens */
+    height: auto; /* Allow flexible height for smaller screens */
   }
 
   .group-card-header {
-    height: 140px;
+    padding-bottom: 40%; /* Maintain aspect ratio */
   }
 
-  .weather-forecast-card {
-    top: 10px;
-    right: 10px;
-    width: 200px;
+  .weather-forecast-card,
+  .weather-error-card {
+    position: static;
+    margin-top: 1rem;
+    width: 100%;
+    top: auto;
+    right: auto;
   }
 
   .group-nav-bar {
@@ -1304,6 +1387,10 @@ a:focus {
   .no-discussions {
     padding: 0.75rem;
   }
+
+  .form_container {
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1313,15 +1400,16 @@ a:focus {
   }
 
   .group-card {
-    height: 460px;
+    height: auto; /* Allow flexible height for smaller screens */
   }
 
   .group-card-header {
-    height: 130px;
+    padding-bottom: 40%; /* Maintain aspect ratio */
   }
 
-  .weather-forecast-card {
-    width: 180px;
+  .weather-forecast-card,
+  .weather-error-card {
+    width: 100%;
     top: 5px;
     right: 5px;
   }

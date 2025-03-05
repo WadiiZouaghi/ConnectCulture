@@ -1,29 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Culture Connect - {{ group.name }} Posts{% endblock %}
+{% block title %}
+    Culture Connect - {{ group.name }} Posts
+{% endblock %}
 
 {% block body %}
     <!-- Header Section -->
     <div class="hero_area">
         <header class="header_section">
+            <!-- Top Contact Bar -->
             <div class="header_top">
                 <div class="container-fluid">
-                    <div class="contact_nav">
-                        <a href="" class="contact-link">
+                    <div class="contact_nav d-flex justify-content-center">
+                        <a href="tel:+01123455678990" class="contact-link mx-3" aria-label="Phone number">
                             <i class="fa fa-phone" aria-hidden="true"></i>
                             <span>Call: +01 123455678990</span>
                         </a>
-                        <a href="" class="contact-link">
+                        <a href="mailto:support@cultureconnect.com" class="contact-link mx-3" aria-label="Email address">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
                             <span>Email: support@cultureconnect.com</span>
                         </a>
-                        <a href="" class="contact-link">
+                        <a href="#" class="contact-link mx-3" aria-label="Global events">
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
                             <span>Global Events</span>
                         </a>
                     </div>
                 </div>
             </div>
+            <!-- Navigation Bar -->
             <div class="header_bottom">
                 <div class="container-fluid">
                     <nav class="navbar navbar-expand-lg custom_nav-container">
@@ -36,7 +40,7 @@
                             <span class="s-3"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav">
+                            <ul class="navbar-nav mr-auto">
                                 <li class="nav-item active">
                                     <a class="nav-link" href="{{ path('group_list') }}">Events <span class="sr-only">(current)</span></a>
                                 </li>
@@ -49,13 +53,13 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Contact Us</a>
                                 </li>
-                                <form class="form-inline" method="GET" action="{{ path('group_list') }}">
-                                    <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control mr-2" placeholder="Search events">
-                                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                    </button>
-                                </form>
                             </ul>
+                            <form class="form-inline my-2 my-lg-0" method="GET" action="{{ path('group_list') }}">
+                                <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control mr-2" placeholder="Search events" aria-label="Search events">
+                                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </form>
                         </div>
                     </nav>
                 </div>
@@ -63,80 +67,112 @@
         </header>
     </div>
 
-    <!-- Main Content Section -->
-    <section class="event-group-view-section layout_padding-top">
+    <!-- Group Posts Section -->
+    <section class="event-group-view-section layout_padding-top py-5">
         <div class="container-fluid">
             <div class="row">
                 <!-- Sidebar -->
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="sidebar">
+                <div class="col-lg-3 col-md-4 col-sm-12 mb-4">
+                    <div class="sidebar bg-light p-4 rounded shadow-sm">
                         <!-- Quick Navigation -->
-                        <div class="sidebar-section">
-                            <h3>Navigation</h3>
-                            <ul class="sidebar-nav">
-                                <li><a href="{{ path('group_create') }}"><i class="fas fa-plus-circle"></i> Create New Event</a></li>
-                                <li><a href="#my-events"><i class="fas fa-calendar-check"></i> My Events</a></li>
-                                <li><a href="#invitations"><i class="fas fa-envelope"></i> Invitations</a></li>
+                        <div class="sidebar-section mb-4">
+                            <h3 class="mb-3">Navigation</h3>
+                            <ul class="sidebar-nav list-unstyled">
+                                <li class="mb-2">
+                                    <a href="{{ path('group_create') }}" class="text-primary">
+                                        <i class="fas fa-plus-circle mr-2"></i> Create New Event
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#my-events" class="text-primary">
+                                        <i class="fas fa-calendar-check mr-2"></i> My Events
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#invitations" class="text-primary">
+                                        <i class="fas fa-envelope mr-2"></i> Invitations
+                                    </a>
+                                </li>
                             </ul>
-                            <h4>Categories</h4>
-                            <ul class="sidebar-categories">
-                                <li><a href="{{ path('group_list', {'category': 'music'}) }}">Music</a></li>
-                                <li><a href="{{ path('group_list', {'category': 'dance'}) }}">Dance</a></li>
-                                <li><a href="{{ path('group_list', {'category': 'food'}) }}">Food</a></li>
-                                <li><a href="{{ path('group_list', {'category': 'art'}) }}">Art</a></li>
+                        </div>
+                        <!-- Categories -->
+                        <div class="sidebar-section">
+                            <h4 class="mb-3">Categories</h4>
+                            <ul class="sidebar-categories list-unstyled">
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'music'}) }}" class="text-primary">Music</a></li>
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'dance'}) }}" class="text-primary">Dance</a></li>
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'food'}) }}" class="text-primary">Food</a></li>
+                                <li class="mb-2"><a href="{{ path('group_list', {'category': 'art'}) }}" class="text-primary">Art</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
+
                 <!-- Main Content -->
                 <div class="col-lg-9 col-md-8 col-sm-12">
-                    <div class="heading_container heading_center">
-                        <h2>{{ group.name }} Posts</h2>
+                    <!-- Page Title -->
+                    <div class="heading_container heading_center mb-5">
+                        <h2 class="text-dark font-weight-bold">{{ group.name }} Posts</h2>
                     </div>
+
+                    <!-- Flash Messages -->
                     {% for message in app.flashes('success') %}
-                        <div class="alert alert-success">{{ message }}</div>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
                     {% endfor %}
-                    <nav class="group-nav-bar">
-                        <ul class="nav flex-row align-items-center justify-content-between">
+
+                    <!-- Group Navigation Tabs -->
+                    <nav class="group-nav-bar mb-4">
+                        <ul class="nav flex-row align-items-center justify-content-between bg-light p-2 rounded">
                             <div class="d-flex">
                                 <li class="nav-item">
-                                    <a href="{{ path('group_view', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_view' %}active{% endif %}" aria-current="{% if app.request.attributes.get('_route') == 'group_view' %}page{% else %}false{% endif %}">
-                                        <i class="fas fa-info-circle" aria-hidden="true"></i> Details
+                                    <a class="nav-link text-primary" href="{{ path('group_view', {'id': group.id}) }}" aria-current="{% if app.request.attributes.get('_route') == 'group_view' %}page{% else %}false{% endif %}">
+                                        <i class="fas fa-info-circle mr-1"></i> Details
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ path('group_posts', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_posts' %}active{% endif %} view-posts-btn" aria-current="{% if app.request.attributes.get('_route') == 'group_posts' %}page{% else %}false{% endif %}">
-                                        <i class="fas fa-file-alt" aria-hidden="true"></i> Posts
+                                    <a class="nav-link active text-primary view-posts-btn" href="{{ path('group_posts', {'id': group.id}) }}" aria-current="{% if app.request.attributes.get('_route') == 'group_posts' %}page{% else %}false{% endif %}">
+                                        <i class="fas fa-file-alt mr-1"></i> Posts
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ path('group_discussion', {'id': group.id}) }}" class="nav-link {% if app.request.attributes.get('_route') == 'group_discussion' %}active{% endif %} discussion-btn" aria-current="{% if app.request.attributes.get('_route') == 'group_discussion' %}page{% else %}false{% endif %}">
-                                        <i class="fas fa-comments" aria-hidden="true"></i> Discussion
+                                    <a class="nav-link text-primary discussion-btn" href="{{ path('group_discussion', {'id': group.id}) }}" aria-current="{% if app.request.attributes.get('_route') == 'group_discussion' %}page{% else %}false{% endif %}">
+                                        <i class="fas fa-comments mr-1"></i> Discussions
                                     </a>
                                 </li>
                             </div>
                             <li class="nav-item">
-                                <a href="{{ path('group_invite', {'id': group.id}) }}" class="nav-link btn btn-primary invite-btn">
-                                    <i class="fas fa-envelope" aria-hidden="true"></i> Send Invitation
+                                <a href="{{ path('group_invite', {'id': group.id}) }}" class="nav-link btn btn-primary invite-btn" aria-label="Send Invitation">
+                                    <i class="fas fa-envelope mr-1" aria-hidden="true"></i> Send Invitation
                                 </a>
                             </li>
                         </ul>
                     </nav>
+
+                    <!-- Posts Card -->
                     <div class="posts-card">
                         {% if posts is defined and posts is not empty %}
                             <div class="row">
                                 {% for post in posts %}
                                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                                        <div class="post-card">
+                                        <div class="post-card bg-white p-3 rounded shadow-sm">
                                             <div class="post-item">
-                                                <h4 class="post-title">{{ post.content|slice(0, 50) ~ (post.content|length > 50 ? '...' : '') }}</h4>
-                                                <p class="post-content">{{ post.content }}</p>
-                                                <small class="post-meta">Posted on {{ post.createdAt|date('Y-m-d H:i') }} by {{ post.actor ? post.actor.name : 'Anonymous' }}</small>
-                                                <div class="post-actions d-flex justify-content-end mt-2">
-                                                    <a href="{{ path('post_edit', {'id': post.id}) }}" class="action-btn btn btn-secondary mr-2">Update</a>
+                                                <h4 class="post-title text-dark mb-2">
+                                                    {{ post.content|slice(0, 50) ~ (post.content|length > 50 ? '...' : '') }}
+                                                </h4>
+                                                <p class="post-content text-muted">{{ post.content }}</p>
+                                                <small class="post-meta text-secondary d-block mb-2">
+                                                    Posted on {{ post.createdAt|date('Y-m-d H:i') }} by {{ post.actor ? post.actor.name : 'Anonymous' }}
+                                                </small>
+                                                <div class="post-actions d-flex justify-content-end">
+                                                    <a href="{{ path('post_edit', {'id': post.id}) }}" class="action-btn btn btn-secondary btn-sm mr-2" aria-label="Edit post">Update</a>
                                                     <form action="{{ path('post_delete', {'id': post.id}) }}" method="post" style="display:inline;">
                                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
-                                                        <button type="submit" class="action-btn btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?')">Delete</button>
+                                                        <button type="submit" class="action-btn btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this post?')" aria-label="Delete post">Delete</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -145,7 +181,7 @@
                                 {% endfor %}
                             </div>
                         {% else %}
-                            <div class="no-posts">No posts found for this group.</div>
+                            <div class="no-posts text-muted text-center">No posts found for this group.</div>
                         {% endif %}
                     </div>
                 </div>
@@ -154,64 +190,60 @@
     </section>
 
     <!-- Info Section -->
-    <section class="info_section layout_padding2">
+    <section class="info_section layout_padding2 py-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-lg-3 info_col">
+                <!-- Contact Info -->
+                <div class="col-md-6 col-lg-3 info_col mb-4">
                     <div class="info_contact">
-                        <h4>Contact Us</h4>
+                        <h4 class="mb-3">Contact Us</h4>
                         <div class="contact_link_box">
-                            <a href="">
-                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            <a href="#" class="d-flex align-items-center mb-2" aria-label="Global events">
+                                <i class="fa fa-map-marker mr-2" aria-hidden="true"></i>
                                 <span>Global Events</span>
                             </a>
-                            <a href="">
-                                <i class="fa fa-phone" aria-hidden="true"></i>
+                            <a href="tel:+01123455678990" class="d-flex align-items-center mb-2" aria-label="Phone number">
+                                <i class="fa fa-phone mr-2" aria-hidden="true"></i>
                                 <span>Call: +01 123455678990</span>
                             </a>
-                            <a href="">
-                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                            <a href="mailto:support@cultureconnect.com" class="d-flex align-items-center" aria-label="Email address">
+                                <i class="fa fa-envelope mr-2" aria-hidden="true"></i>
                                 <span>support@cultureconnect.com</span>
                             </a>
                         </div>
                     </div>
-                    <div class="info_social">
-                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                    <div class="info_social mt-3">
+                        <a href="#" class="mx-2" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3 info_col">
+                <!-- About Culture Connect -->
+                <div class="col-md-6 col-lg-3 info_col mb-4">
                     <div class="info_detail">
-                        <h4>About Culture Connect</h4>
+                        <h4 class="mb-3">About Culture Connect</h4>
                         <p>Connecting people through cultural events worldwide.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-2 mx-auto info_col">
-                    <div class="info_link_box">
-                        <h4>Links</h4>
-                        <div class="info_links">
-                            <a class="active" href="{{ path('group_list') }}">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Events
-                            </a>
-                            <a href="">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> About
-                            </a>
-                            <a href="">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Services
-                            </a>
-                            <a href="">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt=""> Contact Us
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 info_col">
-                    <h4>Subscribe</h4>
-                    <form action="#">
-                        <input type="text" placeholder="Enter email" class="form-control" required />
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                <!-- Quick Links -->
+<div class="col-md-6 col-lg-2 mx-auto info_col mb-4">
+    <div class="info_link_box">
+        <h4 class="mb-3">Links</h4>
+        <div class="info_links">
+            <a class="d-block mb-2 active" href="{{ path('group_list') }}">Events</a>
+            <a class="d-block mb-2" href="#">About</a>
+            <a class="d-block mb-2" href="#">Services</a>
+            <a class="d-block mb-2" href="#">Contact Us</a>
+        </div>
+    </div>
+</div>
+                <!-- Newsletter Subscription -->
+                <div class="col-md-6 col-lg-3 info_col mb-4">
+                    <h4 class="mb-3">Subscribe</h4>
+                    <form action="#" class="form-inline">
+                        <input type="email" placeholder="Enter email" class="form-control w-100 mb-2" required aria-label="Email for subscription" />
+                        <button type="submit" class="btn btn-primary w-100">Subscribe</button>
                     </form>
                 </div>
             </div>
@@ -219,22 +251,23 @@
     </section>
 
     <!-- Footer Section -->
-    <footer class="footer_section">
+    <footer class="footer_section py-4">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
-                    <p>
+                    <p class="mb-2">
                         © {{ "now"|date("Y") }} All Rights Reserved By
                         <a href="https://cultureconnect.com/">Culture Connect</a>
                     </p>
-                    <div class="footer-links">
-                        <a href="">Privacy Policy</a> | <a href="">Terms of Service</a>
+                    <div class="footer-links mb-2">
+                        <a href="#" class="mx-2">Privacy Policy</a> | 
+                        <a href="#" class="mx-2">Terms of Service</a>
                     </div>
                     <div class="footer-social">
-                        <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        <a href=""><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+                        <a href="#" class="mx-2" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
