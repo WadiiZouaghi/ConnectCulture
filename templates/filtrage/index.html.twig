@@ -1,37 +1,71 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseA.html.twig' %}
 
-{% block title %}Filtrage index{% endblock %}
+{% block title %}Gestion des Mots Interdits{% endblock %}
 
 {% block body %}
-    <h1>Filtrage index</h1>
+<div class="content-wrapper">
+    <div class="system-info-bar mb-4">
+        <div class="system-info-item">
+            Liste des mots interdits
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Mot_interdit</th>
-                <th>Action</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for filtrage in filtrages %}
-            <tr>
-                <td>{{ filtrage.id }}</td>
-                <td>{{ filtrage.motInterdit }}</td>
-                <td>{{ filtrage.action }}</td>
-                <td>
-                    <a href="{{ path('app_filtrage_show', {'id': filtrage.id}) }}">show</a>
-                    <a href="{{ path('app_filtrage_edit', {'id': filtrage.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="card-title mb-0">Liste des Mots Interdits</h4>
+                        <a href="{{ path('app_filtrage_new') }}" class="action-btn">
+                            <i class="mdi mdi-plus"></i> Ajouter un Mot
+                        </a>
+                    </div>
 
-    <a href="{{ path('app_filtrage_new') }}">Create new</a>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Mot</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for filtrage in filtrages %}
+                                    <tr>
+                                        <td>{{ filtrage.id }}</td>
+                                        <td>{{ filtrage.MotInterdit() }}</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ path('app_filtrage_edit', {'id': filtrage.id}) }}" class="action-btn">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <form action="{{ path('app_filtrage_delete', {'id': filtrage.id}) }}" method="post">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ filtrage.id) }}">
+                                                    <button type="submit" class="action-btn" style="background-color: #dc3545;" 
+                                                            onclick="return confirm('Voulez-vous vraiment supprimer ce mot ?');">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4">
+                                            <i class="mdi mdi-alert-circle text-warning display-4"></i>
+                                            <p class="mt-2">Aucun mot interdit trouvé.</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

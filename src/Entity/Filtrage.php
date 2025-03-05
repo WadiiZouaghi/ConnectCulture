@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\FiltrageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: FiltrageRepository::class)]
+#[ORM\Entity]
 class Filtrage
 {
     #[ORM\Id]
@@ -13,40 +13,28 @@ class Filtrage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(message: 'This field is required')]
     private ?string $mot_interdit = null;
 
-    #[Assert\Choice(choices: ['remplacer', 'bloquer'], message: "L'action doit être soit 'remplacer' soit 'bloquer'.")]
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(message: 'Please select an action')]
     private ?string $action = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    // Getters and Setters
+    public function getId(): ?int { return $this->id; }
 
-    public function getMotInterdit(): ?string
-    {
-        return $this->mot_interdit;
-    }
-
-    public function setMotInterdit(string $mot_interdit): static
+    public function getMotInterdit(): ?string { return $this->mot_interdit; }
+    public function setMotInterdit(string $mot_interdit): self
     {
         $this->mot_interdit = $mot_interdit;
-
         return $this;
     }
 
-    public function getAction(): ?string
-    {
-        return $this->action;
-    }
-
-    public function setAction(string $action): static
+    public function getAction(): ?string { return $this->action; }
+    public function setAction(string $action): self
     {
         $this->action = $action;
-
         return $this;
     }
 }
