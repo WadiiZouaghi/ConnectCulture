@@ -1,0 +1,41 @@
+{{ form_start(form, {'attr': {'class': 'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.destination) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.eventtype) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.image) }}
+            {% if event is defined and event.image %}
+                <div class="mb-3">
+                    <label>Current Image:</label>
+                    <img src="{{ asset('uploads/images/' ~ event.image) }}" 
+                         alt="Current event image" 
+                         class="img-thumbnail" 
+                         style="max-height: 100px">
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {{ form_row(form.Description) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {{ form_row(form.equipment) }}
+        </div>
+    </div>
+    <div class="mt-4">
+        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        <a href="{{ path('app_event_index') }}" class="btn btn-secondary">Back to list</a>
+    </div>
+{{ form_end(form) }}

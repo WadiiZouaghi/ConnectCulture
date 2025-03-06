@@ -1,0 +1,97 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Competitions - Culture Connect{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">
+            {% if form.vars.value.id_comp is defined %}
+                Modifier
+            {% else %}
+                Créer
+            {% endif %}
+            une Compétition
+        </h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('admin_tables') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {% if form.vars.value.id_comp is defined %}
+                        Modifier
+                    {% else %}
+                        Créer
+                    {% endif %}
+                    Compétition
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        {% if form.vars.value.id_comp is defined %}
+                            Modifier Compétition
+                        {% else %}
+                            Créer Compétition
+                        {% endif %}
+                    </h4>
+                    <div class="table-responsive pt-3">
+                        {{ form_start(form, {'attr': {'class': 'form'}}) }}
+
+                        <div class="mb-3">
+                            {{ form_label(form.Nom) }}
+                            {{ form_widget(form.Nom, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.Nom) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.Description) }}
+                            {{ form_widget(form.Description, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.Description) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.Date_debut) }}
+                            {{ form_widget(form.Date_debut, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.Date_debut) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.Date_fin) }}
+                            {{ form_widget(form.Date_fin, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.Date_fin) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.Etat) }}
+                            {{ form_widget(form.Etat, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.Etat) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.organisateur) }}
+                            {{ form_widget(form.organisateur, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.organisateur) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            {% if form.vars.value.id_comp is defined %}
+                                Modifier
+                            {% else %}
+                                Créer
+                            {% endif %}
+                            Compétition
+                        </button>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

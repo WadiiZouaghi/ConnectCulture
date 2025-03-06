@@ -1,0 +1,14 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Add Reward{% endblock %}
+
+{% block body %}
+    <h1>Add Reward</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.points_required) }}
+        {{ form_row(form.user) }}
+        <button class="btn">Save</button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competition Details</title>
+</head>
+<body>
+    <h1>Competition Details: {{ competition.nom }}</h1>
+    <p><strong>Description:</strong> {{ competition.description }}</p>
+    <p><strong>Start Date:</strong> {{ competition.dateDebut|date('M d, Y') }}</p>
+    <p><strong>End Date:</strong> {{ competition.dateFin|date('M d, Y') }}</p>
+    <p><strong>Status:</strong> {{ competition.etat ?: 'Not specified' }}</p>
+    <p><strong>Organizer:</strong> {% if competition.organisateur is not null %}{{ competition.organisateur.id }}{% else %}No user assigned{% endif %}</p>
+</body>
+</html>

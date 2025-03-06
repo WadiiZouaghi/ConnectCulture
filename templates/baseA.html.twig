@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Culture Connect{% endblock %}</title>
+    
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/feather/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/ti-icons/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/typicons/typicons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/simple-line-icons/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/css/vendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/js/select.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/css/vertical-layout-light/style.css') }}">
+
+    {% block stylesheets %}{% endblock %}
+
+    <style>
+    /* Pagination Container */
+    .pagination-container {
+        margin-top: 20px;
+        text-align: center; /* Ensures the pagination is centered */
+    }
+
+    /* Pagination List */
+    body .pagination-container .pagination {
+        display: inline-flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Pagination List Items */
+    .pagination-container .pagination li {
+        margin: 0 5px;
+    }
+
+    /* Links and Button Styles */
+    .pagination-container .pagination li a,
+    .pagination-container .pagination li span {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    /* Hover Effect */
+    .pagination-container .pagination li a:hover {
+        background-color: #0056b3;
+    }
+
+    /* Disabled Pagination Items */
+    .pagination-container .pagination .disabled a,
+    .pagination-container .pagination .disabled span {
+        background-color: #e0e0e0;
+        color: #a0a0a0;
+    }
+
+    /* Active Pagination Item */
+    .pagination-container .pagination .active a {
+        background-color: #28a745;
+        color: white;
+    }
+
+    /* Pagination Number Style */
+    .pagination-container .pagination li a,
+    .pagination-container .pagination li span {
+        font-weight: bold;
+    }
+
+    .system-info-text {
+        font-family: monospace;
+        color: #062264;
+        font-size: 0.9rem;
+        white-space: pre-line;
+        padding: 10px;
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        margin: 10px 0;
+    }
+
+    .brand-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #062264;
+        text-decoration: none;
+        letter-spacing: 0.5px;
+    }
+
+    .action-btn {
+        background-color: #4b93d1;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        font-size: 0.85rem;
+    }
+
+    .action-btn:hover {
+        opacity: 0.9;
+        color: white;
+    }
+
+    .nav-item .nav-link {
+        color: #062264;
+    }
+
+    .menu-title {
+        color: #062264;
+    }
+    </style>
+</head>
+<body>
+    <div class="container-scroller">
+        <!-- Navbar -->
+        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+                <div class="me-3">
+                    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+                        <span class="icon-menu"></span>
+                    </button>
+                </div>
+                <div>
+                    <a class="brand-title" href="{{ path('app_admin') }}">
+                        Culture Connect
+                    </a>
+                </div>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-top">
+                <ul class="navbar-nav">
+                    <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+                        <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">{{ app.user.username ?? 'User' }}</span></h1>
+                        <h3 class="welcome-sub-text">Your performance summary this week</h3>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown d-none d-lg-block">
+                        <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">Select Category</a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
+                            <!-- Category Items -->
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid page-body-wrapper">
+            <!-- Sidebar -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_admin') }}">
+                            <i class="mdi mdi-grid-large menu-icon"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-category">Management</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin_dashboard') }}">
+                            <i class="menu-icon mdi mdi-account-multiple"></i>
+                            <span class="menu-title">Users List</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_event_index') }}">
+                            <i class="menu-icon mdi mdi-calendar-multiple"></i>
+                            <span class="menu-title">Events List</span>
+                        </a>
+                    </li>
+                                        <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin_tables') }}">
+                            <i class="menu-icon mdi mdi-calendar-multiple"></i>
+                            <span class="menu-title">Events List</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    {% block content %}
+                        <div class="pagination-container">
+                            <ul class="pagination">
+                                <li class="page-item"><a href="#">1</a></li>
+                                <li class="page-item"><a href="#">2</a></li>
+                                <li class="page-item"><a href="#">3</a></li>
+                                <li class="page-item active"><a href="#">4</a></li>
+                                <li class="page-item"><a href="#">5</a></li>
+                            </ul>
+                        </div>
+                    {% endblock %}
+                </div>
+                {% block body %}{% endblock %}
+                
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+                            Culture Connect © {{ "now"|date("Y") }}
+                        </span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                            All rights reserved
+                        </span>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    {% block javascripts %}
+    <script src="{{ asset('assetsA/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('assetsA/vendors/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('assetsA/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('assetsA/vendors/progressbar.js/progressbar.min.js') }}"></script>
+    <script src="{{ asset('assetsA/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('assetsA/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('assetsA/js/template.js') }}"></script>
+    <script src="{{ asset('assetsA/js/settings.js') }}"></script>
+    <script src="{{ asset('assetsA/js/todolist.js') }}"></script>
+    <script src="{{ asset('assetsA/js/dashboard.js') }}"></script>
+    <script src="{{ asset('assetsA/js/Chart.roundedBarCharts.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

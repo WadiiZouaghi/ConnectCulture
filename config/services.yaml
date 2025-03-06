@@ -1,0 +1,35 @@
+parameters:
+    # Paramètre pour le répertoire des images téléchargées
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+
+
+    twilio_sid: '%env(TWILIO_SID)%'
+    twilio_auth_token: '%env(TWILIO_AUTH_TOKEN)%'
+    twilio_phone: '%env(TWILIO_PHONE)%'
+
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    dompdf:
+        class: Dompdf\Dompdf
+        factory: ['Dompdf\Dompdf', 'new']
+        arguments:
+            - '@dompdf.options'
+
+    dompdf.options:
+        class: Dompdf\Options
+        calls:
+            - [ set, [ { 'defaultFont': 'Arial' } ] ]
+
+    App\Service\PdfGenerator: ~
+
+    # makes classes in src/ available to be used as services
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
