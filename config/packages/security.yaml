@@ -1,11 +1,8 @@
-# config/packages/security.yaml
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         App\Entity\Actor:
             algorithm: auto
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         app_user_provider:
             entity:
@@ -23,10 +20,19 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+                default_target_path: group_list
             logout:
                 path: app_logout
                 target: group_list
 
-    # Easy way to control access for large sections of your site
     access_control:
-        #- { path: ^/group/(create|edit|delete), roles: ROLE_USER }
+        - { path: ^/group/create, roles: ROLE_USER }
+        - { path: ^/group/\d+/edit, roles: ROLE_USER }
+        - { path: ^/group/\d+/delete, roles: ROLE_USER }
+        - { path: ^/group/\d+/discussion, roles: ROLE_USER, methods: [POST] }
+        - { path: ^/group/\d+/add-discussion, roles: ROLE_USER }
+        - { path: ^/group/\d+/invite, roles: ROLE_USER, methods: [POST] }
+        - { path: ^/group/\d+/posts, roles: ROLE_USER, methods: [POST] }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/signup, roles: PUBLIC_ACCESS }
+        - { path: ^/group, roles: PUBLIC_ACCESS }

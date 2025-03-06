@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250224004702 extends AbstractMigration
+final class Version20250306092449 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20250224004702 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user_group CHANGE cover_picture cover_picture LONGBLOB DEFAULT NULL');
+        $this->addSql('ALTER TABLE event_group CHANGE group_type_id group_type_id INT NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user_group CHANGE cover_picture cover_picture VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE event_group CHANGE group_type_id group_type_id INT DEFAULT NULL');
     }
 }

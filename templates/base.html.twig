@@ -29,7 +29,109 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <!-- Header Section -->
+        <div class="hero_area">
+            <header class="header_section">
+                <!-- Top Contact Bar -->
+                <div class="header_top">
+                    <div class="container-fluid">
+                        <div class="contact_nav d-flex justify-content-center">
+                            <a href="tel:+01123455678990" class="contact-link mx-3" aria-label="Phone number">
+                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                <span>Call: +01 123455678990</span>
+                            </a>
+                            <a href="mailto:support@cultureconnect.com" class="contact-link mx-3" aria-label="Email address">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span>Email: support@cultureconnect.com</span>
+                            </a>
+                            <a href="#" class="contact-link mx-3" aria-label="Global events">
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <span>Global Events</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation Bar -->
+                <div class="header_bottom">
+                    <div class="container-fluid">
+                        <nav class="navbar navbar-expand-lg custom_nav-container">
+                            <a class="navbar-brand" href="{{ path('group_list') }}">
+                                <span>Culture Connect</span>
+                            </a>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="s-1"></span>
+                                <span class="s-2"></span>
+                                <span class="s-3"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav mr-auto">
+                                    <li class="nav-item active">
+                                        <a class="nav-link" href="{{ path('group_list') }}">Events <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Services</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">About</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Contact Us</a>
+                                    </li>
+                                </ul>
+                                <ul class="navbar-nav ml-auto">
+                                    {% if app.user %}
+                                        <li class="nav-item">
+                                            <span class="nav-link">Welcome, {{ app.user.email }}</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('app_signup') }}">Sign Up</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                                <form class="form-inline my-2 my-lg-0" method="GET" action="{{ path('group_list') }}">
+                                    <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control mr-2" placeholder="Search events" aria-label="Search events">
+                                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="container mt-3">
+            {% for flash_error in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ flash_error }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for flash_success in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ flash_success }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="container-fluid">
+            {% block body %}{% endblock %}
+        </div>
 
         <!-- Scripts -->
         <script type="text/javascript" src="{{ asset('js/jquery-3.4.1.min.js') }}" defer></script>

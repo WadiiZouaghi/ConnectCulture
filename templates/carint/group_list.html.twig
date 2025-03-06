@@ -5,68 +5,6 @@
 {% endblock %}
 
 {% block body %}
-    <!-- Header Section -->
-    <div class="hero_area">
-        <header class="header_section">
-            <!-- Top Contact Bar -->
-            <div class="header_top">
-                <div class="container-fluid">
-                    <div class="contact_nav d-flex justify-content-center">
-                        <a href="tel:+01123455678990" class="contact-link mx-3" aria-label="Phone number">
-                            <i class="fa fa-phone" aria-hidden="true"></i>
-                            <span>Call: +01 123455678990</span>
-                        </a>
-                        <a href="mailto:support@cultureconnect.com" class="contact-link mx-3" aria-label="Email address">
-                            <i class="fa fa-envelope" aria-hidden="true"></i>
-                            <span>Email: support@cultureconnect.com</span>
-                        </a>
-                        <a href="#" class="contact-link mx-3" aria-label="Global events">
-                            <i class="fa fa-map-marker" aria-hidden="true"></i>
-                            <span>Global Events</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- Navigation Bar -->
-            <div class="header_bottom">
-                <div class="container-fluid">
-                    <nav class="navbar navbar-expand-lg custom_nav-container">
-                        <a class="navbar-brand" href="{{ path('group_list') }}">
-                            <span>Culture Connect</span>
-                        </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="s-1"></span>
-                            <span class="s-2"></span>
-                            <span class="s-3"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav mr-auto">
-                                <li class="nav-item active">
-                                    <a class="nav-link" href="{{ path('group_list') }}">Events <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Services</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">About</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Contact Us</a>
-                                </li>
-                            </ul>
-                            <form class="form-inline my-2 my-lg-0" method="GET" action="{{ path('group_list') }}">
-                                <input type="text" name="q" value="{{ searchQuery|default('') }}" class="form-control mr-2" placeholder="Search events" aria-label="Search events">
-                                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit" aria-label="Search">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </header>
-    </div>
-
     <!-- Event Group List Section -->
     <section class="event-group-view-section layout_padding-top py-5">
         <div class="container-fluid">
@@ -146,16 +84,6 @@
                     <div class="heading_container heading_center mb-5">
                         <h2 class="text-dark font-weight-bold">Event Groups</h2>
                     </div>
-
-                    <!-- Flash Messages -->
-                    {% for message in app.flashes('success') %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                    {% endfor %}
 
                     <!-- Search and Filter Bar -->
                     <div class="search-filter-bar mb-4">
@@ -248,18 +176,20 @@
                                             </div>
                                             <div class="group-actions d-flex justify-content-end mt-3">
                                                 <a href="{{ path('group_view', {'id': data.group.id}) }}" class="action-btn btn btn-info btn-sm mr-2" aria-label="View group details">Details</a>
-                                                <a href="{{ path('group_edit', {'id': data.group.id}) }}" class="action-btn btn btn-secondary btn-sm mr-2" aria-label="Edit group">Edit</a>
-                                                <form action="{{ path('group_delete', {'id': data.group.id}) }}" method="post" style="display:inline;">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ data.group.id) }}">
-                                                    <button 
-                                                        type="submit" 
-                                                        class="action-btn btn btn-danger btn-sm" 
-                                                        onclick="return confirm('Are you sure you want to delete this group?')"
-                                                        aria-label="Delete group"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </form>
+                                                {% if app.user %}
+                                                    <a href="{{ path('group_edit', {'id': data.group.id}) }}" class="action-btn btn btn-secondary btn-sm mr-2" aria-label="Edit group">Edit</a>
+                                                    <form action="{{ path('group_delete', {'id': data.group.id}) }}" method="post" style="display:inline;">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ data.group.id) }}">
+                                                        <button 
+                                                            type="submit" 
+                                                            class="action-btn btn btn-danger btn-sm" 
+                                                            onclick="return confirm('Are you sure you want to delete this group?')"
+                                                            aria-label="Delete group"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -270,7 +200,6 @@
                             <div class="col-12 mt-4">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination justify-content-center">
-                                        {# Previous Page Link #}
                                         <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
                                             <a 
                                                 class="page-link" 
@@ -280,7 +209,6 @@
                                                 Previous
                                             </a>
                                         </li>
-                                        {# Page Numbers #}
                                         {% for i in 1..totalPages %}
                                             <li class="page-item {% if i == currentPage %}active{% endif %}">
                                                 <a 
@@ -291,7 +219,6 @@
                                                 </a>
                                             </li>
                                         {% endfor %}
-                                        {# Next Page Link #}
                                         <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
                                             <a 
                                                 class="page-link" 
@@ -322,7 +249,6 @@
     <section class="info_section layout_padding2 py-5">
         <div class="container">
             <div class="row">
-                <!-- Contact Info -->
                 <div class="col-md-6 col-lg-3 info_col mb-4">
                     <div class="info_contact">
                         <h4 class="mb-3">Contact Us</h4>
@@ -348,26 +274,23 @@
                         <a href="#" class="mx-2" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
-                <!-- About Culture Connect -->
                 <div class="col-md-6 col-lg-3 info_col mb-4">
                     <div class="info_detail">
                         <h4 class="mb-3">About Culture Connect</h4>
                         <p>Connecting people through cultural events worldwide.</p>
                     </div>
                 </div>
-                <!-- Quick Links -->
-<div class="col-md-6 col-lg-2 mx-auto info_col mb-4">
-    <div class="info_link_box">
-        <h4 class="mb-3">Links</h4>
-        <div class="info_links">
-            <a class="d-block mb-2 active" href="{{ path('group_list') }}">Events</a>
-            <a class="d-block mb-2" href="#">About</a>
-            <a class="d-block mb-2" href="#">Services</a>
-            <a class="d-block mb-2" href="#">Contact Us</a>
-        </div>
-    </div>
-</div>
-                <!-- Newsletter Subscription -->
+                <div class="col-md-6 col-lg-2 mx-auto info_col mb-4">
+                    <div class="info_link_box">
+                        <h4 class="mb-3">Links</h4>
+                        <div class="info_links">
+                            <a class="d-block mb-2 active" href="{{ path('group_list') }}">Events</a>
+                            <a class="d-block mb-2" href="#">About</a>
+                            <a class="d-block mb-2" href="#">Services</a>
+                            <a class="d-block mb-2" href="#">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-6 col-lg-3 info_col mb-4">
                     <h4 class="mb-3">Subscribe</h4>
                     <form action="#" class="form-inline">

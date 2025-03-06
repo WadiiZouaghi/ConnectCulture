@@ -39,14 +39,16 @@ class ImageGeneratorService
             return $imageData;
         }
 
-        // Fallback: Use a minimal 1x1 pixel gray image (base64-encoded JPEG)
+        // Fallback: Use a minimal 1x1 pixel gray image (valid base64-encoded PNG)
         $this->logger->warning("Using minimal base64 placeholder image for event type: {$eventType}");
-
-        // Base64-encoded 1x1 gray pixel image (JPEG)
-        $placeholderBase64 = '/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALAAAAAABAAEAAAoBAAMBAAgAAAAGAAAABwAEAAIAAAAHAAAAYgAAAAAAAAD/2gAIAQEAAD8AQ5s4AAAAAaaaaaa';
-
-        // Decode base64 to binary
+        $placeholderBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='; // 1x1 gray PNG
         $imageData = base64_decode($placeholderBase64);
+
+        if ($imageData === false) {
+            $this->logger->error("Failed to decode placeholder image for event type: {$eventType}");
+            throw new \RuntimeException('Failed to generate placeholder image');
+        }
+
         $this->logger->info("Generated placeholder image for event type: {$eventType}, size: " . strlen($imageData) . " bytes");
         return $imageData;
     }
@@ -81,14 +83,14 @@ class ImageGeneratorService
                     'prompt' => $prompt,
                     'n' => 1,
                     'size' => '1024x1024',
-                    'response_format' => 'url',
+                    'response_format' => 'url', // OpenAI returns a URL to the generated image
                 ],
             ]);
 
             $data = json_decode($response->getBody(), true);
             $this->logger->debug("OpenAI API response: " . json_encode($data));
 
-            // OpenAI returns an array of data, access the first item's URL
+            // Extract the image URL from the response
             $imageUrl = $data['data'][0]['url'] ?? null;
 
             if (!$imageUrl) {
@@ -96,7 +98,14 @@ class ImageGeneratorService
             }
 
             // Download the image
-            $imageResponse = $this->client->get($imageUrl);
+            $imageResponse = $this->client->get($imageUrl, [
+                'http_errors' => false, // Prevent exceptions for non-200 responses
+            ]);
+
+            if ($imageResponse->getStatusCode() !== 200) {
+                throw new \Exception("Failed to download image from URL: {$imageUrl}, status: " . $imageResponse->getStatusCode());
+            }
+
             return $imageResponse->getBody()->getContents();
         } catch (\Exception $e) {
             $this->logger->error("Failed to generate image via OpenAI API for event type: {$eventType}: " . $e->getMessage());

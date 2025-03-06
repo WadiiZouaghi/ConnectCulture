@@ -55,8 +55,8 @@ class Group
     private Collection $actors;
 
     #[ORM\ManyToOne(targetEntity: GroupType::class)]
-    #[ORM\JoinColumn(name: "group_type_id", referencedColumnName: "id", nullable: true)]
-    private ?GroupType $groupType = null;
+    #[ORM\JoinColumn(name: "group_type_id", referencedColumnName: "id", nullable: false)]
+    private ?GroupType $groupType;
 
     public function __construct()
     {
@@ -289,7 +289,7 @@ class Group
         return $this->visibility === 'public';
     }
 
-    public function getGroupType(): ?GroupType
+    public function getGroupType(): GroupType
     {
         return $this->groupType;
     }

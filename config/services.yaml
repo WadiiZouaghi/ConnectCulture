@@ -8,6 +8,7 @@ services:
         autoconfigure: true
         bind:
             $weatherApiKey: '%weather_api_key%'
+            $openAiApiKey: '%openai_api_key%'
 
     App\:
         resource: '../src/'
@@ -29,4 +30,4 @@ services:
     App\Service\ImageGeneratorService:
         arguments:
             $openAiApiKey: '%openai_api_key%'
-            $logger: '@monolog.logger'
+            $logger: '@logger'

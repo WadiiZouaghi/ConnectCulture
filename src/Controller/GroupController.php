@@ -52,21 +52,13 @@ class GroupController extends AbstractController
     private function processCoverPicture(Group $group, $coverPicture, bool $forceGenerate = false): bool
     {
         try {
-            if ($coverPicture) {
+            $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/groups/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            if ($coverPicture instanceof UploadedFile) {
                 // Handle uploaded file
-                if (!$coverPicture instanceof UploadedFile) {
-                    $this->logger->error("Invalid uploaded file provided for group: {$group->getName()}");
-                    return false;
-                }
-
-                // Read the uploaded file contents
-                $binaryContent = file_get_contents($coverPicture->getPathname());
-                if ($binaryContent === false) {
-                    $this->logger->error("Failed to read uploaded file for group: {$group->getName()}");
-                    return false;
-                }
-
-                // Validate the file (e.g., size, type)
                 $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
                 if (!in_array($coverPicture->getMimeType(), $allowedMimeTypes)) {
                     $this->logger->error("Invalid file type for group: {$group->getName()}. Allowed types: " . implode(', ', $allowedMimeTypes));
@@ -78,8 +70,10 @@ class GroupController extends AbstractController
                     return false;
                 }
 
-                $group->setCoverPicture($binaryContent);
-                $this->logger->info("Successfully set uploaded cover picture for group: {$group->getName()}, size: " . strlen($binaryContent) . " bytes");
+                $coverPictureName = uniqid() . '.' . $coverPicture->guessExtension();
+                $coverPicture->move($uploadDir, $coverPictureName);
+                $group->setCoverPicture($coverPictureName);
+                $this->logger->info("Successfully set uploaded cover picture for group: {$group->getName()}, filename: {$coverPictureName}");
                 return true;
             }
 
@@ -100,8 +94,10 @@ class GroupController extends AbstractController
                             $this->logger->warning("Generated image data is empty for group: {$group->getName()} (event type: {$eventType})");
                             return $this->useDefaultCoverPicture($group);
                         }
-                        $group->setCoverPicture($imageData);
-                        $this->logger->info("Successfully set generated cover picture for group: {$group->getName()}, size: " . strlen($imageData) . " bytes");
+                        $coverPictureName = uniqid() . '.png';
+                        file_put_contents($uploadDir . $coverPictureName, $imageData);
+                        $group->setCoverPicture($coverPictureName);
+                        $this->logger->info("Successfully set generated cover picture for group: {$group->getName()}, filename: {$coverPictureName}");
                         return true;
                     } catch (\Exception $e) {
                         $this->logger->error("Failed to generate cover picture for group: {$group->getName()} (event type: {$eventType}): " . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
@@ -130,69 +126,60 @@ class GroupController extends AbstractController
             return false;
         }
 
-        $binaryContent = file_get_contents($defaultImagePath);
-        if ($binaryContent === false) {
-            $this->logger->error("Failed to read default cover picture file for group: {$group->getName()}");
-            return false;
-        }
-
-        $group->setCoverPicture($binaryContent);
-        $this->logger->info("Successfully set default cover picture for group: {$group->getName()}, size: " . strlen($binaryContent) . " bytes");
+        $group->setCoverPicture('default-cover.jpg'); // Store filename instead of binary
+        $this->logger->info("Successfully set default cover picture for group: {$group->getName()}");
         return true;
     }
 
     private function getBase64Image($coverPicture): ?array
-{
-    $this->logger->info("Converting cover picture to base64");
+    {
+        $this->logger->info("Converting cover picture to base64");
 
-    if ($coverPicture === null) {
-        $this->logger->warning("Cover picture is null. Cannot convert to base64.");
-        return null;
-    }
-
-    if (is_resource($coverPicture)) {
-        $this->logger->info("Cover picture is a resource. Reading stream.");
-        $binaryContent = stream_get_contents($coverPicture, -1, 0);
-        if ($binaryContent === false) {
-            $this->logger->error("Failed to read cover picture stream.");
+        if ($coverPicture === null) {
+            $this->logger->warning("Cover picture is null. Cannot convert to base64.");
             return null;
         }
-        $this->logger->info("Successfully read cover picture stream, size: " . strlen($binaryContent) . " bytes");
-        fclose($coverPicture);
-    } else {
-        $this->logger->info("Cover picture is a binary string, size: " . strlen($coverPicture) . " bytes");
-        $binaryContent = $coverPicture;
-    }
 
-    if (!is_string($binaryContent) || strlen($binaryContent) === 0) {
-        $this->logger->warning("Cover picture binary content is invalid or empty.");
-        return null;
-    }
+        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/groups/';
+        $filePath = $uploadDir . $coverPicture;
 
-    // Detect the image type
-    $imageType = 'image/jpeg'; // Default to JPEG
-    $imageHeader = substr($binaryContent, 0, 4);
-    if (strncmp($imageHeader, "\xFF\xD8\xFF", 3) === 0) { // JPEG
-        $imageType = 'image/jpeg';
-        $this->logger->info("Detected JPEG image header.");
-    } elseif (strncmp($imageHeader, "\x89PNG", 4) === 0) { // PNG
-        $imageType = 'image/png';
-        $this->logger->info("Detected PNG image header.");
-    } elseif (strncmp($imageHeader, "GIF8", 4) === 0) { // GIF
-        $imageType = 'image/gif';
-        $this->logger->info("Detected GIF image header.");
-    } else {
-        $this->logger->warning("Binary content does not appear to be a valid image. First 4 bytes: " . bin2hex($imageHeader));
-    }
+        if (!file_exists($filePath)) {
+            $this->logger->error("Cover picture file not found at: {$filePath}");
+            return null;
+        }
 
-    $base64 = base64_encode($binaryContent);
-    $this->logger->info("Successfully converted cover picture to base64, length: " . strlen($base64));
-    $this->logger->debug("Base64 preview: " . substr($base64, 0, 50) . "...");
-    return [
-        'data' => $base64,
-        'type' => $imageType,
-    ];
-}
+        $binaryContent = file_get_contents($filePath);
+        if ($binaryContent === false) {
+            $this->logger->error("Failed to read cover picture file at: {$filePath}");
+            return null;
+        }
+
+        $this->logger->info("Successfully read cover picture file, size: " . strlen($binaryContent) . " bytes");
+
+        // Detect the image type
+        $imageType = 'image/jpeg'; // Default to JPEG
+        $imageHeader = substr($binaryContent, 0, 4);
+        if (strncmp($imageHeader, "\xFF\xD8\xFF", 3) === 0) { // JPEG
+            $imageType = 'image/jpeg';
+            $this->logger->info("Detected JPEG image header.");
+        } elseif (strncmp($imageHeader, "\x89PNG", 4) === 0) { // PNG
+            $imageType = 'image/png';
+            $this->logger->info("Detected PNG image header.");
+        } elseif (strncmp($imageHeader, "GIF8", 4) === 0) { // GIF
+            $imageType = 'image/gif';
+            $this->logger->info("Detected GIF image header.");
+        } else {
+            $this->logger->warning("Binary content does not appear to be a valid image. First 4 bytes: " . bin2hex($imageHeader));
+        }
+
+        $base64 = base64_encode($binaryContent);
+        $this->logger->info("Successfully converted cover picture to base64, length: " . strlen($base64));
+        $this->logger->debug("Base64 preview: " . substr($base64, 0, 50) . "...");
+        return [
+            'data' => $base64,
+            'type' => $imageType,
+        ];
+    }
 
     private function fetchWeatherForecast(Group $group): ?array
     {
@@ -254,9 +241,17 @@ class GroupController extends AbstractController
     }
 
     #[Route('/group/create', name: 'group_create', methods: ['GET', 'POST'])]
-    public function create(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    public function create(Request $request): Response
     {
-        $this->logger->info("Creating new event group");
+        $this->logger->info("Attempting to create new event group");
+
+        $actor = $this->getUser();
+        if (!$actor) {
+            $this->logger->warning("Unauthenticated user attempted to create a group");
+            $this->addFlash('error', 'You must be logged in to create an event group.');
+            return $this->redirectToRoute('app_login');
+        }
+
         $group = new Group();
         $form = $this->createForm(GroupFormType::class, $group);
         $form->handleRequest($request);
@@ -264,7 +259,6 @@ class GroupController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->logger->info("Form submitted and valid for group: {$group->getName()}");
 
-            // Fetch latitude and longitude based on location using OpenWeatherMap Geocoding API
             if ($group->getLocation()) {
                 try {
                     $client = HttpClient::create();
@@ -282,60 +276,48 @@ class GroupController extends AbstractController
                         $this->logger->info("Fetched coordinates for group {$group->getName()}: lat={$geoData[0]['lat']}, lon={$geoData[0]['lon']}");
                     } else {
                         $this->logger->warning("No coordinates found for location: {$group->getLocation()}");
-                        $this->addFlash('error', "The location '{$group->getLocation()}' could not be found. Please enter a valid location.");
-                        return $this->render('carint/create_event_group.html.twig', [
-                            'group_form' => $form->createView(),
-                        ]);
+                        $this->addFlash('error', "The location '{$group->getLocation()}' could not be found.");
+                        return $this->render('carint/create_event_group.html.twig', ['group_form' => $form->createView()]);
                     }
                 } catch (\Exception $e) {
                     $this->logger->error("Failed to fetch coordinates for group {$group->getName()}: " . $e->getMessage());
-                    $this->addFlash('error', "Failed to validate the location '{$group->getLocation()}': " . $e->getMessage());
-                    return $this->render('carint/create_event_group.html.twig', [
-                        'group_form' => $form->createView(),
-                    ]);
+                    $this->addFlash('error', "Failed to validate location '{$group->getLocation()}': " . $e->getMessage());
+                    return $this->render('carint/create_event_group.html.twig', ['group_form' => $form->createView()]);
                 }
             } else {
-                $this->addFlash('error', "Location is required to create an event group.");
-                return $this->render('carint/create_event_group.html.twig', [
-                    'group_form' => $form->createView(),
-                ]);
+                $this->addFlash('error', "Location is required.");
+                return $this->render('carint/create_event_group.html.twig', ['group_form' => $form->createView()]);
             }
 
-            // Process the cover picture
             $uploadedFile = $form->get('coverPicture')->getData();
             if (!$this->processCoverPicture($group, $uploadedFile)) {
                 $this->logger->error("Failed to process cover picture during group creation");
-                $this->addFlash('error', "Failed to process the cover picture for the group.");
-                return $this->render('carint/create_event_group.html.twig', [
-                    'group_form' => $form->createView(),
-                ]);
+                $this->addFlash('error', "Failed to process the cover picture.");
+                return $this->render('carint/create_event_group.html.twig', ['group_form' => $form->createView()]);
             }
 
-            // Persist the group
-            $entityManager->persist($group);
+            $group->addActor($actor);
+            $this->logger->info("Associated actor {$actor->getEmail()} with group: {$group->getName()}");
+
+            $this->entityManager->persist($group);
             try {
                 $this->entityManager->flush();
-                $this->logger->info("Successfully created group: {$group->getName()} (ID: {$group->getId()})");
+                $this->logger->info("Successfully created group: {$group->getName()} (ID: {$group->getId()}) by actor: {$actor->getEmail()}");
 
-                // Send email notification (example: notify an admin or user)
-                try {
-                    $email = (new Email())
-                        ->from('zouaghi.wadii69@gmail.com')
-                        ->to('zouaghi.wadii69@gmail.com')
-                        ->subject('New Event Group Created: ' . $group->getName())
-                        ->text("A new event group named '{$group->getName()}' has been created.\nLocation: {$group->getLocation()}\nEvent Date: {$group->getEventDate()->format('Y-m-d H:i')}");
-                    $this->mailer->send($email);
-                    $this->logger->info("Sent email notification for new group: {$group->getName()}");
-                } catch (\Exception $e) {
-                    $this->logger->error("Failed to send email notification for group {$group->getName()}: " . $e->getMessage());
-                }
-
-                $this->addFlash('success', 'Event group created successfully!');
-                return $this->redirectToRoute('group_list');
+                $email = (new Email())
+                    ->from('zouaghi.wadii69@gmail.com')
+                    ->to($actor->getEmail())
+                    ->subject('New Event Group Created: ' . $group->getName())
+                    ->text("You created '{$group->getName()}'.\nLocation: {$group->getLocation()}\nEvent Date: {$group->getEventDate()->format('Y-m-d H:i')}");
+                $this->mailer->send($email);
+                $this->logger->info("Sent email notification for group: {$group->getName()} to {$actor->getEmail()}");
             } catch (\Exception $e) {
-                $this->logger->error("Failed to flush group creation to database: " . $e->getMessage());
+                $this->logger->error("Failed to flush group creation or send email: " . $e->getMessage());
                 $this->addFlash('error', 'Failed to create event group: ' . $e->getMessage());
             }
+
+            $this->addFlash('success', 'Event group created successfully!');
+            return $this->redirectToRoute('group_list');
         }
 
         return $this->render('carint/create_event_group.html.twig', [
@@ -344,96 +326,79 @@ class GroupController extends AbstractController
     }
 
     #[Route('/group/list', name: 'group_list', methods: ['GET'])]
-public function list(Request $request, GroupRepository $groupRepository, EntityManagerInterface $entityManager): Response
-{
-    $this->logger->info("Fetching group list");
-    $searchQuery = trim($request->query->get('q', ''));
-    $location = trim($request->query->get('location', ''));
-    $visibility = trim($request->query->get('visibility', ''));
-    $date = trim($request->query->get('date', ''));
-    $category = trim($request->query->get('category', ''));
+    public function list(Request $request, GroupRepository $groupRepository): Response
+    {
+        $this->logger->info("Fetching group list");
+        $searchQuery = trim($request->query->get('q', ''));
+        $location = trim($request->query->get('location', ''));
+        $visibility = trim($request->query->get('visibility', ''));
+        $date = trim($request->query->get('date', ''));
+        $category = trim($request->query->get('category', ''));
 
-    // Handle special date filters like 'next_7_days'
-    $effectiveDate = $date;
-    if ($date === 'next_7_days') {
-        $startDate = new \DateTime();
-        $endDate = (clone $startDate)->modify('+7 days')->setTime(23, 59, 59);
-        $effectiveDate = [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')];
-        $this->logger->info("Applying date filter for next 7 days: {$startDate->format('Y-m-d')} to {$endDate->format('Y-m-d')}");
-    }
-
-    // Handle category filter
-    $categoryId = null;
-    if ($category) {
-        $groupType = $entityManager->getRepository(GroupType::class)->findOneBy(['type' => $category]);
-        if ($groupType) {
-            $categoryId = $groupType->getId();
-            $this->logger->info("Filtering by category: {$category}, group_type_id: {$categoryId}");
-        } else {
-            $this->logger->warning("Category not found: {$category}");
+        $effectiveDate = $date;
+        if ($date === 'next_7_days') {
+            $startDate = new \DateTime();
+            $endDate = (clone $startDate)->modify('+7 days')->setTime(23, 59, 59);
+            $effectiveDate = [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')];
+            $this->logger->info("Applying date filter for next 7 days: {$startDate->format('Y-m-d')} to {$endDate->format('Y-m-d')}");
         }
-    }
 
-    // Pagination parameters
-    $limit = 9; // 9 groups per page
-    $page = (int) $request->query->get('page', 1); // Current page, default to 1
-    $page = max(1, $page); // Ensure page is at least 1
-    $offset = ($page - 1) * $limit;
-
-    // Fetch paginated groups with filters
-    $groups = $groupRepository->findBySearchQueryWithFilters($searchQuery, $location, $visibility, $effectiveDate, $limit, $offset, $categoryId);
-    $locations = $groupRepository->findUniqueLocations();
-    $visibilities = $groupRepository->findUniqueVisibilities();
-    $upcomingEvents = $groupRepository->findUpcomingEvents(7, 5); // Fetch upcoming events within 7 days
-
-    // Calculate total groups and total pages
-    $totalGroups = $groupRepository->countBySearchQueryWithFilters($searchQuery, $location, $visibility, $effectiveDate, $categoryId);
-    $totalPages = max(1, (int) ceil($totalGroups / $limit));
-
-    $this->logger->info("Number of groups retrieved: " . count($groups) . ", Total groups: {$totalGroups}, Total pages: {$totalPages}, Current page: {$page}");
-    foreach ($groups as $group) {
-        $this->logger->info("Processing group: {$group->getName()} (ID: {$group->getId()})");
-
-        // Generate cover picture if missing
-        if (!$group->getCoverPicture()) {
-            $this->processCoverPicture($group, null, true); // Force generation
+        $categoryId = null;
+        if ($category) {
+            $groupType = $this->entityManager->getRepository(GroupType::class)->findOneBy(['type' => $category]);
+            if ($groupType) {
+                $categoryId = $groupType->getId();
+                $this->logger->info("Filtering by category: {$category}, group_type_id: {$categoryId}");
+            } else {
+                $this->logger->warning("Category not found: {$category}");
+            }
         }
-    }
 
-    // Flush changes to the database
-    try {
+        $limit = 9;
+        $page = max(1, (int)$request->query->get('page', 1));
+        $offset = ($page - 1) * $limit;
+
+        $groups = $groupRepository->findBySearchQueryWithFilters($searchQuery, $location, $visibility, $effectiveDate, $limit, $offset, $categoryId);
+        $locations = $groupRepository->findUniqueLocations();
+        $visibilities = $groupRepository->findUniqueVisibilities();
+        $upcomingEvents = $groupRepository->findUpcomingEvents(7, 5);
+
+        $totalGroups = $groupRepository->countBySearchQueryWithFilters($searchQuery, $location, $visibility, $effectiveDate, $categoryId);
+        $totalPages = max(1, (int)ceil($totalGroups / $limit));
+
+        $this->logger->info("Number of groups retrieved: " . count($groups) . ", Total groups: {$totalGroups}, Total pages: {$totalPages}, Current page: {$page}");
+        foreach ($groups as $group) {
+            if (!$group->getCoverPicture()) {
+                $this->processCoverPicture($group, null, true);
+            }
+        }
+
         $this->entityManager->flush();
-        $this->logger->info("Successfully flushed changes to the database.");
-    } catch (\Exception $e) {
-        $this->logger->error("Failed to flush changes to the database: " . $e->getMessage());
-        throw $e;
-    }
 
-    $groupData = [];
-    foreach ($groups as $group) {
-        $imageData = $this->getBase64Image($group->getCoverPicture());
-        $this->logger->info("Image data for group {$group->getName()}: " . ($imageData ? 'Generated (length: ' . strlen($imageData['data']) . ')' : 'Null'));
-        $groupData[] = [
-            'group' => $group,
-            'imageData' => $imageData, // Now an array with 'data' and 'type'
-        ];
-    }
+        $groupData = [];
+        foreach ($groups as $group) {
+            $imageData = $this->getBase64Image($group->getCoverPicture());
+            $groupData[] = [
+                'group' => $group,
+                'imageData' => $imageData,
+            ];
+        }
 
-    return $this->render('carint/group_list.html.twig', [
-        'groupData' => $groupData,
-        'locations' => $locations,
-        'visibilities' => $visibilities,
-        'searchQuery' => $searchQuery,
-        'location' => $location,
-        'visibility' => $visibility,
-        'date' => $date,
-        'currentPage' => $page,
-        'totalPages' => $totalPages,
-        'totalGroups' => $totalGroups,
-        'category' => $category,
-        'upcomingEvents' => $upcomingEvents,
-    ]);
-}
+        return $this->render('carint/group_list.html.twig', [
+            'groupData' => $groupData,
+            'locations' => $locations,
+            'visibilities' => $visibilities,
+            'searchQuery' => $searchQuery,
+            'location' => $location,
+            'visibility' => $visibility,
+            'date' => $date,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalGroups' => $totalGroups,
+            'category' => $category,
+            'upcomingEvents' => $upcomingEvents,
+        ]);
+    }
 
     #[Route('/group/{id}/edit', name: 'group_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Group $group): Response
@@ -444,13 +409,11 @@ public function list(Request $request, GroupRepository $groupRepository, EntityM
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->logger->info("Form submitted and valid for editing group: {$group->getName()}");
-
-            // Process the cover picture: Force generation if no cover picture exists
             $uploadedFile = $form->get('coverPicture')->getData();
-            $forceGenerate = !$group->getCoverPicture(); // Generate if no cover picture exists
-            $this->logger->info("Uploaded file: " . ($uploadedFile ? 'Present' : 'Not present') . ", Force generate: " . ($forceGenerate ? 'true' : 'false'));
+            $forceGenerate = !$group->getCoverPicture();
             if (!$this->processCoverPicture($group, $uploadedFile, $forceGenerate)) {
                 $this->logger->error("Failed to process cover picture during group edit");
+                $this->addFlash('error', "Failed to process the cover picture.");
                 return $this->render('carint/edit_event_group.html.twig', [
                     'group_form' => $form->createView(),
                     'group' => $group,
@@ -495,23 +458,15 @@ public function list(Request $request, GroupRepository $groupRepository, EntityM
 
         return $this->redirectToRoute('group_list');
     }
-
     #[Route('/group/{id}/view', name: 'group_view', methods: ['GET'])]
-public function view(Group $group, DiscussionRepository $discussionRepository, EntityManagerInterface $entityManager): Response
+public function view(Group $group, DiscussionRepository $discussionRepository): Response
 {
     $this->logger->info("Viewing group: {$group->getName()} (ID: {$group->getId()})");
 
-    // Generate cover picture if missing
     if (!$group->getCoverPicture()) {
         $this->logger->info("Cover picture missing for group: {$group->getName()}. Generating...");
-        $this->processCoverPicture($group, null, true); // Force generation
-        try {
-            $this->entityManager->flush();
-            $this->logger->info("Successfully set generated cover picture for group: {$group->getName()}");
-        } catch (\Exception $e) {
-            $this->logger->error("Failed to flush generated cover picture for group: {$group->getName()}: " . $e->getMessage());
-            throw $e;
-        }
+        $this->processCoverPicture($group, null, true);
+        $this->entityManager->flush();
     }
 
     // Fetch coordinates if missing
@@ -530,8 +485,8 @@ public function view(Group $group, DiscussionRepository $discussionRepository, E
             if (!empty($geoData)) {
                 $group->setLatitude($geoData[0]['lat']);
                 $group->setLongitude($geoData[0]['lon']);
-                $entityManager->persist($group);
-                $entityManager->flush();
+                $this->entityManager->persist($group);
+                $this->entityManager->flush();
                 $this->logger->info("Updated coordinates for group {$group->getId()}: lat={$geoData[0]['lat']}, lon={$geoData[0]['lon']}");
             } else {
                 $this->logger->warning("No coordinates found for location: {$group->getLocation()}");
@@ -544,7 +499,6 @@ public function view(Group $group, DiscussionRepository $discussionRepository, E
     }
 
     $imageData = $this->getBase64Image($group->getCoverPicture());
-    $this->logger->info("Image data for group {$group->getName()}: " . ($imageData ? 'Generated (length: ' . strlen($imageData['data']) . ')' : 'Null'));
     $discussions = $discussionRepository->findBy(['group' => $group], ['createdAt' => 'DESC']);
     $weatherData = $this->fetchWeatherForecast($group);
     $relatedGroups = $this->entityManager->getRepository(Group::class)
@@ -552,47 +506,44 @@ public function view(Group $group, DiscussionRepository $discussionRepository, E
 
     return $this->render('carint/group_view.html.twig', [
         'group' => $group,
-        'imageData' => $imageData, // Now an array with 'data' and 'type'
+        'imageData' => $imageData,
         'discussions' => $discussions,
         'weatherData' => $weatherData,
-        'weatherErrorMessage' => $weatherErrorMessage,
+        'weatherErrorMessage' => $weatherErrorMessage, // Add this variable to the template
         'relatedGroups' => $relatedGroups,
     ]);
 }
+    #[Route('/group/{id}/posts', name: 'group_posts', methods: ['GET'])]
+    public function posts(Group $group): Response
+    {
+        $this->logger->info("Viewing posts for group: {$group->getName()} (ID: {$group->getId()})");
 
-#[Route('/group/{id}/posts', name: 'group_posts', methods: ['GET'])]
-public function posts(Group $group): Response
-{
-    $this->logger->info("Viewing posts for group: {$group->getName()} (ID: {$group->getId()})");
-
-    // Generate cover picture if missing
-    if (!$group->getCoverPicture()) {
-        $this->logger->info("Cover picture missing for group: {$group->getName()}. Generating...");
-        $this->processCoverPicture($group, null, true); // Force generation
-        try {
+        if (!$group->getCoverPicture()) {
+            $this->logger->info("Cover picture missing for group: {$group->getName()}. Generating...");
+            $this->processCoverPicture($group, null, true);
             $this->entityManager->flush();
-            $this->logger->info("Successfully set generated cover picture for group: {$group->getName()}");
-        } catch (\Exception $e) {
-            $this->logger->error("Failed to flush generated cover picture for group: {$group->getName()}: " . $e->getMessage());
-            throw $e;
         }
+
+        $imageData = $this->getBase64Image($group->getCoverPicture());
+        $posts = $this->entityManager->getRepository(Post::class)
+            ->findBy(['group' => $group], ['createdAt' => 'DESC']);
+
+        return $this->render('carint/group_posts.html.twig', [
+            'group' => $group,
+            'posts' => $posts,
+            'imageData' => $imageData,
+        ]);
     }
-
-    $imageData = $this->getBase64Image($group->getCoverPicture());
-    $this->logger->info("Image data for group {$group->getName()}: " . ($imageData ? 'Generated (length: ' . strlen($imageData['data']) . ')' : 'Null'));
-    $posts = $this->entityManager->getRepository(Post::class)
-        ->findBy(['group' => $group], ['createdAt' => 'DESC']);
-
-    return $this->render('carint/group_posts.html.twig', [
-        'group' => $group,
-        'posts' => $posts,
-        'imageData' => $imageData, // Now an array with 'data' and 'type'
-    ]);
-}
 
     #[Route('/group/{id}/invite', name: 'group_invite', methods: ['GET', 'POST'])]
     public function invite(Request $request, Group $group, InvitationRepository $invitationRepository, ActorRepository $actorRepository): Response
     {
+        $actor = $this->getUser();
+        if ($request->isMethod('POST') && !$actor) {
+            $this->addFlash('error', 'You must be logged in to send an invitation.');
+            return $this->redirectToRoute('app_login');
+        }
+
         $this->logger->info("Inviting user to group: {$group->getName()} (ID: {$group->getId()})");
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('invite' . $group->getId(), $request->request->get('_token'))) {
@@ -611,7 +562,7 @@ public function posts(Group $group): Response
             $invitee = $actorRepository->findOneBy(['email' => $inviteeEmail]);
             if ($invitee && !$group->isMember($invitee)) {
                 $invitation = new Invitation();
-                $invitation->setGroup($group)->setInvitee($invitee);
+                $invitation->setGroup($group)->setInvitee($invitee)->setInviter($actor);
                 $this->entityManager->persist($invitation);
                 try {
                     $this->entityManager->flush();
@@ -720,80 +671,77 @@ public function posts(Group $group): Response
     }
 
     #[Route('/group/{id}/discussion', name: 'group_discussion', methods: ['GET', 'POST'])]
-public function groupDiscussion(Request $request, Group $group): Response
-{
-    // Fetch discussions for the group
-    $discussions = $this->entityManager->getRepository(Discussion::class)->findBy(['group' => $group]);
+    public function groupDiscussion(Request $request, Group $group): Response
+    {
+        $discussions = $this->entityManager->getRepository(Discussion::class)->findBy(['group' => $group]);
 
-    // Temporarily skip user verification for testing
-    // Uncomment the following block when ready to implement authentication
-    /*
-    $user = $this->getUser();
-    if (!$user) {
-        $this->addFlash('error', 'You must be logged in to add a discussion.');
-        return $this->redirectToRoute('group_view', ['id' => $group->getId()]);
+        $actor = $this->getUser();
+        if ($request->isMethod('POST') && !$actor) {
+            $this->addFlash('error', 'You must be logged in to add a discussion.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $discussion = new Discussion();
+        $discussion->setGroup($group);
+        $discussion->setAuthor($actor);
+        $discussion->setCreatedAt(new \DateTimeImmutable());
+
+        $form = $this->createForm(DiscussionType::class, $discussion);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($discussion);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Discussion added successfully!');
+            return $this->redirectToRoute('group_discussion', ['id' => $group->getId()]);
+        }
+
+        return $this->render('carint/group_discussion.html.twig', [
+            'group' => $group,
+            'discussions' => $discussions,
+            'group_form' => $form->createView(),
+            'searchQuery' => $request->query->get('q', ''),
+        ]);
     }
-    */
-
-    // Create a new discussion
-    $discussion = new Discussion();
-    $discussion->setGroup($group);
-    // Temporarily set author to null for testing without authentication
-    $discussion->setAuthor(null); // You can set a default author if needed, e.g., $this->entityManager->getRepository(Actor::class)->find(1)
-    $discussion->setCreatedAt(new \DateTimeImmutable());
-
-    // Create the form for adding a discussion
-    $form = $this->createForm(DiscussionType::class, $discussion);
-    $form->handleRequest($request);
-
-    // Handle form submission
-    if ($form->isSubmitted() && $form->isValid()) {
-        $this->entityManager->persist($discussion);
-        $this->entityManager->flush();
-
-        $this->addFlash('success', 'Discussion added successfully!');
-        return $this->redirectToRoute('group_discussion', ['id' => $group->getId()]);
-    }
-
-    // Render the template with the form
-    return $this->render('carint/group_discussion.html.twig', [
-        'group' => $group,
-        'discussions' => $discussions,
-        'group_form' => $form->createView(),
-        'searchQuery' => $request->query->get('q', ''),
-    ]);
-}
 
     #[Route('/group/{id}/add-discussion', name: 'group_add_discussion', methods: ['POST'])]
-public function addDiscussion(Request $request, Group $group): Response
-{
-    $this->logger->info("Adding discussion for group: {$group->getName()} (ID: {$group->getId()})");
-    if (!$this->isCsrfTokenValid('add_discussion' . $group->getId(), $request->request->get('_token'))) {
-        $this->logger->error("Invalid CSRF token during discussion addition for group: {$group->getName()}");
-        $this->addFlash('error', 'Invalid CSRF token.');
+    public function addDiscussion(Request $request, Group $group): Response
+    {
+        $actor = $this->getUser();
+        if (!$actor) {
+            $this->addFlash('error', 'You must be logged in to add a discussion.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $this->logger->info("Adding discussion for group: {$group->getName()} (ID: {$group->getId()})");
+        if (!$this->isCsrfTokenValid('add_discussion' . $group->getId(), $request->request->get('_token'))) {
+            $this->logger->error("Invalid CSRF token during discussion addition for group: {$group->getName()}");
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('group_discussion', ['id' => $group->getId()]);
+        }
+
+        $content = trim($request->request->get('content', ''));
+        if (!empty($content)) {
+            $discussion = new Discussion();
+            $discussion->setContent($content)
+                       ->setGroup($group)
+                       ->setAuthor($actor)
+                       ->setCreatedAt(new \DateTime());
+            $this->entityManager->persist($discussion);
+            try {
+                $this->entityManager->flush();
+                $this->logger->info("Successfully added discussion for group: {$group->getName()}");
+                $this->addFlash('success', 'Discussion added successfully!');
+            } catch (\Exception $e) {
+                $this->logger->error("Failed to add discussion for group: {$group->getName()}: " . $e->getMessage());
+                $this->addFlash('error', 'Failed to add discussion: ' . $e->getMessage());
+            }
+        } else {
+            $this->logger->error("Discussion content is empty for group: {$group->getName()}");
+            $this->addFlash('error', 'Discussion content cannot be empty.');
+        }
+
         return $this->redirectToRoute('group_discussion', ['id' => $group->getId()]);
     }
-
-    $content = trim($request->request->get('content', ''));
-    if (!empty($content)) {
-        $discussion = new Discussion();
-        $discussion->setContent($content)
-                   ->setGroup($group)
-                   ->setCreatedAt(new \DateTime());
-        $this->entityManager->persist($discussion);
-        try {
-            $this->entityManager->flush();
-            $this->logger->info("Successfully added discussion for group: {$group->getName()}");
-            $this->addFlash('success', 'Discussion added successfully!');
-        } catch (\Exception $e) {
-            $this->logger->error("Failed to add discussion for group: {$group->getName()}: " . $e->getMessage());
-            $this->addFlash('error', 'Failed to add discussion: ' . $e->getMessage());
-        }
-    } else {
-        $this->logger->error("Discussion content is empty for group: {$group->getName()}");
-        $this->addFlash('error', 'Discussion content cannot be empty.');
-    }
-
-    return $this->redirectToRoute('group_discussion', ['id' => $group->getId()]);
-}
 }

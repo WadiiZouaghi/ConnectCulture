@@ -1,50 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Culture Connect - Request Invitation{% endblock %}
+{% block title %}Log in - Culture Connect{% endblock %}
 
 {% block body %}
+    <section class="login-section layout_padding-top py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="heading_container heading_center mb-4">
+                        <h2 class="text-dark font-weight-bold">Log in</h2>
+                    </div>
 
-    <!-- Main Content Section -->
-    <section class="event-group-view-section layout_padding-top py-5">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="heading_container heading_center mb-5">
-                        <h2 class="text-dark font-weight-bold">Request Invitation for {{ group.name }}</h2>
-                    </div>
-                    {% for message in app.flashes('success') %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                    {% endfor %}
-                    {% for message in app.flashes('info') %}
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                    {% endfor %}
-                    {% for message in app.flashes('error') %}
+                    {% if error %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ message }}
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
+                                <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                    {% endfor %}
-                    <div class="card p-3 bg-white rounded shadow-sm">
-                        <p class="text-muted mb-4">This is a private event. Request an invitation to join.</p>
-                        <form action="{{ path('group_invite_request_submit', {'id': group.id}) }}" method="post">
-                            <div class="btn_box text-center">
-                                <button type="submit" class="btn btn-primary mt-3">Request Invitation</button>
-                                <a href="{{ path('group_list') }}" class="btn btn-secondary mt-3 ml-2">Back to Events</a>
-                            </div>
-                        </form>
-                    </div>
+                    {% endif %}
+
+                    <form method="post" action="{{ path('app_login') }}" class="bg-white p-4 rounded shadow-sm">
+                        <div class="form-group mb-4">
+                            <label for="inputEmail" class="form-label font-weight-bold">Email</label>
+                            <input type="email" name="_username" id="inputEmail" class="form-control" value="{{ last_username }}" required autofocus>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="inputPassword" class="form-label font-weight-bold">Password</label>
+                            <input type="password" name="_password" id="inputPassword" class="form-control" required>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="btn_box text-center mt-4">
+                            <button class="btn btn-primary px-4" type="submit">Sign in</button>
+                        </div>
+
+                        <p class="text-center mt-3">
+                            Don't have an account? <a href="{{ path('app_signup') }}">Sign up</a>
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
@@ -89,18 +85,10 @@
                     <div class="info_link_box">
                         <h4 class="mb-3">Links</h4>
                         <div class="info_links">
-                            <a class="d-flex align-items-center mb-2 active" href="{{ path('group_list') }}">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt="Bullet" class="mr-2"> Events
-                            </a>
-                            <a class="d-flex align-items-center mb-2" href="#">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt="Bullet" class="mr-2"> About
-                            </a>
-                            <a class="d-flex align-items-center mb-2" href="#">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt="Bullet" class="mr-2"> Services
-                            </a>
-                            <a class="d-flex align-items-center" href="#">
-                                <img src="{{ asset('images/nav-bullet.png') }}" alt="Bullet" class="mr-2"> Contact Us
-                            </a>
+                            <a class="d-block mb-2 active" href="{{ path('group_list') }}">Events</a>
+                            <a class="d-block mb-2" href="#">About</a>
+                            <a class="d-block mb-2" href="#">Services</a>
+                            <a class="d-block mb-2" href="#">Contact Us</a>
                         </div>
                     </div>
                 </div>
