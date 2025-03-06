@@ -19,20 +19,15 @@
     {% block stylesheets %}{% endblock %}
     
     <style>
-        .system-info {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        
-        .system-time {
+        .system-info-text {
             font-family: monospace;
             color: #062264;
-        }
-
-        .brand-logo {
-            padding: 15px !important;
+            font-size: 0.9rem;
+            white-space: pre-line;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            margin: 10px 0;
         }
 
         .brand-title {
@@ -43,51 +38,25 @@
             letter-spacing: 0.5px;
         }
 
-        .welcome-text {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .welcome-sub-text {
-            font-size: 1rem;
-            color: #6c757d;
-        }
-
-        .nav-profile-name {
-            font-weight: 500;
-            color: #062264;
-        }
-
-        .navbar .navbar-brand-wrapper {
-            background: #ffffff;
-            border-right: 1px solid #e9ecef;
-        }
-
-        .sidebar {
-            background: #ffffff;
-        }
-
-        .sidebar .nav .nav-item .nav-link {
-            color: #062264;
-        }
-
-        .sidebar .nav .nav-item .nav-link:hover {
-            background: #e9ecef;
-        }
-
-        .content-wrapper {
-            background: #f8f9fa;
-        }
-
-        .card {
+        .action-btn {
+            background-color: #4b93d1;
+            color: white;
+            padding: 8px 16px;
             border: none;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-size: 0.85rem;
         }
 
-        .footer {
-            background: #ffffff;
-            padding: 20px 1rem;
-            border-top: 1px solid #e9ecef;
+        .action-btn:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        .nav-item .nav-link {
+            color: #062264;
+        }
+
+        .menu-title {
+            color: #062264;
         }
     </style>
 </head>
@@ -110,14 +79,29 @@
             <div class="navbar-menu-wrapper d-flex align-items-top">
                 <ul class="navbar-nav">
                     <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-                        <h1 class="welcome-text">Good 
-                            {% set hour = "now"|date("H") %}
-                            {% if hour < 12 %}Morning{% elseif hour < 18 %}Afternoon{% else %}Evening{% endif %}, 
-                            <span class="text-black fw-bold">Administrator</span>
-                        </h1>
+                        <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">Administrator</span></h1>
+                        <h3 class="welcome-sub-text">Your performance summary this week</h3>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
+                    <!-- Category Dropdown -->
+                    <li class="nav-item dropdown d-none d-lg-block">
+                        <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">Select Category</a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
+                            <!-- Category Items -->
+                        </div>
+                    </li>
+
+                    <!-- Date Picker -->
+                    <li class="nav-item d-none d-lg-block">
+                        <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                            <span class="input-group-addon input-group-prepend border-right">
+                                <span class="icon-calendar input-group-text calendar-icon"></span>
+                            </span>
+                            <input type="text" class="form-control">
+                        </div>
+                    </li>
+
                     <!-- Search -->
                     <li class="nav-item">
                         <form class="search-form" action="#">
@@ -129,15 +113,9 @@
                     <!-- Notifications -->
                     <li class="nav-item dropdown">
                         <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-                            <i class="icon-bell"></i>
-                            <span class="count"></span>
+                            <i class="icon-mail icon-lg"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
-                            <a class="dropdown-item py-3 border-bottom">
-                                <p class="mb-0 font-weight-medium float-left">Notifications</p>
-                                <span class="badge badge-pill badge-primary float-right">View all</span>
-                            </a>
-                            <!-- Add notification items here -->
                         </div>
                     </li>
 
@@ -149,8 +127,8 @@
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                             <div class="dropdown-header text-center">
                                 <img class="img-md rounded-circle" src="{{ asset('assetsA/images/faces/face8.jpg') }}" alt="Profile image">
-                                <p class="mb-1 mt-3 font-weight-semibold">Administrator</p>
-                                <p class="fw-light text-muted mb-0">admin@cultureconnect.com</p>
+                                <p class="mb-1 mt-3 font-weight-semibold">{{ app.user.username ?? 'User' }}</p>
+                                <p class="fw-light text-muted mb-0">{{ app.user.email ?? '' }}</p>
                             </div>
                             <a class="dropdown-item" href="{{ path('app_profile') }}">
                                 <i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>
@@ -163,9 +141,6 @@
                         </div>
                     </li>
                 </ul>
-                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
-                    <span class="mdi mdi-menu"></span>
-                </button>
             </div>
         </nav>
 
@@ -181,22 +156,15 @@
                         </a>
                     </li>
 
+
                     <!-- Management Section -->
                     <li class="nav-item nav-category">Management</li>
                     
                     <!-- Users Management -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_users_list') }}">
+                        <a class="nav-link" href="{{ path('admin_dashboard') }}">
                             <i class="menu-icon mdi mdi-account-multiple"></i>
                             <span class="menu-title">Users List</span>
-                        </a>
-                    </li>
-
-                    <!-- Events Management -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_event_index') }}">
-                            <i class="menu-icon mdi mdi-calendar-multiple"></i>
-                            <span class="menu-title">Events List</span>
                         </a>
                     </li>
 
@@ -209,12 +177,11 @@
                     </li>
 
 
-                    <!-- Reports -->
-                    <li class="nav-item nav-category">Reports</li>
+                    <!-- Events Management -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="menu-icon mdi mdi-chart-line"></i>
-                            <span class="menu-title">Statistics</span>
+                        <a class="nav-link" href="{{ path('app_event_index') }}">
+                            <i class="menu-icon mdi mdi-calendar-multiple"></i>
+                            <span class="menu-title">Events List</span>
                         </a>
                     </li>
                 </ul>
@@ -223,17 +190,9 @@
             <!-- Main Content -->
             <div class="main-panel">
                 <div class="content-wrapper">
-                    {% for label, messages in app.flashes %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                    
                     {% block content %}{% endblock %}
                 </div>
+                {% block body %}{% endblock %}
                 
                 <!-- Footer -->
                 <footer class="footer">
@@ -263,23 +222,6 @@
     <script src="{{ asset('assetsA/js/todolist.js') }}"></script>
     <script src="{{ asset('assetsA/js/dashboard.js') }}"></script>
     <script src="{{ asset('assetsA/js/Chart.roundedBarCharts.js') }}"></script>
-    
-    <script>
-        // Update time every second
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.getUTCFullYear() + '-' + 
-                             String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
-                             String(now.getUTCDate()).padStart(2, '0') + ' ' +
-                             String(now.getUTCHours()).padStart(2, '0') + ':' +
-                             String(now.getUTCMinutes()).padStart(2, '0') + ':' +
-                             String(now.getUTCSeconds()).padStart(2, '0');
-            document.querySelector('.system-time').textContent = timeString;
-        }
-        
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
     {% endblock %}
 </body>
 </html>

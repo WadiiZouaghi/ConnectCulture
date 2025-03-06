@@ -1,0 +1,48 @@
+{% extends 'baseAA.html.twig' %}
+
+{% block title %}{{ agency.name }}{% endblock %}
+
+{% block body %}
+    <div class="agency-details">
+        <div class="heading_container">
+            <h1>{{ agency.name }}</h1>
+        </div>
+        <p><strong>Address:</strong> {{ agency.address.description }}</p>
+
+        <!-- Map Container -->
+        <div id="map" style="height: 400px; width: 100%;"></div>
+
+        <a href="{{ path('agency_list') }}" class="back-btn">Back to List</a>
+    </div>
+
+    <!-- Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var map = L.map('map').setView([{{ agency.address.latitude }}, {{ agency.address.longitude }}], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.marker([{{ agency.address.latitude }}, {{ agency.address.longitude }}])
+                .addTo(map)
+                .bindPopup("<b>{{ agency.name }}</b><br>{{ agency.address.description }}")
+                .openPopup();
+        });
+    </script>
+
+    <style>
+        .heading_container h1 {
+            color: #062264;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .heading_container span {
+            color: #4b93d1;
+        }
+    </style>
+{% endblock %}
