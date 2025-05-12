@@ -31,11 +31,11 @@ class SeedAdminCommand extends Command
         $admin = new User();
         $admin->setFullName("Admin User")
               ->setEmail("admin@example.com")
-              ->setPhone("1234567890")
+              ->setPhone("50895698")
               ->setRoles(["ROLE_ADMIN"]);
 
         // Hash the password before saving
-        $hashedPassword = $this->passwordHasher->hashPassword($admin, "admin123");
+        $hashedPassword = $this->passwordHasher->hashPassword($admin, "Admin123");
         $admin->setPassword($hashedPassword);
 
         $this->entityManager->persist($admin);
