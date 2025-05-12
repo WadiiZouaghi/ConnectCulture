@@ -1,0 +1,347 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groups{% endblock %}
+
+{% block body %}
+<section class="groups-section">
+    <!-- System Info Bar -->
+    <div class="system-info-bar">
+        <div class="system-info-item">
+            Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): {{ "now"|date("Y-m-d H:i:s") }}
+        </div>
+        {% if app.user %}
+        <div class="system-info-item">
+            Current User's Login: {{ app.user.userIdentifier }}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="groups-container">
+        <!-- Groups Header -->
+        <div class="groups-header">
+            <div class="heading_container">
+                <h2>Discover <span>Groups</span></h2>
+            </div>
+        </div>
+
+        <!-- Groups Grid -->
+        <div class="groups-grid">
+            {% if groups is empty %}
+                <div class="no-groups">
+                    <i class="fa fa-users"></i>
+                    <h3>No Groups Found</h3>
+                    <p>There are no groups available at the moment</p>
+                </div>
+            {% endif %}
+
+            {% for group in groups %}
+                <div class="group-card">
+                    <div class="group-header">
+                        <div class="group-type-badge">{{ group.type }}</div>
+                        <div class="group-visibility-badge">{{ group.visibility }}</div>
+                    </div>
+
+                    <div class="group-content">
+                        <div class="group-info">
+                            <div class="info-item">
+                                <i class="fa fa-users"></i>
+                                <div class="info-content">
+                                    <label>Group Name</label>
+                                    <p>{{ group.name }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <i class="fa fa-tag"></i>
+                                <div class="info-content">
+                                    <label>Category</label>
+                                    <p>{{ group.category }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <i class="fa fa-map-marker"></i>
+                                <div class="info-content">
+                                    <label>City</label>
+                                    <p>{{ group.city }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <i class="fa fa-align-left"></i>
+                                <div class="info-content">
+                                    <label>Description</label>
+                                    <p class="description">{{ group.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="group-actions">
+                            <a href="{{ path('app_group_show_user', {'id': group.id}) }}" class="action-btn view-btn">
+                                <i class="fa fa-eye"></i>
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* System Info Bar */
+.system-info-bar {
+    background: #f8f9fa;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+}
+
+.system-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #062264;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Groups Section */
+.groups-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.groups-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Groups Header */
+.groups-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.heading_container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #062264;
+}
+
+.heading_container span {
+    color: #4b93d1;
+}
+
+/* Groups Grid */
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Group Card */
+.group-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.group-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Group Header */
+.group-header {
+    position: relative;
+    background: linear-gradient(145deg, #4b93d1, #062264);
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.group-type-badge, .group-visibility-badge {
+    background: white;
+    color: #062264;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Group Content */
+.group-content {
+    padding: 20px;
+}
+
+.group-info {
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.info-item i {
+    color: #4b93d1;
+    font-size: 1.2rem;
+    min-width: 20px;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content label {
+    color: #062264;
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info-content p {
+    color: #062264;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.description {
+    white-space: pre-line;
+    max-height: 80px;
+    overflow: hidden;
+}
+
+/* Group Actions */
+.group-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    flex: 1;
+}
+
+.view-btn {
+    background-color: #4b93d1;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    color: white;
+    text-decoration: none;
+}
+
+.action-btn i {
+    font-size: 0.9rem;
+}
+
+/* No Groups Message */
+.no-groups {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+}
+
+.no-groups i {
+    font-size: 48px;
+    color: #062264;
+    margin-bottom: 15px;
+}
+
+.no-groups h3 {
+    color: #062264;
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.no-groups p {
+    color: #062264;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .system-info-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .groups-container {
+        padding: 15px;
+    }
+
+    .groups-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .group-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+
+    .info-content label {
+        font-size: 0.95rem;
+    }
+
+    .info-content p {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

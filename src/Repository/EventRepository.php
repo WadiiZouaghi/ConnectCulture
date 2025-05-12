@@ -29,8 +29,8 @@ class EventRepository extends ServiceEntityRepository
     public function findByUser(User $user): array
     {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.user = :user')
-            ->setParameter('user', $user)
+            ->andWhere('e.userId = :userId')
+            ->setParameter('userId', $user->getId())
             ->orderBy('e.id', 'DESC')
             ->getQuery()
             ->getResult();
@@ -67,8 +67,8 @@ class EventRepository extends ServiceEntityRepository
         }
 
         if ($user) {
-            $qb->andWhere('e.user = :user')
-                ->setParameter('user', $user);
+            $qb->andWhere('e.userId = :userId')
+                ->setParameter('userId', $user->getId());
         }
 
         return $qb->orderBy('e.id', 'DESC')
@@ -111,8 +111,8 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
 
         if ($user) {
-            $qb->andWhere('e.user = :user')
-                ->setParameter('user', $user);
+            $qb->andWhere('e.userId = :userId')
+                ->setParameter('userId', $user->getId());
         }
 
         return $qb->orderBy('e.id', 'DESC')
@@ -131,8 +131,8 @@ class EventRepository extends ServiceEntityRepository
             ->select('COUNT(e.id)');
 
         if ($user) {
-            $qb->andWhere('e.user = :user')
-                ->setParameter('user', $user);
+            $qb->andWhere('e.userId = :userId')
+                ->setParameter('userId', $user->getId());
         }
 
         return $qb->getQuery()
@@ -147,8 +147,8 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
 
         if ($user) {
-            $qb->andWhere('e.user = :user')
-                ->setParameter('user', $user);
+            $qb->andWhere('e.userId = :userId')
+                ->setParameter('userId', $user->getId());
         }
 
         return $qb->orderBy('e.id', 'DESC')

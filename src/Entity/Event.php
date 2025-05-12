@@ -9,23 +9,24 @@ use Symfony\Component\Validator\Constraints as Assert; // Import validation cons
 
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
+#[ORM\Table(name: 'event')]
 class Event
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 100)]
     #[Assert\Length(
         min: 3,
-        max: 255,
+        max: 100,
         minMessage: 'Name must be at least {{ limit }} characters long',
         maxMessage: 'Name cannot be longer than {{ limit }} characters'
     )]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, columnDefinition: 'VARCHAR(255) DEFAULT NULL')]
     #[Assert\Length(
         min: 3,
         max: 255,
@@ -34,33 +35,43 @@ class Event
     )]
     private ?string $destination = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Event type must be selected')]
+    #[ORM\Column(type: 'string', length: 50, nullable: true, columnDefinition: 'VARCHAR(50) DEFAULT NULL')]
     #[Assert\Choice(
         choices: ['sport', 'cultural', 'educational', 'entertainment', 'other'],
         message: 'Please select a valid event type'
     )]
     private ?string $eventtype = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true, columnDefinition: 'TEXT DEFAULT NULL')]
     #[Assert\Length(
         max: 1000,
         maxMessage: 'Description cannot be longer than {{ limit }} characters'
     )]
     private ?string $Description = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, columnDefinition: 'VARCHAR(255) DEFAULT NULL')]
     #[Assert\Length(
-        max: 500,
+        max: 255,
         maxMessage: 'Equipment list cannot be longer than {{ limit }} characters'
     )]
     private ?string $equipment = null;
 
-    #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?User $user = null;
+    #[ORM\Column(name: 'user_id', type: 'integer', columnDefinition: 'INT NOT NULL DEFAULT 1')]
+    private ?int $userId = 1;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, columnDefinition: 'VARCHAR(255) DEFAULT NULL')]
     private ?string $image = null;
+    
+    #[ORM\Column(type: 'date', nullable: true, columnDefinition: 'DATE DEFAULT NULL')]
+    private ?\DateTimeInterface $date = null;
+    
+    #[ORM\Column(name: 'nbplaces', type: 'integer', nullable: true, columnDefinition: 'INT DEFAULT 0')]
+    private ?int $nbPlaces = 0;
+    
+    /**
+     * @var User|null
+     */
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -84,7 +95,7 @@ class Event
         return $this->destination;
     }
 
-    public function setDestination(string $destination): static
+    public function setDestination(?string $destination): static
     {
         $this->destination = $destination;
 
@@ -96,7 +107,7 @@ class Event
         return $this->eventtype;
     }
 
-    public function setEventtype(string $eventtype): static
+    public function setEventtype(?string $eventtype): static
     {
         $this->eventtype = $eventtype;
 
@@ -127,14 +138,35 @@ class Event
         return $this;
     }
 
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(int $userId): static
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
+    
+    /**
+     * Get the associated User entity (not stored in database)
+     */
     public function getUser(): ?User
     {
         return $this->user;
     }
 
+    /**
+     * Set the associated User entity (not stored in database)
+     */
     public function setUser(?User $user): static
     {
         $this->user = $user;
+        if ($user !== null) {
+            $this->userId = $user->getId();
+        }
 
         return $this;
     }
@@ -148,6 +180,30 @@ class Event
     {
         $this->image = $image;
 
+        return $this;
+    }
+    
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+    
+    public function setDate(?\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+        
+        return $this;
+    }
+    
+    public function getNbPlaces(): ?int
+    {
+        return $this->nbPlaces;
+    }
+    
+    public function setNbPlaces(?int $nbPlaces): static
+    {
+        $this->nbPlaces = $nbPlaces;
+        
         return $this;
     }
 }

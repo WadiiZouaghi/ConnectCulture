@@ -13,7 +13,7 @@ class SecurityController extends AbstractController
     {
         // Check if the user is already logged in, redirect to the home page or other target.
         if ($this->getUser()) {
-            return $this->redirectToRoute('home'); // Adjust 'home' to your desired redirect route
+            return $this->redirectToRoute('app_home'); // Adjust to your home route
         }
 
         // Get login error if there is one
@@ -35,12 +35,9 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/logout', name: 'app_logout')]
-    public function logout(UrlGeneratorInterface $urlGenerator): RedirectResponse
+    public function logout(): void
     {
-        // First, let Symfony handle the logout
-        throw new \RuntimeException('You must configure the logout path to be handled by the firewall.');
-        
-        // This line will never be executed, but shows where it would redirect
-        return new RedirectResponse($urlGenerator->generate('app_login'));
+        // This method can be empty - it will be intercepted by the logout key on your firewall
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }
