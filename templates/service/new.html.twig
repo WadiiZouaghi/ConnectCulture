@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ form.vars.value.id is defined and form.vars.value.id is not null ? 'Edit Service' : 'New Service' }}
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        {{ form.vars.value.id is defined and form.vars.value.id is not null ? 'Edit Service' : 'Create New Service' }}
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    {{ form_start(form) }}
+
+                    <div class="mb-3">
+                        <label for="{{ form.name.vars.id }}" class="form-label">Service Name</label>
+                        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter service name'}}) }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.serviceEquipment.vars.id }}" class="form-label">Service Equipment</label>
+                        {{ form_widget(form.serviceEquipment, {'attr': {'class': 'form-control', 'placeholder': 'Enter equipment'}}) }}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('service_index') }}" class="btn btn-outline-secondary">
+                            ← Back to list
+                        </a>
+                        <button class="btn btn-success">
+                            💾 Save
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

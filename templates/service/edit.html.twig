@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ attribute(form.vars.value, 'id') is defined and attribute(form.vars.value, 'id') is not null ? 'Edit Service' : 'New Service' }}{% endblock %}
+
+
+
+
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ attribute(form.vars.value, 'id') is defined and attribute(form.vars.value, 'id') is not null ? 'Edit Service' : 'Create New Service' }}</h1>
+
+        {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.serviceEquipment) }}
+
+            <button class="btn btn-success mt-2">Save</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('service_index') }}" class="btn btn-secondary mt-2">Back to list</a>
+    </div>
+{% endblock %}

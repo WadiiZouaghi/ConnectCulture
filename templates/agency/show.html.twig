@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agency{% endblock %}
+
+{% block body %}
+    <h1>Agency</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ agency.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ agency.name }}</td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td>{{ agency.location }}</td>
+            </tr>
+            <tr>
+                <th>UserId</th>
+                <td>{{ agency.userId }}</td>
+            </tr>
+            <tr>
+                <th>Longitude</th>
+                <td>{{ agency.longitude }}</td>
+            </tr>
+            <tr>
+                <th>Latitude</th>
+                <td>{{ agency.latitude }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ agency.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_agency_index') }}">back to list</a>
+
+    <a href="{{ path('app_agency_edit', {'id': agency.id}) }}">edit</a>
+
+    {{ include('agency/_delete_form.html.twig') }}
+{% endblock %}

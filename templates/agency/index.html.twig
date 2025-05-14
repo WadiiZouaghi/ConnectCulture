@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agency List{% endblock %}
+
+{% block body %}
+    <h1>Agency List</h1>
+
+    <a href="{{ path('agency_new') }}" class="btn btn-primary mb-3">Create New Agency</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>User ID</th>
+                <th>Longitude</th>
+                <th>Latitude</th>
+                <th>Email</th>
+                <th>Services</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for agency in agencies %}
+            <tr>
+                <td>{{ agency.name }}</td>
+                <td>{{ agency.location }}</td>
+                <td>{{ agency.userId }}</td>
+                <td>{{ agency.longitude }}</td>
+                <td>{{ agency.latitude }}</td>
+                <td>{{ agency.email }}</td>
+                <td>
+                    {% for service in agency.services %}
+                        {{ service.name }}{% if not loop.last %}, {% endif %}
+                    {% else %}
+                        <em>No services</em>
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{{ path('agency_edit', {'id': agency.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form method="post" action="{{ path('agency_delete', {'id': agency.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ agency.id) }}">
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

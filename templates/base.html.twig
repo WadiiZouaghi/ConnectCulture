@@ -72,6 +72,17 @@
                                     <i class="fa fa-users"></i> Groups
                                 </a>
                             </li>
+                            <li class="nav-item {% if app.request.get('_route') starts with 'app_service' %}active{% endif %}">
+                            <a class="nav-link" href="{{ path('service_index') }}">
+                                <i class="fa fa-cogs"></i> Services
+                            </a>
+                            </li>
+                            <li class="nav-item {% if app.request.get('_route') starts with 'app_agency' %}active{% endif %}">
+                                <a class="nav-link" href="{{ path('agency_index') }}">
+                                    <i class="fa fa-building"></i> Agencies
+                                </a>
+                            </li>
+
                         </ul>
                         
                         <ul class="navbar-nav">
