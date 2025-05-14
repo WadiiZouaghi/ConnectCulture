@@ -1,0 +1,150 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Competitions{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="card-title mb-0">Competitions</h4>
+                        <a href="{{ path('admin_competition_new') }}" class="action-btn">
+                            <i class="mdi mdi-plus"></i> Add New Competition
+                        </a>
+                    </div>
+
+                    <!-- Search Form -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <form method="get" action="{{ path('admin_competitions') }}" class="search-box">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" 
+                                           placeholder="Search by competition name" value="{{ search|default('') }}"
+                                           style="border-radius: 0;">
+                                    <button type="submit" class="action-btn">
+                                        <i class="mdi mdi-magnify"></i> Search
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Competitions Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for competition in competitions %}
+                                    <tr>
+                                        <td>{{ competition.id }}</td>
+                                        <td>{{ competition.name }}</td>
+                                        <td>{{ competition.description|length > 50 ? competition.description|slice(0, 50) ~ '...' : competition.description }}</td>
+                                        <td>{{ competition.startDate|date('Y-m-d') }}</td>
+                                        <td>{{ competition.endDate|date('Y-m-d') }}</td>
+                                        <td><span class="badge bg-primary">{{ competition.status }}</span></td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ path('admin_competition_edit', {'id': competition.id}) }}" 
+                                                   class="action-btn">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <form action="{{ path('admin_competition_delete', {'id': competition.id}) }}" 
+                                                      method="post" 
+                                                      style="display:inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ competition.id) }}">
+                                                    <button type="submit" 
+                                                            class="action-btn"
+                                                            style="background-color: #dc3545;"
+                                                            onclick="return confirm('Are you sure you want to delete this competition?');">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4">
+                                            <i class="mdi mdi-alert-circle text-warning display-4"></i>
+                                            <p class="mt-2">No competitions found.</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 0;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        background-color: #4b93d1;
+        color: white;
+    }
+
+    .action-btn:hover {
+        opacity: 0.9;
+        color: white;
+        text-decoration: none;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        color: #062264;
+        font-weight: 600;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .table td {
+        vertical-align: middle;
+        color: #062264;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 0;
+    }
+
+    .search-box .form-control:focus {
+        border-color: #4b93d1;
+        box-shadow: none;
+    }
+
+    .card {
+        border-radius: 0;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .card-title {
+        color: #062264;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

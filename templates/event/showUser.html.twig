@@ -73,7 +73,21 @@
                         <i class="fa fa-arrow-left"></i>
                         Back to List
                     </a>
-                
+                    
+                    {% if app.user and app.user == event.user %}
+                        <a href="{{ path('app_event_edit_user', {'id': event.id}) }}" class="action-btn edit-btn">
+                            <i class="fa fa-pencil"></i>
+                            Edit
+                        </a>
+                        
+                        <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?');" style="display: inline-block; width: 100%;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                            <button class="action-btn delete-btn" style="width: 100%;">
+                                <i class="fa fa-trash"></i>
+                                Delete
+                            </button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -267,6 +281,7 @@
 /* Action Buttons */
 .event-actions {
     display: flex;
+    flex-direction: column;
     gap: 15px;
     margin: 30px 15px 0 15px;
 }
@@ -285,8 +300,8 @@
 }
 
 .edit-btn {
-    background-color: #4b93d1;
-    color: white;
+    background-color: #ffc107;
+    color: #212529;
 }
 
 .back-btn {
@@ -302,8 +317,15 @@
 .action-btn:hover {
     transform: translateY(-2px);
     opacity: 0.9;
-    color: white;
     text-decoration: none;
+}
+
+.back-btn:hover, .delete-btn:hover {
+    color: white;
+}
+
+.edit-btn:hover {
+    color: #212529;
 }
 
 /* Layout fixes */

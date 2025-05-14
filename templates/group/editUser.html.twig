@@ -1,0 +1,283 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Group{% endblock %}
+
+{% block body %}
+<section class="group-form-section">
+    <div class="group-form-container">
+        <div class="form-header">
+            <div class="heading_container">
+                <h2>Edit <span>Group</span></h2>
+            </div>
+            <a href="{{ path('app_group_show_user', {'id': group.id}) }}" class="action-btn back-btn">
+                <i class="fa fa-arrow-left"></i>
+                Back to Group
+            </a>
+        </div>
+
+        <div class="form-card">
+            {{ form_start(form, {'attr': {'class': 'group-form'}}) }}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        <div class="form-error">
+                            {{ form_errors(form.name) }}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        <div class="form-error">
+                            {{ form_errors(form.category) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.type) }}
+                        {{ form_widget(form.type) }}
+                        <div class="form-error">
+                            {{ form_errors(form.type) }}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.city) }}
+                        {{ form_widget(form.city) }}
+                        <div class="form-error">
+                            {{ form_errors(form.city) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.startDate) }}
+                        {{ form_widget(form.startDate) }}
+                        <div class="form-error">
+                            {{ form_errors(form.startDate) }}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.endDate) }}
+                        {{ form_widget(form.endDate) }}
+                        <div class="form-error">
+                            {{ form_errors(form.endDate) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.size) }}
+                        {{ form_widget(form.size) }}
+                        <div class="form-error">
+                            {{ form_errors(form.size) }}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.visibility) }}
+                        {{ form_widget(form.visibility) }}
+                        <div class="form-error">
+                            {{ form_errors(form.visibility) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    <div class="form-error">
+                        {{ form_errors(form.description) }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="action-btn update-btn">
+                        <i class="fa fa-save"></i>
+                        Update Group
+                    </button>
+                    <a href="{{ path('app_group_show_user', {'id': group.id}) }}" class="action-btn cancel-btn">
+                        <i class="fa fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Group Form Section */
+.group-form-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+.group-form-container {
+    padding: 0 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Form Header */
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.heading_container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #062264;
+}
+
+.heading_container span {
+    color: #4b93d1;
+}
+
+/* Form Card */
+.form-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+    padding: 30px;
+}
+
+/* Form Styles */
+.group-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #062264;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #4b93d1;
+    outline: none;
+}
+
+.form-error {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+}
+
+.back-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.update-btn {
+    background-color: #4b93d1;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    color: white;
+    text-decoration: none;
+}
+
+.action-btn i {
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .group-form-section {
+        padding: 20px 0;
+    }
+    
+    .group-form-container {
+        padding: 0 15px;
+    }
+
+    .form-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

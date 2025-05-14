@@ -98,9 +98,10 @@ final class GroupController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Group created successfully!');
-            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+            
+            return $this->redirectToRoute('app_group_show', ['id' => $group->getId()], Response::HTTP_SEE_OTHER);
         }
-
+        
         return $this->render('group/new.html.twig', [
             'group' => $group,
             'form' => $form,
@@ -139,9 +140,25 @@ final class GroupController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Group updated successfully!');
 
-            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+            // Redirect to user group view if coming from user pages
+            $referer = $request->headers->get('referer');
+            if ($referer && strpos($referer, '/group/user') !== false) {
+                return $this->redirectToRoute('app_group_show_user', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
+            }
+            
+            return $this->redirectToRoute('app_group_show', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
         }
 
+        // Use different template based on the referer
+        $referer = $request->headers->get('referer');
+        if ($referer && strpos($referer, '/group/user') !== false) {
+            return $this->render('group/editUser.html.twig', [
+                'group' => $group,
+                'form' => $form,
+                ...$this->getSystemInfo()
+            ]);
+        }
+        
         return $this->render('group/edit.html.twig', [
             'group' => $group,
             'form' => $form,
@@ -165,7 +182,13 @@ final class GroupController extends AbstractController
             $this->addFlash('success', 'Group deleted successfully!');
         }
 
-        return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+        // Redirect to user group list if coming from user pages
+        $referer = $request->headers->get('referer');
+        if ($referer && strpos($referer, '/group/user') !== false) {
+                return $this->redirectToRoute('app_group_show_user', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
+        }
+        
+            return $this->redirectToRoute('app_group_show', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
     }
 
  /**************************************** User *************************************/
@@ -178,7 +201,7 @@ final class GroupController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{id}', name: 'app_group_show_user', methods: ['GET'])]
+    #[Route('/user/{id}', name: 'app_group_show_user', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function showUser(GroupRepository $groupRepository, int $id): Response
     {
         $group = $groupRepository->find($id);
@@ -189,6 +212,58 @@ final class GroupController extends AbstractController
 
         return $this->render('group/show_user.html.twig', [
             'group' => $group,
+            ...$this->getSystemInfo()
+        ]);
+    }
+
+    #[Route('/user/{id}/edit', name: 'app_group_edit_user', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function editUser(Request $request, GroupRepository $groupRepository, int $id, EntityManagerInterface $entityManager): Response
+    {
+        $group = $groupRepository->find($id);
+        
+        if (!$group) {
+            throw $this->createNotFoundException('Group not found');
+        }
+
+        $form = $this->createForm(GroupType::class, $group);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Group updated successfully!');
+            
+            return $this->redirectToRoute('app_group_show_user', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->render('group/editUser.html.twig', [
+            'group' => $group,
+            'form' => $form,
+            ...$this->getSystemInfo()
+        ]);
+    }
+    
+    #[Route('/user/new', name: 'app_group_new_user', methods: ['GET', 'POST'])]
+    public function newUser(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $group = new Group();
+        $group->setCreatedByUser($this->getUser());
+        
+        $form = $this->createForm(GroupType::class, $group);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($group);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Group created successfully!');
+            
+            // Make sure to cast the ID to an integer
+            return $this->redirectToRoute('app_group_show_user', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->render('group/newUser.html.twig', [
+            'group' => $group,
+            'form' => $form,
             ...$this->getSystemInfo()
         ]);
     }

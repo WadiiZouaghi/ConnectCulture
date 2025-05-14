@@ -68,9 +68,10 @@ final class EventController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Event created successfully!');
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            
+            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
         }
-
+        
         return $this->render('event/new.html.twig', [
             'event' => $event,
             'form' => $form,
@@ -128,7 +129,7 @@ final class EventController extends AbstractController
                     );
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Error uploading the image');
-                    return $this->redirectToRoute('app_event_edit', ['id' => $event->getId()]);
+                    return $this->redirectToRoute('app_event_edit', ['id' => (int)$event->getId()]);
                 }
 
                 $event->setImage($newFilename);
@@ -137,9 +138,25 @@ final class EventController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Event updated successfully!');
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            // Redirect to user event view if coming from user pages
+            $referer = $request->headers->get('referer');
+            if ($referer && strpos($referer, '/event/user') !== false) {
+                return $this->redirectToRoute('app_event_show_User', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
+            }
+            
+            return $this->redirectToRoute('app_event_show', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
         }
 
+        // Use different template based on the referer
+        $referer = $request->headers->get('referer');
+        if ($referer && strpos($referer, '/event/user') !== false) {
+            return $this->render('event/editUser.html.twig', [
+                'event' => $event,
+                'form' => $form,
+                ...$this->getSystemInfo()
+            ]);
+        }
+        
         return $this->render('event/edit.html.twig', [
             'event' => $event,
             'form' => $form,
@@ -172,8 +189,14 @@ final class EventController extends AbstractController
             $this->addFlash('success', 'Event deleted successfully!');
         }
 
-        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-    }
+        // Redirect to user event list if coming from user pages
+        $referer = $request->headers->get('referer');
+        if ($referer && strpos($referer, '/event/user') !== false) {
+               return $this->redirectToRoute('app_event_show_User', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
+            }
+            
+            return $this->redirectToRoute('app_event_show', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
+   }
 
  /**************************************** User *************************************/
     #[Route('/user', name: 'app_event_index_User', methods: ['GET'])]
@@ -185,7 +208,7 @@ final class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{id}', name: 'app_event_show_User', methods: ['GET'])]
+    #[Route('/user/{id}', name: 'app_event_show_User', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function showUser(EventRepository $eventRepository, int $id): Response
     {
         $event = $eventRepository->find($id);
@@ -196,6 +219,105 @@ final class EventController extends AbstractController
 
         return $this->render('event/showUser.html.twig', [
             'event' => $event,
+            ...$this->getSystemInfo()
+        ]);
+    }
+
+    #[Route('/user/{id}/edit', name: 'app_event_edit_user', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function editUser(Request $request, EventRepository $eventRepository, int $id, EntityManagerInterface $entityManager): Response
+    {
+        $event = $eventRepository->find($id);
+        
+        if (!$event) {
+            throw $this->createNotFoundException('Event not found');
+        }
+
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    // Delete old image if exists
+                    $oldImage = $event->getImage();
+                    if ($oldImage) {
+                        $oldImagePath = $this->getParameter('images_directory') . '/' . $oldImage;
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                    }
+
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error uploading the image');
+                    return $this->redirectToRoute('app_event_edit_user', ['id' => (int)$event->getId()]);
+                }
+
+                $event->setImage($newFilename);
+            }
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Event updated successfully!');
+            
+            return $this->redirectToRoute('app_event_show_User', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->render('event/editUser.html.twig', [
+            'event' => $event,
+            'form' => $form,
+            ...$this->getSystemInfo()
+        ]);
+    }
+    
+    #[Route('/user/new', name: 'app_event_new_user', methods: ['GET', 'POST'])]
+    public function newUser(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $event = new Event();
+        $event->setUser($this->getUser());
+        
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error uploading the image');
+                    return $this->redirectToRoute('app_event_new_user');
+                }
+
+                $event->setImage($newFilename);
+            }
+
+            $entityManager->persist($event);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Event created successfully!');
+            
+            // Make sure to cast the ID to an integer
+            return $this->redirectToRoute('app_event_show_User', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->render('event/newUser.html.twig', [
+            'event' => $event,
+            'form' => $form,
             ...$this->getSystemInfo()
         ]);
     }

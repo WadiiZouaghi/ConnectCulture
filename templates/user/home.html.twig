@@ -5,7 +5,7 @@
 {% block hero_content %}
 <section class="slider_section">    
     <div class="slider_bg_box">
-        <img src="{{ asset('/uploads/images/images.png') }}" alt="slider background">
+        <img src="{{ asset('/uploads/images/background.jpg') }}" alt="slider background">
     </div>
     <div id="customCarousel1" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
@@ -118,7 +118,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.9;
+    opacity: 1;
 }
 
 /* Content Styling */
@@ -226,7 +226,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     z-index: 0;
 }
 
@@ -294,13 +294,8 @@
 {{ parent() }}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Preload background image
-    const img = new Image();
-    img.src = '{{ asset('uploads/images/m2.webp') }}';
-    
-    img.onload = function() {
-        document.querySelector('.slider_bg_box img').style.opacity = '1';
-    };
+    // Set background image opacity to 1 immediately
+    document.querySelector('.slider_bg_box img').style.opacity = '1';
 
     // Update current time
     function updateDateTime() {

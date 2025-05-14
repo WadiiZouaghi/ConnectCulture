@@ -113,6 +113,7 @@
         .action-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             background-color: #007bff;
             color: white;
             padding: 10px 16px;
@@ -120,9 +121,24 @@
             text-decoration: none;
             font-weight: 500;
             transition: background-color 0.2s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 8px;
         }
         .action-btn:hover {
             background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+        .back-btn {
+            background-color: #6c757d;
+        }
+        .edit-btn {
+            background-color: #28a745;
+        }
+        .delete-btn {
+            background-color: #dc3545;
         }
         .action-btn i {
             margin-right: 8px;
@@ -159,19 +175,6 @@
     </div>
 
     <div class="row">
-        <!-- Group Image Column -->
-        <div class="col-md-6">
-            <div class="img-box">
-                <div class="group-image">
-                    <div class="group-icon">
-                        <i class="fa fa-users"></i>
-                    </div>
-                </div>
-                <div class="img-overlay">
-                    <i class="fa fa-search-plus"></i>
-                </div>
-            </div>
-        </div>
 
         <!-- Group Details Column -->
         <div class="col-md-6">
@@ -271,6 +274,19 @@
                     
                     {% if app.user and app.user.id == group.createdByUserId %}
                         <span class="owner-badge">You are the owner of this group</span>
+                        
+                        <a href="{{ path('app_group_edit_user', {'id': group.id}) }}" class="action-btn edit-btn">
+                            <i class="fa fa-pencil"></i>
+                            Edit
+                        </a>
+                        
+                        <form method="post" action="{{ path('app_group_delete', {'id': group.id}) }}" onsubmit="return confirm('Are you sure you want to delete this group?');" style="display: inline-block; width: 100%;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+                            <button class="action-btn delete-btn" style="width: 100%;">
+                                <i class="fa fa-trash"></i>
+                                Delete
+                            </button>
+                        </form>
                     {% endif %}
                 </div>
             </div>
