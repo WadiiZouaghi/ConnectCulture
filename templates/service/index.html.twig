@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Service Management{% endblock %}
+
+{% block body %}
+    <h1>Service List</h1>
+
+    <a href="{{ path('service_new') }}" class="btn btn-primary mb-3">+ Create New Service</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Equipment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in services %}
+                <tr>
+                    <td>{{ service.id }}</td>
+                    <td>{{ service.name }}</td>
+                    <td>{{ service.serviceEquipment }}</td>
+                    <td>
+                        <a href="{{ path('service_show', {id: service.id}) }}" class="btn btn-info btn-sm">Show</a>
+                        <a href="{{ path('service_edit', {id: service.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="post" action="{{ path('service_delete', {id: service.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ service.id) }}">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No services found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
