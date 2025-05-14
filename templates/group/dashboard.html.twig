@@ -1,0 +1,236 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Groups Dashboard{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+    <!-- System Info Bar -->
+    <div class="system-info-bar mb-4">
+        <div class="system-info-item">
+            Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): {{ "now"|date("Y-m-d H:i:s") }}
+        </div>
+        {% if app.user %}
+        <div class="system-info-item">
+            Current User's Login: {{ app.user.userIdentifier }}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="card-title mb-0">{{ page_title }}</h4>
+                        <a href="{{ path('app_group_new') }}" class="action-btn">
+                            <i class="mdi mdi-plus"></i> Create New Group
+                        </a>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-account-group icon-lg text-primary"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">Total Groups</h6>
+                                            <h3 class="mb-0">{{ group_count }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category and Visibility Distribution -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Groups by Category</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Category</th>
+                                                    <th>Count</th>
+                                                    <th>Percentage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for category, count in category_counts %}
+                                                    <tr>
+                                                        <td>{{ category }}</td>
+                                                        <td>{{ count }}</td>
+                                                        <td>{{ (count / group_count * 100)|round(1) }}%</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Groups by Visibility</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Visibility</th>
+                                                    <th>Count</th>
+                                                    <th>Percentage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for visibility, count in visibility_counts %}
+                                                    <tr>
+                                                        <td>{{ visibility }}</td>
+                                                        <td>{{ count }}</td>
+                                                        <td>{{ (count / group_count * 100)|round(1) }}%</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Groups -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recent Groups</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Type</th>
+                                            <th>City</th>
+                                            <th>Visibility</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for group in groups|slice(0, 5) %}
+                                            <tr>
+                                                <td>{{ group.id }}</td>
+                                                <td>{{ group.name }}</td>
+                                                <td>{{ group.category }}</td>
+                                                <td>{{ group.type }}</td>
+                                                <td>{{ group.city }}</td>
+                                                <td>
+                                                    <span class="badge bg-{{ group.visibility == 'PUBLIC' ? 'success' : (group.visibility == 'PRIVATE' ? 'danger' : 'warning') }}">
+                                                        {{ group.visibility }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="{{ path('app_group_show', {'id': group.id}) }}" class="action-btn">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </a>
+                                                        <a href="{{ path('app_group_edit', {'id': group.id}) }}" class="action-btn">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="7" class="text-center py-4">
+                                                    <i class="mdi mdi-alert-circle text-warning display-4"></i>
+                                                    <p class="mt-2">No groups found.</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="{{ path('app_group_index') }}" class="action-btn">
+                                    <i class="mdi mdi-view-list"></i> View All Groups
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 0;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        background-color: #4b93d1;
+        color: white;
+    }
+
+    .action-btn:hover {
+        opacity: 0.9;
+        color: white;
+        text-decoration: none;
+    }
+
+    .system-info-bar {
+        background: #f8f9fa;
+        padding: 15px;
+        border: 1px solid #e9ecef;
+        font-family: monospace;
+    }
+
+    .system-info-item {
+        color: #062264;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        color: #062264;
+        font-weight: 600;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .table td {
+        vertical-align: middle;
+        color: #062264;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 0;
+    }
+
+    .card {
+        border-radius: 0;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        color: #062264;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}

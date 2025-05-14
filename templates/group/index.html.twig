@@ -1,0 +1,439 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Groups List{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+    <!-- System Info Bar -->
+    <div class="system-info-bar mb-4">
+        <div class="system-info-item">
+            Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): {{ "now"|date("Y-m-d H:i:s") }}
+        </div>
+        {% if app.user %}
+        <div class="system-info-item">
+            Current User's Login: {{ app.user.userIdentifier }}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Flash Messages -->
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label }} mb-4">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="card-title mb-0">Groups List</h4>
+                        <div>
+                            <a href="{{ path('app_admin') }}" class="action-btn me-2" style="background-color: #6c757d;">
+                                <i class="mdi mdi-view-dashboard"></i> Dashboard
+                            </a>
+                            <a href="{{ path('app_group_new') }}" class="action-btn">
+                                <i class="mdi mdi-plus"></i> Create New Group
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Search Form -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <form method="get" action="{{ path('app_group_index') }}" class="search-box">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" 
+                                           placeholder="Search by name or category" value="{{ search|default('') }}"
+                                           style="border-radius: 0;">
+                                    <button type="submit" class="action-btn">
+                                        <i class="mdi mdi-magnify"></i> Search
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Groups Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                    <th>City</th>
+                                    <th>Date Range</th>
+                                    <th>Size</th>
+                                    <th>Visibility</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for group in groups %}
+                                    <tr>
+                                        <td>{{ group.id }}</td>
+                                        <td>{{ group.name }}</td>
+                                        <td>{{ group.category }}</td>
+                                        <td>{{ group.type }}</td>
+                                        <td>{{ group.city }}</td>
+                                        <td>
+                                            {% if group.startDate %}
+                                                {{ group.startDate|date('Y-m-d') }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                            to
+                                            {% if group.endDate %}
+                                                {{ group.endDate|date('Y-m-d') }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ group.size ?? 'Unlimited' }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ group.visibility == 'PUBLIC' ? 'success' : (group.visibility == 'PRIVATE' ? 'danger' : 'warning') }}">
+                                                {{ group.visibility }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ path('app_group_show', {'id': group.id}) }}" class="action-btn">
+                                                    <i class="mdi mdi-eye"></i>
+                                                </a>
+                                                <a href="{{ path('app_group_edit', {'id': group.id}) }}" class="action-btn">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this group?')) document.getElementById('delete-form-{{ group.id }}').submit();" class="action-btn" style="background-color: #dc3545;">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                                <form id="delete-form-{{ group.id }}" method="post" action="{{ path('app_group_delete', {'id': group.id}) }}" style="display: none;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="9" class="text-center py-4">
+                                            <i class="mdi mdi-alert-circle text-warning display-4"></i>
+                                            <p class="mt-2">No groups found.</p>
+                                            <a href="{{ path('app_group_new') }}" class="action-btn mt-3">
+                                                <i class="mdi mdi-plus"></i> Create New Group
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* System Info Bar */
+.system-info-bar {
+    background: #f8f9fa;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+}
+
+.system-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #062264;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Groups Section */
+.groups-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.groups-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Groups Header */
+.groups-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.heading_container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #062264;
+}
+
+.heading_container span {
+    color: #4b93d1;
+}
+
+/* Groups Grid */
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Group Card */
+.group-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.group-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Group Header */
+.group-header {
+    position: relative;
+    background: linear-gradient(145deg, #4b93d1, #062264);
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.group-type-badge, .group-visibility-badge {
+    background: white;
+    color: #062264;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Group Content */
+.group-content {
+    padding: 20px;
+}
+
+.group-info {
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.info-item i {
+    color: #4b93d1;
+    font-size: 1.2rem;
+    min-width: 20px;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content label {
+    color: #062264;
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info-content p {
+    color: #062264;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.description {
+    white-space: pre-line;
+    max-height: 80px;
+    overflow: hidden;
+}
+
+/* Group Actions */
+.group-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    flex: 1;
+}
+
+/* Special styling for header create button */
+.header-create-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    max-width: 150px;
+    margin-left: auto;
+}
+
+.create-btn, .view-btn, .edit-btn, .delete-btn {
+    background-color: #4b93d1;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    color: white;
+    text-decoration: none;
+}
+
+.action-btn i {
+    font-size: 0.9rem;
+}
+
+/* No Groups Message */
+.no-groups {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+}
+
+.no-groups i {
+    font-size: 48px;
+    color: #062264;
+    margin-bottom: 15px;
+}
+
+.no-groups h3 {
+    color: #062264;
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.no-groups p {
+    color: #062264;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* Flash Messages */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .system-info-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .groups-container {
+        padding: 15px;
+    }
+
+    .groups-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .header-create-btn {
+        margin: 0 auto;
+    }
+
+    .group-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+
+    .info-content label {
+        font-size: 0.95rem;
+    }
+
+    .info-content p {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

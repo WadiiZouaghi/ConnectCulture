@@ -1,0 +1,399 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groups{% endblock %}
+
+{% block body %}
+<section class="events-section">
+    <div class="events-container">
+        <div class="system-info-item">
+            {% if app.user %}
+                Current User's Login: {{ app.user.userIdentifier }}
+            {% endif %}
+        </div>
+
+        <!-- Groups Header -->
+        <div class="events-header">
+            <div class="heading_container">
+                <h2>Group <span>List</span></h2>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Groups Grid -->
+        <div class="events-grid">
+            {% if groups is empty %}
+                <div class="no-events">
+                    <i class="mdi mdi-account-group"></i>
+                    <h3>No Groups Available</h3>
+                    <p>Check back later for exciting groups!</p>
+                </div>
+            {% else %}
+                {% for group in groups %}
+                    <div class="event-card">
+                        <div class="img-box">
+                            <div class="no-image">
+                                <i class="mdi mdi-account-group"></i>
+                                <span>{{ group.name }}</span>
+                            </div>
+                            <div class="img-overlay">
+                                <i class="mdi mdi-eye"></i>
+                            </div>
+                            <div class="event-type-badge">{{ group.type }}</div>
+                        </div>
+
+                        <div class="event-content">
+                            <div class="event-info">
+                                <div class="info-item">
+                                    <i class="mdi mdi-account-group"></i>
+                                    <div class="info-content">
+                                        <label>Group Name</label>
+                                        <p>{{ group.name }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="mdi mdi-tag"></i>
+                                    <div class="info-content">
+                                        <label>Category</label>
+                                        <p>{{ group.category }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="mdi mdi-map-marker"></i>
+                                    <div class="info-content">
+                                        <label>City</label>
+                                        <p>{{ group.city }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="mdi mdi-text"></i>
+                                    <div class="info-content">
+                                        <label>Description</label>
+                                        <p class="description">{{ group.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="event-actions">
+                                <a href="{{ path('app_group_show_user', {'id': group.id}) }}" class="action-btn view-btn">
+                                    <i class="mdi mdi-eye"></i>
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.events-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.events-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* System Info Styles */
+.system-info-box {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    font-family: 'Courier New', monospace;
+}
+
+.system-info-item {
+    color: #062264;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    white-space: pre-line;
+}
+
+/* Card System Info */
+.card-system-info {
+    background: #f8f9fa;
+    padding: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.system-info-text {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #062264;
+    white-space: pre-line;
+    line-height: 1.4;
+}
+
+/* Events Header */
+.events-header {
+    margin-bottom: 20px;
+}
+
+.heading_container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #062264;
+}
+
+.heading_container span {
+    color: #4b93d1;
+}
+
+/* Events Grid */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Event Card */
+.event-card {
+    background: white;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image Box */
+.img-box {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(145deg, #4b93d1, #062264);
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.no-image i {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.no-image span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.img-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(6, 34, 100, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.img-box:hover .img-overlay {
+    opacity: 1;
+}
+
+.img-overlay i {
+    color: white;
+    font-size: 2rem;
+}
+
+.event-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    color: #062264;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 20px;
+}
+
+/* Event Content */
+.event-content {
+    padding: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+}
+
+.info-item i {
+    color: #4b93d1;
+    font-size: 1.2rem;
+    min-width: 20px;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content label {
+    color: #062264;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+    display: block;
+}
+
+.info-content p {
+    color: #062264;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.description {
+    max-height: 60px;
+    overflow: hidden;
+}
+
+/* Action Button */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: #4b93d1;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    border: none;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+    color: white;
+}
+
+/* Flash Messages */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 0;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* No Groups Message */
+.no-events {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: white;
+}
+
+.no-events i {
+    font-size: 48px;
+    color: #062264;
+    margin-bottom: 15px;
+}
+
+.no-events h3 {
+    color: #062264;
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.no-events p {
+    color: #062264;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .events-section {
+        padding: 10px;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .system-info-text {
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}

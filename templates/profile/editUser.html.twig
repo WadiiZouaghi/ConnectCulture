@@ -1,0 +1,306 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+<section class="profile-section">
+    <div class="system-info-bar">
+        <div class="system-info-item">
+            <i class="fa fa-clock-o"></i>
+            <span>{{ "now"|date("Y-m-d H:i:s") }}</span>
+        </div>
+        {% if app.user %}
+        <div class="system-info-item">
+            <i class="fa fa-user"></i>
+            <span>{{ app.user.userIdentifier }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <h2>Edit <span>Profile</span></h2>
+            <p class="subtitle">Update your personal information</p>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                <i class="fa fa-check-circle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="profile-form-container">
+            {{ form_start(form, {'attr': {'class': 'profile-form', 'novalidate': 'novalidate'}}) }}
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-icon">
+                        <i class="fa fa-user"></i>
+                    </span>
+                    {{ form_widget(form.fullName, {
+                        'attr': {
+                            'class': 'form-input' ~ (form.fullName.vars.errors|length > 0 ? ' is-invalid' : ''),
+                            'placeholder': 'Full Name'
+                        }
+                    }) }}
+                </div>
+                {% if form.fullName.vars.errors|length > 0 %}
+                    <div class="error-message">
+                        <i class="fa fa-exclamation-circle"></i>
+                        {{ form.fullName.vars.errors[0].message }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-icon">
+                        <i class="fa fa-envelope"></i>
+                    </span>
+                    {{ form_widget(form.email, {
+                        'attr': {
+                            'class': 'form-input' ~ (form.email.vars.errors|length > 0 ? ' is-invalid' : ''),
+                            'placeholder': 'Email Address'
+                        }
+                    }) }}
+                </div>
+                {% if form.email.vars.errors|length > 0 %}
+                    <div class="error-message">
+                        <i class="fa fa-exclamation-circle"></i>
+                        {{ form.email.vars.errors[0].message }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-icon">
+                        <i class="fa fa-phone"></i>
+                    </span>
+                    {{ form_widget(form.phone, {
+                        'attr': {
+                            'class': 'form-input' ~ (form.phone.vars.errors|length > 0 ? ' is-invalid' : ''),
+                            'placeholder': 'Phone Number'
+                        }
+                    }) }}
+                </div>
+                {% if form.phone.vars.errors|length > 0 %}
+                    <div class="error-message">
+                        <i class="fa fa-exclamation-circle"></i>
+                        {{ form.phone.vars.errors[0].message }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="action-btn save-btn">
+                    <i class="fa fa-save"></i>
+                    Save Changes
+                </button>
+                <a href="{{ path('app_home') }}" class="action-btn cancel-btn">
+                    <i class="fa fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* System Info Bar */
+.system-info-bar {
+    background: #f8f9fa;
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.system-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666666;
+    font-size: 0.9rem;
+}
+
+.system-info-item i {
+    color: #4b93d1;
+}
+
+/* Profile Section */
+.profile-section {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding-bottom: 40px;
+}
+
+.profile-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+/* Header Styles */
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #062264;
+    margin-bottom: 10px;
+}
+
+.profile-header span {
+    color: #4b93d1;
+}
+
+.profile-header .subtitle {
+    color: #666666;
+    font-size: 1.1rem;
+}
+
+/* Alert Styles */
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #4b93d1;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #4b93d1;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(75, 147, 209, 0.1);
+}
+
+.form-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Action Buttons */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+}
+
+.save-btn {
+    background-color: #4b93d1;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .system-info-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .profile-container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .profile-header h2 {
+        font-size: 2rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

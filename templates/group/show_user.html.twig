@@ -1,0 +1,280 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Group Details{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .about_section {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .group-header .heading_container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .group-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+        }
+        .group-header h2 span {
+            color: #007bff;
+        }
+        .group-type-badge {
+            display: inline-block;
+            background-color: #17a2b8;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        .col-md-6 {
+            flex: 1 1 45%;
+        }
+        .img-box {
+            position: relative;
+            background: #e9ecef;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .group-icon {
+            font-size: 80px;
+            color: #6c757d;
+        }
+        .img-overlay {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 123, 255, 0.1);
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 18px;
+            color: #007bff;
+        }
+        .detail-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+        .alert {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .group-info .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .group-info .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-item i {
+            font-size: 22px;
+            color: #007bff;
+            margin-right: 15px;
+            min-width: 30px;
+            text-align: center;
+        }
+        .info-content label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+            color: #333;
+        }
+        .info-content p {
+            margin: 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .description {
+            white-space: pre-wrap;
+        }
+        .group-actions {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        .action-btn:hover {
+            background-color: #0056b3;
+        }
+        .action-btn i {
+            margin-right: 8px;
+        }
+        .owner-badge {
+            background-color: #ffc107;
+            color: #212529;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            align-self: flex-start;
+        }
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+            .col-md-6 {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="about_section layout_padding">
+
+    <!-- Group Header -->
+    <div class="group-header">
+        <div class="heading_container">
+            <h2>Group <span>Details</span></h2>
+            <div class="group-type-badge">{{ group.type }}</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Group Image Column -->
+        <div class="col-md-6">
+            <div class="img-box">
+                <div class="group-image">
+                    <div class="group-icon">
+                        <i class="fa fa-users"></i>
+                    </div>
+                </div>
+                <div class="img-overlay">
+                    <i class="fa fa-search-plus"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Group Details Column -->
+        <div class="col-md-6">
+            <div class="detail-box">
+                <!-- Flash Messages -->
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                
+                <div class="group-info">
+                    <div class="info-item">
+                        <i class="fa fa-users"></i>
+                        <div class="info-content">
+                            <label>Group Name</label>
+                            <p>{{ group.name }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fa fa-tag"></i>
+                        <div class="info-content">
+                            <label>Category</label>
+                            <p>{{ group.category }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fa fa-map-marker"></i>
+                        <div class="info-content">
+                            <label>City</label>
+                            <p>{{ group.city }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fa fa-users"></i>
+                        <div class="info-content">
+                            <label>Maximum Size</label>
+                            <p>{{ group.size ?? 'Unlimited' }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fa fa-calendar"></i>
+                        <div class="info-content">
+                            <label>Start Date</label>
+                            <p>
+                                {% if group.startDate %}
+                                    {{ group.startDate|date('Y-m-d') }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fa fa-calendar-check-o"></i>
+                        <div class="info-content">
+                            <label>End Date</label>
+                            <p>
+                                {% if group.endDate %}
+                                    {{ group.endDate|date('Y-m-d') }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fa fa-align-left"></i>
+                        <div class="info-content">
+                            <label>Description</label>
+                            <p class="description">{{ group.description }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fa fa-eye"></i>
+                        <div class="info-content">
+                            <label>Visibility</label>
+                            <p>{{ group.visibility }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-actions">
+                    <a href="{{ path('app_group_index_user') }}" class="action-btn back-btn">
+                        <i class="fa fa-arrow-left"></i>
+                        Back to List
+                    </a>
+                    
+                    {% if app.user and app.user.id == group.createdByUserId %}
+                        <span class="owner-badge">You are the owner of this group</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

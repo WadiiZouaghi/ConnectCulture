@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Culture Connect{% endblock %}</title>
+    
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/feather/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/ti-icons/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/typicons/typicons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/simple-line-icons/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/css/vendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/js/select.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsA/css/vertical-layout-light/style.css') }}">
+    
+    {% block stylesheets %}{% endblock %}
+    
+    <style>
+        .system-info-text {
+            font-family: monospace;
+            color: #062264;
+            font-size: 0.9rem;
+            white-space: pre-line;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            margin: 10px 0;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #062264;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .action-btn {
+            background-color: #4b93d1;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            font-size: 0.85rem;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        .nav-item .nav-link {
+            color: #062264;
+        }
+
+        .menu-title {
+            color: #062264;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-scroller">
+        <!-- Navbar -->
+        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+                <div class="me-3">
+                    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+                        <span class="icon-menu"></span>
+                    </button>
+                </div>
+                <div>
+                    <a class="brand-title" href="{{ path('app_admin') }}">
+                        Culture Connect
+                    </a>
+                </div>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-top">
+                <ul class="navbar-nav">
+                    <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+                        <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">{{ app.user.username ?? 'User' }}</span></h1>
+                        <h3 class="welcome-sub-text">Your performance summary this week</h3>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <!-- Category Dropdown -->
+                    <li class="nav-item dropdown d-none d-lg-block">
+                        <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">Select Category</a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
+                            <!-- Category Items -->
+                        </div>
+                    </li>
+
+                    <!-- Date Picker -->
+                    <li class="nav-item d-none d-lg-block">
+                        <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                            <span class="input-group-addon input-group-prepend border-right">
+                                <span class="icon-calendar input-group-text calendar-icon"></span>
+                            </span>
+                            <input type="text" class="form-control">
+                        </div>
+                    </li>
+
+                    <!-- Search -->
+                    <li class="nav-item">
+                        <form class="search-form" action="#">
+                            <i class="icon-search"></i>
+                            <input type="search" class="form-control" placeholder="Search Here" title="Search here">
+                        </form>
+                    </li>
+
+                    <!-- Notifications -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+                            <i class="icon-mail icon-lg"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
+                        </div>
+                    </li>
+
+                    <!-- User Profile -->
+                    <li class="nav-item dropdown d-none d-lg-block user-dropdown">
+                        <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="img-xs rounded-circle" src="{{ asset('assetsA/images/faces/face8.jpg') }}" alt="Profile image">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+                            <div class="dropdown-header text-center">
+                                <img class="img-md rounded-circle" src="{{ asset('assetsA/images/faces/face8.jpg') }}" alt="Profile image">
+                                <p class="mb-1 mt-3 font-weight-semibold">{{ app.user.username ?? 'User' }}</p>
+                                <p class="fw-light text-muted mb-0">{{ app.user.email ?? '' }}</p>
+                            </div>
+                            <a class="dropdown-item" href="{{ path('app_profile') }}">
+                                <i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>
+                                My Profile
+                            </a>
+                            <a class="dropdown-item" href="{{ path('app_logout') }}">
+                                <i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid page-body-wrapper">
+            <!-- Sidebar -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <!-- Dashboard -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_admin') }}">
+                            <i class="mdi mdi-grid-large menu-icon"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+
+
+                    <!-- Management Section -->
+                    <li class="nav-item nav-category">Management</li>
+                    
+                    <!-- Users Management -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin_dashboard') }}">
+                            <i class="menu-icon mdi mdi-account-multiple"></i>
+                            <span class="menu-title">Users List</span>
+                        </a>
+                    </li>
+
+                    <!-- Events Management -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_event_index') }}">
+                            <i class="menu-icon mdi mdi-calendar-multiple"></i>
+                            <span class="menu-title">Events List</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Groups Management -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_group_index') }}">
+                            <i class="menu-icon mdi mdi-account-group"></i>
+                            <span class="menu-title">Groups Management</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Debug Section -->
+                    <li class="nav-item nav-category">Debug</li>
+                    
+                    <!-- Debug Group Pages -->
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#debugGroups" aria-expanded="false" aria-controls="debugGroups">
+                            <i class="menu-icon mdi mdi-bug"></i>
+                            <span class="menu-title">Debug Group Pages</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="debugGroups">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_group_index') }}">User Group List</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_group_index') }}">Admin Group List</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_group_dashboard') }}">Group Dashboard</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    {% block content %}{% endblock %}
+                </div>
+                {% block body %}{% endblock %}
+                
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+                            Culture Connect © {{ "now"|date("Y") }}
+                        </span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                            All rights reserved
+                        </span>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    {% block javascripts %}
+    <script src="{{ asset('assetsA/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('assetsA/vendors/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('assetsA/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('assetsA/vendors/progressbar.js/progressbar.min.js') }}"></script>
+    <script src="{{ asset('assetsA/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('assetsA/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('assetsA/js/template.js') }}"></script>
+    <script src="{{ asset('assetsA/js/settings.js') }}"></script>
+    <script src="{{ asset('assetsA/js/todolist.js') }}"></script>
+    <script src="{{ asset('assetsA/js/dashboard.js') }}"></script>
+    <script src="{{ asset('assetsA/js/Chart.roundedBarCharts.js') }}"></script>
+    {% endblock %}
+</body>
+</html>
