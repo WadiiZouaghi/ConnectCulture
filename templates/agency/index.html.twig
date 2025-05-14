@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agency Management{% endblock %}
+
+{% block body %}
+    <h1>Agency List</h1>
+
+    <a href="{{ path('agency_new') }}" class="btn btn-primary mb-3">+ Create New Agency</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agency in agencies %}
+                <tr>
+                    <td>{{ agency.id }}</td>
+                    <td>{{ agency.name }}</td>
+                    <td>{{ agency.address }}</td>
+                    <td>{{ agency.contactInfo }}</td>
+                    <td>
+                        <a href="{{ path('agency_show', {id: agency.id}) }}" class="btn btn-info btn-sm">Show</a>
+                        <a href="{{ path('agency_edit', {id: agency.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="post" action="{{ path('agency_delete', {id: agency.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ agency.id) }}">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">No agencies found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

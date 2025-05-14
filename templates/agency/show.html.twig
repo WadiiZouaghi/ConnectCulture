@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agency Details{% endblock %}
+
+{% block body %}
+    <h1>Agency Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>{{ agency.name }}</h2>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ agency.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ agency.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>{{ agency.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>Contact Information</th>
+                        <td>{{ agency.contactInfo }}</td>
+                    </tr>
+                    {% if agency.description %}
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ agency.description }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if agency.website %}
+                    <tr>
+                        <th>Website</th>
+                        <td><a href="{{ agency.website }}" target="_blank">{{ agency.website }}</a></td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="{{ path('agency_edit', {id: agency.id}) }}" class="btn btn-warning">Edit</a>
+        <a href="{{ path('agency_index') }}" class="btn btn-secondary">Back to list</a>
+        <form method="post" action="{{ path('agency_delete', {id: agency.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this agency?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ agency.id) }}">
+            <button class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+{% endblock %}

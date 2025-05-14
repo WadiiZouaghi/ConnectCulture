@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Service Details{% endblock %}
+
+{% block body %}
+    <h1>Service Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>{{ service.name }}</h2>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ service.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ service.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Equipment</th>
+                        <td>{{ service.serviceEquipment }}</td>
+                    </tr>
+                    {% if service.description %}
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ service.description }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if service.price is defined %}
+                    <tr>
+                        <th>Price</th>
+                        <td>{{ service.price }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="{{ path('service_edit', {id: service.id}) }}" class="btn btn-warning">Edit</a>
+        <a href="{{ path('service_index') }}" class="btn btn-secondary">Back to list</a>
+        <form method="post" action="{{ path('service_delete', {id: service.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this service?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ service.id) }}">
+            <button class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+{% endblock %}

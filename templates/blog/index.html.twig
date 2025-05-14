@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog Management{% endblock %}
+
+{% block body %}
+    <h1>Blog List</h1>
+
+    <a href="{{ path('blog_new') }}" class="btn btn-primary mb-3">+ Create New Blog</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for blog in blogs %}
+                <tr>
+                    <td>{{ blog.id }}</td>
+                    <td>{{ blog.title }}</td>
+                    <td>{{ blog.content|slice(0, 100) }}{% if blog.content|length > 100 %}...{% endif %}</td>
+                    <td>{{ blog.createdAt ? blog.createdAt|date('Y-m-d H:i') : '' }}</td>
+                    <td>
+                        <a href="{{ path('blog_show', {id: blog.id}) }}" class="btn btn-info btn-sm">Show</a>
+                        <a href="{{ path('blog_edit', {id: blog.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="post" action="{{ path('blog_delete', {id: blog.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ blog.id) }}">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">No blogs found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

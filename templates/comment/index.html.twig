@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comment Management{% endblock %}
+
+{% block body %}
+    <h1>Comment List</h1>
+
+    <a href="{{ path('comment_new') }}" class="btn btn-primary mb-3">+ Create New Comment</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Content</th>
+                <th>Created At</th>
+                <th>Blog</th>
+                <th>Author</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ comment.id }}</td>
+                    <td>{{ comment.content|slice(0, 100) }}{% if comment.content|length > 100 %}...{% endif %}</td>
+                    <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i') : '' }}</td>
+                    <td>
+                        {% if comment.blog %}
+                            <a href="{{ path('blog_show', {id: comment.blog.id}) }}">{{ comment.blog.title }}</a>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if comment.author %}
+                            {{ comment.author.fullName }}
+                        {% else %}
+                            Anonymous
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('comment_show', {id: comment.id}) }}" class="btn btn-info btn-sm">Show</a>
+                        <a href="{{ path('comment_edit', {id: comment.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="post" action="{{ path('comment_delete', {id: comment.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No comments found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

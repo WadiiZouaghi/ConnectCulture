@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Comment{% endblock %}
+
+{% block body %}
+    <h1>Create New Comment</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">Save</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('comment_index') }}" class="btn btn-secondary mt-3">Back to list</a>
+    
+    {% if app.request.query.get('blog_id') %}
+        <a href="{{ path('blog_show', {id: app.request.query.get('blog_id')}) }}" class="btn btn-info mt-3">Back to blog</a>
+    {% endif %}
+{% endblock %}

@@ -65,6 +65,11 @@
                                 <i class="fa fa-calendar"></i> Events
                             </a>
                         </li>
+                        <li class="nav-item {% if app.request.get('_route') == 'service_index' %}active{% endif %}">
+                            <a class="nav-link" href="{{ path('service_index') }}">
+                                <i class="fa fa-cogs"></i> Services
+                            </a>
+                        </li>
                         {% if app.user %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link" href="{{ path('app_profile_User') }}">
@@ -118,6 +123,7 @@
                         <h4>Quick Links</h4>
                         <a href="{{ path('app_home') }}"><i class="fa fa-home"></i> Home</a>
                         <a href="{{ path('app_event_index_User') }}"><i class="fa fa-calendar"></i> Events</a>
+                        <a href="{{ path('service_index') }}"><i class="fa fa-cogs"></i> Services</a>
                     </div>
                 </div>
             </div>
@@ -144,7 +150,7 @@
                              String(now.getUTCHours()).padStart(2, '0') + ':' +
                              String(now.getUTCMinutes()).padStart(2, '0') + ':' +
                              String(now.getUTCSeconds()).padStart(2, '0');
-        
+
         document.querySelectorAll('.current-datetime').forEach(element => {
             element.textContent = dateTimeString;
         });
