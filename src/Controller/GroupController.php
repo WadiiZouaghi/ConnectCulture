@@ -182,13 +182,13 @@ final class GroupController extends AbstractController
             $this->addFlash('success', 'Group deleted successfully!');
         }
 
-        // Redirect to user group list if coming from user pages
+        // Redirect to the appropriate index page based on referer
         $referer = $request->headers->get('referer');
         if ($referer && strpos($referer, '/group/user') !== false) {
-                return $this->redirectToRoute('app_group_show_user', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_group_index_user', [], Response::HTTP_SEE_OTHER);
         }
         
-            return $this->redirectToRoute('app_group_show', ['id' => (int)$group->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
     }
 
  /**************************************** User *************************************/

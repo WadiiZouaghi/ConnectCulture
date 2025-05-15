@@ -189,13 +189,13 @@ final class EventController extends AbstractController
             $this->addFlash('success', 'Event deleted successfully!');
         }
 
-        // Redirect to user event list if coming from user pages
+        // Redirect to the appropriate event list page based on referer
         $referer = $request->headers->get('referer');
         if ($referer && strpos($referer, '/event/user') !== false) {
-               return $this->redirectToRoute('app_event_show_User', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
-            }
-            
-            return $this->redirectToRoute('app_event_show', ['id' => (int)$event->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_event_index_User', [], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
    }
 
  /**************************************** User *************************************/
