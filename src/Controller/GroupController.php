@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
+use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,16 +111,23 @@ final class GroupController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_group_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(GroupRepository $groupRepository, int $id): Response
+    public function show(GroupRepository $groupRepository, WeatherService $weatherService, int $id): Response
     {
         $group = $groupRepository->find($id);
         
         if (!$group) {
             throw $this->createNotFoundException('Group not found');
         }
+        
+        // Get weather data for the group's city if available
+        $weatherData = null;
+        if ($group->getCity()) {
+            $weatherData = $weatherService->getCurrentWeather($group->getCity());
+        }
 
         return $this->render('group/show.html.twig', [
             'group' => $group,
+            'weather' => $weatherData,
             ...$this->getSystemInfo()
         ]);
     }
@@ -202,16 +210,23 @@ final class GroupController extends AbstractController
     }
 
     #[Route('/user/{id}', name: 'app_group_show_user', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function showUser(GroupRepository $groupRepository, int $id): Response
+    public function showUser(GroupRepository $groupRepository, WeatherService $weatherService, int $id): Response
     {
         $group = $groupRepository->find($id);
         
         if (!$group) {
             throw $this->createNotFoundException('Group not found');
         }
+        
+        // Get weather data for the group's city if available
+        $weatherData = null;
+        if ($group->getCity()) {
+            $weatherData = $weatherService->getCurrentWeather($group->getCity());
+        }
 
         return $this->render('group/show_user.html.twig', [
             'group' => $group,
+            'weather' => $weatherData,
             ...$this->getSystemInfo()
         ]);
     }
