@@ -1,0 +1,473 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}Blog: {{ blog.title }}{% endblock %}
+
+{% block body %}
+<section class="blog-section">
+    <!-- System Info Bar -->
+    <div class="system-info-bar">
+        <div class="system-info-item">
+            Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): {{ "now"|date("Y-m-d H:i:s") }}
+        </div>
+        {% if app.user %}
+        <div class="system-info-item">
+            Current User's Login: {{ app.user.userIdentifier }}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="blog-container">
+        <!-- Blog Header -->
+        <div class="blog-header">
+            <div class="heading_container">
+                <h2>Blog <span>Details</span></h2>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('app_blog_index_user') }}" class="action-btn back-btn">
+                    <i class="fa fa-arrow-left"></i>
+                    Back to List
+                </a>
+                {% if app.user and app.user.username == blog.author %}
+                <a href="{{ path('app_blog_edit_user', {'id': blog.id}) }}" class="action-btn edit-btn">
+                    <i class="fa fa-pencil"></i>
+                    Edit
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Blog Content -->
+        <div class="blog-content-wrapper">
+            <div class="blog-card">
+                <div class="blog-content">
+                    <div class="blog-title">
+                        <h3>{{ blog.title }}</h3>
+                        <div class="blog-meta">
+                            <span><i class="fa fa-user"></i> {{ blog.author }}</span>
+                            <span><i class="fa fa-calendar"></i> {{ blog.date|date('Y-m-d') }}</span>
+                            <span><i class="fa fa-comments"></i> {{ blog.comments|length }} comment(s)</span>
+                        </div>
+                    </div>
+                    <div class="blog-body">
+                        <p>{{ blog.content|nl2br }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Form (only for the author) -->
+            {% if app.user and app.user.username == blog.author %}
+            <div class="delete-form-container">
+                {{ include('blog/_delete_form.html.twig') }}
+            </div>
+            {% endif %}
+
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <h3>Comments ({{ blog.comments|length }})</h3>
+                
+                <!-- Add Comment Form -->
+                {% if app.user %}
+                <div class="add-comment-form">
+                    <form method="post" action="{{ path('app_blog_comment_new', {'id': blog.id}) }}">
+                        <div class="form-group">
+                            <label for="content" class="form-label">Add a comment</label>
+                            <textarea id="content" name="content" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="login-to-comment">
+                    <p>Please <a href="{{ path('app_login') }}">login</a> to add a comment.</p>
+                </div>
+                {% endif %}
+                
+                <!-- Comments List -->
+                <div class="comments-list">
+                    {% if blog.comments is empty %}
+                        <div class="no-comments">
+                            <p>No comments yet. Be the first to comment!</p>
+                        </div>
+                    {% else %}
+                        {% for comment in blog.comments %}
+                            <div class="comment-card">
+                                <div class="comment-header">
+                                    <div class="comment-author">
+                                        <i class="fa fa-user-circle"></i>
+                                        <span>{{ comment.author }}</span>
+                                    </div>
+                                    {% if app.user and app.user.id == comment.userId %}
+                                        <div class="comment-actions">
+                                            <a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="comment-action edit-action">
+                                                <i class="fa fa-pencil"></i>
+                                                Edit
+                                            </a>
+                                            <form method="post" action="{{ path('app_comment_delete', {'id': comment.id}) }}" class="comment-delete-form">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                                <button type="submit" class="comment-action delete-action" onclick="return confirm('Are you sure you want to delete this comment?')">
+                                                    <i class="fa fa-trash"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="comment-content">
+                                    <p>{{ comment.content|nl2br }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* System Info Bar */
+.system-info-bar {
+    background: #f8f9fa;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+}
+
+.system-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #062264;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Blog Section */
+.blog-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.blog-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Blog Header */
+.blog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.heading_container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #062264;
+}
+
+.heading_container span {
+    color: #4b93d1;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Blog Content */
+.blog-content-wrapper {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+    margin-bottom: 30px;
+}
+
+.blog-card {
+    padding: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.blog-title {
+    margin-bottom: 20px;
+}
+
+.blog-title h3 {
+    font-size: 1.8rem;
+    color: #062264;
+    margin-bottom: 10px;
+}
+
+.blog-meta {
+    display: flex;
+    gap: 15px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.blog-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.blog-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-line;
+}
+
+/* Delete Form Container */
+.delete-form-container {
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Comments Section */
+.comments-section {
+    padding: 30px;
+}
+
+.comments-section h3 {
+    font-size: 1.5rem;
+    color: #062264;
+    margin-bottom: 20px;
+}
+
+/* Add Comment Form */
+.add-comment-form {
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #062264;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4b93d1;
+    outline: none;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #4b93d1;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* Login to Comment */
+.login-to-comment {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.login-to-comment a {
+    color: #4b93d1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-to-comment a:hover {
+    text-decoration: underline;
+}
+
+/* Comments List */
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.no-comments {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.comment-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #062264;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.edit-action:hover {
+    color: #4b93d1;
+}
+
+.delete-action:hover {
+    color: #dc3545;
+}
+
+.comment-content {
+    color: #333;
+    line-height: 1.6;
+}
+
+.comment-delete-form {
+    display: inline;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.back-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.edit-btn {
+    background-color: #4b93d1;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .system-info-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .blog-container {
+        padding: 15px;
+    }
+
+    .blog-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .blog-card {
+        padding: 20px;
+    }
+
+    .blog-title h3 {
+        font-size: 1.5rem;
+    }
+
+    .blog-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+</style>
+{% endblock %}

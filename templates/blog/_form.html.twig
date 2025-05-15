@@ -1,0 +1,116 @@
+{{ form_start(form, {'attr': {'class': 'blog-form'}}) }}
+    <div class="form-group">
+        {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.title) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.content, 'Content', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 10}}) }}
+        {{ form_errors(form.content) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.author, 'Author', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.author, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.author) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.date) }}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        <a href="{{ path('app_blog_index') }}" class="btn btn-secondary">Back to list</a>
+    </div>
+{{ form_end(form) }}
+
+<style>
+.blog-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #062264;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4b93d1;
+    outline: none;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #4b93d1;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .blog-form {
+        padding: 20px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+</style>

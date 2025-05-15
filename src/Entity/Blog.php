@@ -2,45 +2,52 @@
 
 namespace App\Entity;
 
+use App\Repository\BlogRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\BlogRepository")
- */
+
+ #@ORM\Entity(repositoryClass="App\Repository\BlogRepository")
+#[ORM\Entity(repositoryClass: BlogRepository::class)]
 class Blog
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: "string", length: 255)]
+
     private $title;
 
     /**
      * @ORM\Column(type="text")
      */
+    #[ORM\Column(type: "text")]
+
     private $content;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: "string", length: 255)]
+
     private $author;
 
     /**
      * @ORM\Column(type="date")
      */
+    #[ORM\Column(type: "date")]
     private $date;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="blog", cascade={"persist", "remove"})
      */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: "blog", cascade: ["persist", "remove"])]
     private $comments;
 
     public function __construct()
@@ -118,7 +125,7 @@ class Blog
             $this->comments->removeElement($comment);
             // Set the owning side to null
             if ($comment->getBlog() === $this) {
-                $comment->setBlog($this);
+                $comment->setBlog(null);
             }
         }
 

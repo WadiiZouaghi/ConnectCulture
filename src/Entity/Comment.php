@@ -2,39 +2,46 @@
 
 namespace App\Entity;
 
+use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  */
+#[ORM\Entity(repositoryClass: CommentRepository::class)]
+
 class Comment
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
     private $id;
 
     /**
      * @ORM\Column(type="text")
      */
+    #[ORM\Column(type: "text")]
+
     private $content;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: "string", length: 255)]
+
     private $author;
 
     /**
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: "integer")]
+
     private $userId;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Blog", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */
+    #[ORM\ManyToOne(targetEntity: Blog::class, inversedBy: "comments")]
+    #[ORM\JoinColumn(nullable: false)]
+
     private $blog;
 
     // In Comment.php

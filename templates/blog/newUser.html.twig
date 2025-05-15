@@ -1,0 +1,159 @@
+{% extends 'baseA.html.twig' %}
+
+{% block title %}New Blog{% endblock %}
+
+{% block body %}
+<section class="blog-section">
+    <!-- System Info Bar -->
+    <div class="system-info-bar">
+        <div class="system-info-item">
+            Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): {{ "now"|date("Y-m-d H:i:s") }}
+        </div>
+        {% if app.user %}
+        <div class="system-info-item">
+            Current User's Login: {{ app.user.userIdentifier }}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="blog-container">
+        <!-- Blog Header -->
+        <div class="blog-header">
+            <div class="heading_container">
+                <h2>Create <span>New Blog</span></h2>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('app_blog_index_user') }}" class="action-btn back-btn">
+                    <i class="fa fa-arrow-left"></i>
+                    Back to List
+                </a>
+            </div>
+        </div>
+
+        <!-- Blog Form -->
+        <div class="blog-form-container">
+            {{ include('blog/_form.html.twig', {'button_label': 'Create'}) }}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* System Info Bar */
+.system-info-bar {
+    background: #f8f9fa;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+}
+
+.system-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #062264;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Blog Section */
+.blog-section {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.blog-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Blog Header */
+.blog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.heading_container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #062264;
+}
+
+.heading_container span {
+    color: #4b93d1;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Blog Form Container */
+.blog-form-container {
+    margin-bottom: 30px;
+}
+
+/* Action Buttons */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.back-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .system-info-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .blog-container {
+        padding: 15px;
+    }
+
+    .blog-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

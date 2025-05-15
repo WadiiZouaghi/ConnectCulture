@@ -1,6 +1,6 @@
 {% extends 'baseA.html.twig' %}
 
-{% block title %}Blogs{% endblock %}
+{% block title %}My Blogs{% endblock %}
 
 {% block body %}
 <section class="blogs-section">
@@ -20,9 +20,9 @@
         <!-- Blogs Header -->
         <div class="blogs-header">
             <div class="heading_container">
-                <h2>Blog <span>List</span></h2>
+                <h2>My <span>Blogs</span></h2>
             </div>
-            <a href="{{ path('app_blog_new') }}" class="action-btn create-btn header-create-btn">
+            <a href="{{ path('app_blog_new_user') }}" class="action-btn create-btn header-create-btn">
                 <i class="fa fa-plus"></i>
                 Create New Blog
             </a>
@@ -35,7 +35,7 @@
                     <i class="fa fa-newspaper-o"></i>
                     <h3>No Blogs Found</h3>
                     <p>Start by creating your first blog</p>
-                    <a href="{{ path('app_blog_new') }}" class="action-btn create-btn header-create-btn">
+                    <a href="{{ path('app_blog_new_user') }}" class="action-btn create-btn header-create-btn">
                         <i class="fa fa-plus"></i>
                         Create New Blog
                     </a>
@@ -88,11 +88,11 @@
                         </div>
 
                         <div class="blog-actions">
-                            <a href="{{ path('app_blog_show', {'id': blog.id}) }}" class="action-btn view-btn">
+                            <a href="{{ path('app_blog_show_user', {'id': blog.id}) }}" class="action-btn view-btn">
                                 <i class="fa fa-eye"></i>
                                 View
                             </a>
-                            <a href="{{ path('app_blog_edit', {'id': blog.id}) }}" class="action-btn edit-btn">
+                            <a href="{{ path('app_blog_edit_user', {'id': blog.id}) }}" class="action-btn edit-btn">
                                 <i class="fa fa-pencil"></i>
                                 Edit
                             </a>
