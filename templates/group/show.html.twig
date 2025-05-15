@@ -51,89 +51,186 @@
                 </div>
             </div>
 
-            <div class="group-info">
-                <div class="info-section">
-                    <h4>Basic Information</h4>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <i class="fa fa-tag"></i>
-                            <div class="info-content">
-                                <label>Category</label>
-                                <p>{{ group.category }}</p>
+            <div class="group-content">
+                <!-- Left Side - Group Details -->
+                <div class="group-details">
+                    <div class="info-section">
+                        <h4>Basic Information</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fa fa-tag"></i>
+                                <div class="info-content">
+                                    <label>Category</label>
+                                    <p>{{ group.category }}</p>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <i class="fa fa-map-marker"></i>
-                            <div class="info-content">
-                                <label>City</label>
-                                <p>{{ group.city }}</p>
+                            
+                            <div class="info-item">
+                                <i class="fa fa-map-marker"></i>
+                                <div class="info-content">
+                                    <label>City</label>
+                                    <p>{{ group.city }}</p>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <i class="fa fa-users"></i>
-                            <div class="info-content">
-                                <label>Maximum Size</label>
-                                <p>{{ group.size ?? 'Unlimited' }}</p>
+                            
+                            <div class="info-item">
+                                <i class="fa fa-users"></i>
+                                <div class="info-content">
+                                    <label>Maximum Size</label>
+                                    <p>{{ group.size ?? 'Unlimited' }}</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-section">
-                    <h4>Dates</h4>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <i class="fa fa-calendar"></i>
-                            <div class="info-content">
-                                <label>Start Date</label>
-                                <p>
-                                    {% if group.startDate %}
-                                        {{ group.startDate|date('Y-m-d') }}
-                                    {% else %}
-                                        Not specified
-                                    {% endif %}
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <i class="fa fa-calendar-check-o"></i>
-                            <div class="info-content">
-                                <label>End Date</label>
-                                <p>
-                                    {% if group.endDate %}
-                                        {{ group.endDate|date('Y-m-d') }}
-                                    {% else %}
-                                        Not specified
-                                    {% endif %}
-                                </p>
+                            
+                            <div class="info-item">
+                                <i class="fa fa-eye"></i>
+                                <div class="info-content">
+                                    <label>Visibility</label>
+                                    <p>{{ group.visibility }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="info-section">
-                    <h4>Description</h4>
-                    <div class="description-box">
-                        <p>{{ group.description }}</p>
+                    <div class="info-section">
+                        <h4>Dates</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fa fa-calendar"></i>
+                                <div class="info-content">
+                                    <label>Start Date</label>
+                                    <p>
+                                        {% if group.startDate %}
+                                            {{ group.startDate|date('Y-m-d') }}
+                                        {% else %}
+                                            Not specified
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <i class="fa fa-calendar-check-o"></i>
+                                <div class="info-content">
+                                    <label>End Date</label>
+                                    <p>
+                                        {% if group.endDate %}
+                                            {{ group.endDate|date('Y-m-d') }}
+                                        {% else %}
+                                            Not specified
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>Description</h4>
+                        <div class="description-box">
+                            <p>{{ group.description }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="group-actions">
+                        <a href="{{ path('app_group_edit', {'id': group.id}) }}" class="action-btn edit-btn">
+                            <i class="fa fa-pencil"></i>
+                            Edit
+                        </a>
+                        <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this group?')) document.getElementById('delete-form').submit();" class="action-btn delete-btn">
+                            <i class="fa fa-trash"></i>
+                            Delete
+                        </a>
+                        <form id="delete-form" method="post" action="{{ path('app_group_delete', {'id': group.id}) }}" style="display: none;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+                        </form>
                     </div>
                 </div>
-            </div>
-
-            <div class="group-actions">
-                <a href="{{ path('app_group_edit', {'id': group.id}) }}" class="action-btn edit-btn">
-                    <i class="fa fa-pencil"></i>
-                    Edit
-                </a>
-                <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this group?')) document.getElementById('delete-form').submit();" class="action-btn delete-btn">
-                    <i class="fa fa-trash"></i>
-                    Delete
-                </a>
-                <form id="delete-form" method="post" action="{{ path('app_group_delete', {'id': group.id}) }}" style="display: none;">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
-                </form>
+                
+                <!-- Right Side - Widgets -->
+                <div class="group-widgets">
+                    {% if weather %}
+                    <div class="widget weather-widget">
+                        <div class="widget-header">
+                            <i class="fa fa-cloud"></i>
+                            <h4>Weather in {{ group.city }}</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="weather-main">
+                                <img src="{{ weather.icon_url }}" alt="{{ weather.description }}" class="weather-icon-large">
+                                <div class="weather-info">
+                                    <p class="weather-temp-large">{{ weather.temperature }}°C</p>
+                                    <p class="weather-desc-large">{{ weather.description|capitalize }}</p>
+                                </div>
+                            </div>
+                            <div class="weather-details-grid">
+                                <div class="weather-detail-item">
+                                    <i class="fa fa-tint"></i>
+                                    <div>
+                                        <span>Humidity</span>
+                                        <p>{{ weather.humidity }}%</p>
+                                    </div>
+                                </div>
+                                <div class="weather-detail-item">
+                                    <i class="fa fa-wind"></i>
+                                    <div>
+                                        <span>Wind</span>
+                                        <p>{{ weather.wind_speed }} m/s</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Group Quick Info Widget -->
+                    <div class="widget quick-info-widget">
+                        <div class="widget-header">
+                            <i class="fa fa-info-circle"></i>
+                            <h4>Quick Info</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="quick-info-item">
+                                <i class="fa fa-users"></i>
+                                <div>
+                                    <span>Size</span>
+                                    <p>{{ group.size ?? 'Unlimited' }}</p>
+                                </div>
+                            </div>
+                            <div class="quick-info-item">
+                                <i class="fa fa-eye"></i>
+                                <div>
+                                    <span>Visibility</span>
+                                    <p>{{ group.visibility }}</p>
+                                </div>
+                            </div>
+                            <div class="quick-info-item">
+                                <i class="fa fa-map-marker"></i>
+                                <div>
+                                    <span>Location</span>
+                                    <p>{{ group.city }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Actions Widget -->
+                    <div class="widget admin-actions-widget">
+                        <div class="widget-header">
+                            <i class="fa fa-cog"></i>
+                            <h4>Admin Actions</h4>
+                        </div>
+                        <div class="widget-content">
+                            <a href="{{ path('app_group_edit', {'id': group.id}) }}" class="admin-action-btn">
+                                <i class="fa fa-pencil"></i>
+                                Edit Group
+                            </a>
+                            <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this group?')) document.getElementById('delete-form').submit();" class="admin-action-btn delete-action">
+                                <i class="fa fa-trash"></i>
+                                Delete Group
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -174,8 +271,27 @@
 
 .group-details-container {
     padding: 30px;
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
+}
+
+/* Group Content Layout */
+.group-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+}
+
+.group-details {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.group-widgets {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* Details Header */
@@ -310,6 +426,225 @@
     font-size: 1rem;
 }
 
+/* Sidebar Styles */
+.details-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-widget {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(6, 34, 100, 0.1);
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+}
+
+.widget-header i {
+    font-size: 18px;
+    color: #4b93d1;
+}
+
+.widget-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #062264;
+}
+
+.widget-content {
+    padding: 20px;
+}
+
+/* Weather Widget Styles */
+.weather-widget {
+    background: linear-gradient(to bottom, #f8f9fa, white);
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.weather-icon-large {
+    width: 80px;
+    height: 80px;
+}
+
+.weather-info {
+    flex: 1;
+    padding-left: 10px;
+}
+
+.weather-temp-large {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+    color: #062264;
+}
+
+.weather-desc-large {
+    font-size: 1.1rem;
+    color: #4b93d1;
+    margin: 5px 0 0 0;
+}
+
+.weather-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.weather-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(75, 147, 209, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.weather-detail-item i {
+    font-size: 16px;
+    color: #4b93d1;
+}
+
+.weather-detail-item span {
+    display: block;
+    font-size: 12px;
+    color: #062264;
+    opacity: 0.7;
+}
+
+.weather-detail-item p {
+    margin: 0;
+    font-weight: 600;
+    color: #062264;
+}
+
+/* Quick Info Widget Styles */
+.quick-info-widget .widget-content {
+    padding: 10px 20px;
+}
+
+.quick-info-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(6, 34, 100, 0.1);
+}
+
+.quick-info-item:last-child {
+    border-bottom: none;
+}
+
+.quick-info-item i {
+    font-size: 18px;
+    color: #4b93d1;
+    width: 20px;
+    text-align: center;
+}
+
+.quick-info-item span {
+    display: block;
+    font-size: 12px;
+    color: #062264;
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+.quick-info-item p {
+    margin: 0;
+    font-weight: 600;
+    color: #062264;
+}
+
+/* Admin Actions Widget */
+.admin-actions-widget .widget-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #4b93d1;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.admin-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(75, 147, 209, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.admin-action-btn.delete-action {
+    background-color: #dc3545;
+}
+
+.admin-action-btn.delete-action:hover {
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+/* Original Weather Styles (kept for compatibility) */
+.weather-item {
+    grid-column: span 2;
+}
+
+.weather-data {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.weather-icon {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+}
+
+.weather-details {
+    flex: 1;
+}
+
+.weather-temp {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2px !important;
+}
+
+.weather-desc {
+    font-size: 1rem;
+    margin-bottom: 5px !important;
+}
+
+.weather-extra {
+    font-size: 0.85rem;
+    color: #4b93d1;
+}
+
 .description-box {
     background-color: #f8f9fa;
     padding: 20px;
@@ -418,6 +753,10 @@
         padding: 15px;
     }
 
+    .group-content {
+        grid-template-columns: 1fr;
+    }
+
     .details-header {
         flex-direction: column;
         gap: 20px;
@@ -448,6 +787,14 @@
     }
 
     .group-actions .action-btn {
+        width: 100%;
+    }
+    
+    .weather-details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-action-btn {
         width: 100%;
     }
 }
